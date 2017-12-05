@@ -1,0 +1,8 @@
+*__pycache__*
+venv/
+*.sqlite3
+*.swp
+static/
+media/
+.coverage
+htmlcov/
