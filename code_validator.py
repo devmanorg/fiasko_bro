@@ -216,6 +216,7 @@ class CodeValidator:
                     error_group_name,
                     self.validator_arguments
                 )
+                return errors
         return errors
 
 
