@@ -9,26 +9,26 @@ import ast_helpers
 
 def has_more_commits_than_origin(solution_repo, original_repo=None, *args, **kwargs):
     if not original_repo:
-        return True, None, None
+        return
     # FIXME this check works incorrectly in case of new commit in original repo after student forked it
-    is_valid = solution_repo.count_commits() > original_repo.count_commits()
-    return is_valid, 'no_new_code', None
+    if solution_repo.count_commits() <= original_repo.count_commits():
+        return 'no_new_code', None
 
 
 def has_readme_file(solution_repo, readme_filename, *args, **kwargs):
-    is_valid = solution_repo.does_file_exist(readme_filename)
-    return is_valid, 'need_readme', 'нет %s' % readme_filename
+    if not solution_repo.does_file_exist(readme_filename):
+        return 'need_readme', 'нет %s' % readme_filename
 
 
 def is_pep8_fine(solution_repo, allowed_max_pep8_violations, *args, **kwargs):
     violations_amount = solution_repo.count_pep8_violations()
-    is_valid = violations_amount <= allowed_max_pep8_violations
-    return is_valid, 'pep8', '%s нарушений' % violations_amount
+    if violations_amount > allowed_max_pep8_violations:
+        return 'pep8', '%s нарушений' % violations_amount
 
 
 def has_changed_readme(solution_repo, readme_filename, original_repo=None, *args, **kwargs):
     if not original_repo:
-        return True, None, None
+        return
     # FIXME this check works incorrectly in case of new commit in original repo after student forked it
     original_readme_path = os.path.join(original_repo.path, readme_filename)
     solution_readme_path = os.path.join(solution_repo.path, readme_filename)
@@ -36,23 +36,20 @@ def has_changed_readme(solution_repo, readme_filename, original_repo=None, *args
         with open(original_readme_path, encoding='utf-8') as original_handler:
             original_readme = original_handler.read()
     except FileNotFoundError:
-        return True, None, None
+        return
     try:
         with open(solution_readme_path, encoding='utf-8') as solution_handler:
             solution_readme = solution_handler.read()
-        is_valid = solution_readme != original_readme
-        error_slug = 'need_readme'
+        if solution_readme == original_readme:
+            return 'need_readme', None
     except UnicodeDecodeError:
-        is_valid = False
-        error_slug = 'readme_not_utf_8'
-    return is_valid, error_slug, None
+        return 'readme_not_utf_8', None
 
 
 def has_no_syntax_errors(solution_repo, *args, **kwargs):
     for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
         if tree is None:
-            return False, 'syntax_error', 'в %s' % filename
-    return True, None, None
+            return 'syntax_error', 'в %s' % filename
 
 
 def are_sources_in_utf(solution_repo, *args, **kwargs):
@@ -60,8 +57,7 @@ def are_sources_in_utf(solution_repo, *args, **kwargs):
         solution_repo.get_ast_trees(with_filenames=True)
         solution_repo.get_file('requirements.txt')
     except UnicodeDecodeError:
-        return False, 'sources_not_utf_8', None
-    return True, None, None
+        return 'sources_not_utf_8', None
 
 
 def is_snake_case(solution_repo, whitelists, *args, **kwargs):
@@ -80,8 +76,7 @@ def is_snake_case(solution_repo, whitelists, *args, **kwargs):
                                 and n not in buildins_
                                 and n not in whitelist]
         if names_with_uppercase:
-            return False, 'camel_case_vars', 'переименуй, например, %s.' % ', '.join(names_with_uppercase[:3])
-    return True, None, None
+            return 'camel_case_vars', 'переименуй, например, %s.' % ', '.join(names_with_uppercase[:3])
 
 
 def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
@@ -89,38 +84,33 @@ def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
     for filename, _ in solution_repo.get_ast_trees(with_filenames=True):
         violations += ast_helpers.get_mccabe_violations_for_file(filename, max_complexity)
     if violations:
-        return False, 'mccabe_failure', ','.join(violations)
-    return True, None, None
+        return 'mccabe_failure', ','.join(violations)
 
 
 def has_no_encoding_declaration(solution_repo, *args, **kwargs):
     for _, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
         first_line = file_content.strip('\n').split('\n')[0].strip().replace(' ', '')
         if first_line.startswith('#') and 'coding:utf-8' in first_line:
-            return False, 'has_encoding_declarations', ''
-    return True, None, None
+            return 'has_encoding_declarations', ''
 
 
 def has_no_star_imports(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         if ast_helpers.is_tree_has_star_imports(tree):
-            return False, 'has_star_import', ''
-    return True, None, None
+            return 'has_star_import', ''
 
 
 def has_no_local_imports(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         if ast_helpers.is_has_local_imports(tree):
-            return False, 'has_local_import', ''
-    return True, None, None
+            return 'has_local_import', ''
 
 
 def has_local_var_named_as_global(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         bad_names = ast_helpers.get_local_vars_named_as_globals(tree)
         if bad_names:
-            return False, 'has_locals_named_as_globals', 'например, %s' % (', '.join(bad_names))
-    return True, None, None
+            return 'has_locals_named_as_globals', 'например, %s' % (', '.join(bad_names))
 
 
 def has_variables_from_blacklist(solution_repo, blacklists, *args, **kwargs):
@@ -129,8 +119,7 @@ def has_variables_from_blacklist(solution_repo, blacklists, *args, **kwargs):
         names = ast_helpers.get_all_defined_names(tree)
         bad_names = names.intersection(blacklist)
         if bad_names:
-            return False, 'bad_titles', ', '.join(bad_names)
-    return True, None, None
+            return 'bad_titles', ', '.join(bad_names)
 
 
 def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, *args, **kwargs):
@@ -140,8 +129,7 @@ def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, 
         names = ast_helpers.get_all_defined_names(tree)
         short_names += [n for n in names if len(n) < minimum_name_length and n not in whitelist]
     if short_names:
-        return False, 'bad_titles', ', '.join(list(set(short_names)))
-    return True, None, None
+        return 'bad_titles', ', '.join(list(set(short_names)))
 
 
 def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
@@ -153,11 +141,9 @@ def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
         if ext == '.py':
             # строки могут начинаться с таба в многострочной строке, поэтому такая эвристика
             if tabbed_lines_amount > len(lines) / 2:
-                return False, 'tabs_used_for_indents', ''
+                return 'tabs_used_for_indents', ''
         elif is_frontend and tabbed_lines_amount:
-            return False, 'tabs_used_for_indents', ''
-
-    return True, None, None
+            return 'tabs_used_for_indents', ''
 
 
 @helpers.tokenized_validator(3)
@@ -165,8 +151,8 @@ def has_min_max_functions(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         names = ast_helpers.get_all_names_from_tree(tree)
         if 'min' in names and 'max' in names:
-            return True, None, None
-    return False, 'builtins', 'используй min/max для поиска подходящих баров'
+            return
+    return 'builtins', 'используй min/max для поиска подходящих баров'
 
 
 def has_no_try_without_exception(solution_repo, *args, **kwargs):
@@ -175,36 +161,33 @@ def has_no_try_without_exception(solution_repo, *args, **kwargs):
         tryes = [node for node in ast.walk(tree) if isinstance(node, ast.ExceptHandler)]
         for try_except in tryes:
             if try_except.type is None:
-                return False, 'broad_except', ''
+                return 'broad_except', ''
             if isinstance(try_except.type, ast.Name) and try_except.type.id == exception_type_to_catch:
-                return False, 'broad_except', '%s – слишком широкий тип исключений; укажи подробнее, какую ошибку ты ловишь' % exception_type_to_catch
-    return True, None, None
+                return 'broad_except', '%s – слишком широкий тип исключений; укажи подробнее, какую ошибку ты ловишь' % exception_type_to_catch
 
 
 @helpers.tokenized_validator(5)
 def has_counter_import(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         if ast_helpers.uses_module(tree, 'collections'):
-            return True, None, None
-    return False, 'builtins', 'используй collections.Counter для подсчёта слов'
+            return
+    return 'builtins', 'используй collections.Counter для подсчёта слов'
 
 
 def has_frozen_requirements(solution_repo, *args, **kwargs):
     requirements = solution_repo.get_file('requirements.txt')
     if not requirements:
-        return True, None, None
+        return
     for requirement_line in requirements.split('\n'):
         if requirement_line and '==' not in requirement_line:
-            return False, 'unfrozen_requirements', 'например, %s' % requirement_line
-    return True, None, None
+            return 'unfrozen_requirements', 'например, %s' % requirement_line
 
 
 def has_no_directories_from_blacklist(solution_repo, blacklists, *args, **kwargs):
     blacklist = blacklists.get('has_no_directories_from_blacklist', [])
     for dirname in blacklist:
         if solution_repo.does_directory_exist(dirname):
-            return False, 'data_in_repo', ''
-    return True, None, None
+            return 'data_in_repo', ''
 
 
 def has_no_vars_with_lambda(solution_repo, *args, **kwargs):
@@ -212,8 +195,7 @@ def has_no_vars_with_lambda(solution_repo, *args, **kwargs):
         assigns = [n for n in ast.walk(tree) if isinstance(n, ast.Assign)]
         for assign in assigns:
             if isinstance(assign.value, ast.Lambda):
-                return False, 'named_lambda', ''
-    return True, None, None
+                return 'named_lambda', ''
 
 
 def has_no_calls_with_constants(solution_repo, whitelists, *args, **kwargs):
@@ -231,20 +213,18 @@ def has_no_calls_with_constants(solution_repo, whitelists, *args, **kwargs):
                 continue
             for arg in call.args:
                 if isinstance(arg, ast.Num):
-                    return False, 'magic_numbers', 'например, %s' % arg.n
-    return True, None, None
+                    return 'magic_numbers', 'например, %s' % arg.n
 
 
 @helpers.tokenized_validator(8)
 def fetches_only_online_friends(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         if not ast_helpers.uses_module(tree, 'vk'):
-            return True, None, None
+            return
         if not ast_helpers.find_method_calls(tree, 'getOnline'):
-            return False, 'nonoptimal_api_usage', 'попробуй вытаскивать не всех друзей и ' \
+            return 'nonoptimal_api_usage', 'попробуй вытаскивать не всех друзей и ' \
                                                   'потом фильтровать, а сразу вытаскивать ' \
                                                   'только тех, кто онлайн.'
-    return True, None, None
 
 
 def has_readme_in_single_language(solution_repo, readme_filename, min_percent_of_another_language, *args, **kwargs):
@@ -254,11 +234,10 @@ def has_readme_in_single_language(solution_repo, readme_filename, min_percent_of
     ru_letters_amount = len(re.findall('[а-яА-Я]', clean_readme))
     en_letters_amount = len(re.findall('[a-zA-Z]', clean_readme))
     if not (ru_letters_amount + en_letters_amount):
-        return True, None, None
+        return
     another_language_percent = min([ru_letters_amount, en_letters_amount]) / (ru_letters_amount + en_letters_amount) * 100
     if another_language_percent > min_percent_of_another_language:
-        return False, 'bilingual_readme', ''
-    return True, None, None
+        return 'bilingual_readme', ''
 
 
 def has_no_range_from_zero(solution_repo, *args, **kwargs):
@@ -266,8 +245,7 @@ def has_no_range_from_zero(solution_repo, *args, **kwargs):
         calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)]
         for call in calls:
             if getattr(call.func, 'id', None) == 'range' and call.args and len(call.args) == 2 and isinstance(call.args[0], ast.Num) and call.args[0].n == 0:
-                return False, 'manual_zero_in_range', ''
-    return True, None, None
+                return 'manual_zero_in_range', ''
 
 
 def has_no_urls_with_hardcoded_arguments(solution_repo, *args, **kwargs):
@@ -275,8 +253,7 @@ def has_no_urls_with_hardcoded_arguments(solution_repo, *args, **kwargs):
         strings = [n.s for n in ast.walk(tree) if isinstance(n, ast.Str)]
         for string in strings:
             if helpers.is_url_with_params(string):
-                return False, 'hardcoded_get_params', ''
-    return True, None, None
+                return 'hardcoded_get_params', ''
 
 
 def has_no_nonpythonic_empty_list_validations(solution_repo, *args, **kwargs):
@@ -294,8 +271,7 @@ def has_no_nonpythonic_empty_list_validations(solution_repo, *args, **kwargs):
                 isinstance(compare.comparators[0], ast.Num) and
                 compare.comparators[0].n == 0
             ):
-                return False, 'nonpythonic_empty_list_validation', ''
-    return True, None, None
+                return 'nonpythonic_empty_list_validation', ''
 
 
 def has_no_extra_dockstrings(solution_repo, functions_with_docstrings_percent_limit, *args, **kwargs):
@@ -306,8 +282,7 @@ def has_no_extra_dockstrings(solution_repo, functions_with_docstrings_percent_li
 
         docstrings = [ast.get_docstring(d) for d in defs if ast.get_docstring(d) is not None]
         if len(docstrings) / len(defs) * 100 > functions_with_docstrings_percent_limit:
-            return False, 'extra_comments', ''
-    return True, None, None
+            return 'extra_comments', ''
 
 
 def has_no_commit_messages_from_blacklist(solution_repo, blacklists, last_commits_to_check_amount, *args, **kwargs):
@@ -315,8 +290,7 @@ def has_no_commit_messages_from_blacklist(solution_repo, blacklists, last_commit
     for commit in solution_repo.iter_commits('master', max_count=last_commits_to_check_amount):
         message = commit.message.lower().strip().strip('.\'"')
         if message in blacklist:
-            return False, 'git_history_warning', ''
-    return True, None, None
+            return 'git_history_warning', ''
 
 
 def has_no_libs_from_stdlib_in_requirements(solution_repo, *args, **kwargs):
@@ -324,7 +298,7 @@ def has_no_libs_from_stdlib_in_requirements(solution_repo, *args, **kwargs):
     stdlibs_list = helpers.get_stdlibs_list()
     raw_requirements = solution_repo.get_file('requirements.txt')
     if not raw_requirements:
-        return True, None, None
+        return
 
     stdlib_packages_in_requirements = []
     for requirement in raw_requirements.split('\n'):
@@ -338,8 +312,7 @@ def has_no_libs_from_stdlib_in_requirements(solution_repo, *args, **kwargs):
             stdlib_packages_in_requirements.append(package_name)
 
     if stdlib_packages_in_requirements:
-        return False, 'stdlib_in_requirements', ', '.join(stdlib_packages_in_requirements)
-    return True, None, None
+        return 'stdlib_in_requirements', ', '.join(stdlib_packages_in_requirements)
 
 
 def has_no_exit_calls_in_functions(solution_repo, whitelists, *args, **kwargs):
@@ -353,20 +326,18 @@ def has_no_exit_calls_in_functions(solution_repo, whitelists, *args, **kwargs):
             has_exit_calls = any([c.func.id == 'exit' for c in calls if isinstance(c.func, ast.Name)])
             has_sys_exit_calls = any([hasattr(c.func.value, 'id') and c.func.value.id == 'sys' and c.func.attr == 'exit' for c in calls if isinstance(c.func, ast.Attribute)])
             if has_exit_calls or has_sys_exit_calls:
-                return False, 'has_exit_calls_in_function', function_definition.name
-    return True, None, None
+                return 'has_exit_calls_in_function', function_definition.name
 
 
 def has_no_bom(solution_repo, *args, **kwargs):
     bom = '\ufeff'
     for _, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
         if file_content.startswith(bom):
-            return False, 'has_bom', ''
+            return 'has_bom', ''
 
     requirements = solution_repo.get_file('requirements.txt')
     if requirements and requirements.startswith(bom):
-        return False, 'has_bom', ''
-    return True, None, None
+        return 'has_bom', ''
 
 
 def has_indents_of_spaces(solution_repo, tab_size, *args, **kwargs):
@@ -392,8 +363,7 @@ def has_indents_of_spaces(solution_repo, tab_size, *args, **kwargs):
                 node_line != parent_line and node_offset > parent_offset and
                 node_offset - parent_offset != tab_size and isinstance(node.parent, node_types_to_validate)
             ):
-                return False, 'indent_not_four_spaces', 'например, строка %s' % node.lineno
-    return True, None, None
+                return 'indent_not_four_spaces', 'например, строка %s' % node.lineno
 
 
 def has_no_lines_ends_with_semicolon(solution_repo, *args, **kwargs):
@@ -403,8 +373,7 @@ def has_no_lines_ends_with_semicolon(solution_repo, *args, **kwargs):
         string_nodes = [n for n in ast.walk(tree) if isinstance(n, ast.Str)]
         semicolons_in_string_constants_amount = sum([n.s.count(';') for n in string_nodes])
         if total_lines_with_semicolons > semicolons_in_string_constants_amount:
-            return False, 'has_semicolons', ''
-    return True, None, None
+            return 'has_semicolons', ''
 
 
 def not_validates_response_status_by_comparing_to_200(solution_repo, *args, **kwargs):
@@ -418,8 +387,7 @@ def not_validates_response_status_by_comparing_to_200(solution_repo, *args, **kw
                 or compare.left.attr != 'status_code'
             ):
                 continue
-            return False, 'compare_response_status_to_200', ''
-    return True, None, None
+            return 'compare_response_status_to_200', ''
 
 
 def has_no_mutable_default_arguments(solution_repo, *args, **kwargs):
@@ -429,16 +397,14 @@ def has_no_mutable_default_arguments(solution_repo, *args, **kwargs):
         for funcdef in [n for n in ast.walk(tree) if isinstance(n, funcdef_types)]:
             for default in getattr(funcdef.args, 'defaults', []):
                 if isinstance(default, mutable_types):
-                    return False, 'mutable_default_arguments', ''
-    return True, None, None
+                    return 'mutable_default_arguments', ''
 
 
 def has_no_slices_starts_from_zero(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         for slice in [n for n in ast.walk(tree) if isinstance(n, ast.Slice)]:
             if slice.step is None and isinstance(slice.lower, ast.Num) and slice.lower.n == 0:
-                return False, 'slice_starts_from_zero', ''
-    return True, None, None
+                return 'slice_starts_from_zero', ''
 
 
 def has_no_variables_that_shadow_default_names(solution_repo, *args, **kwargs):
@@ -447,8 +413,7 @@ def has_no_variables_that_shadow_default_names(solution_repo, *args, **kwargs):
         names = ast_helpers.get_all_defined_names(tree)
         bad_names = names.intersection(buildins_)
         if bad_names:
-            return False, 'title_shadows', ', '.join(bad_names)
-    return True, None, None
+            return 'title_shadows', ', '.join(bad_names)
 
 
 def has_no_return_with_parenthesis(solution_repo, *args, **kwargs):
@@ -458,8 +423,7 @@ def has_no_return_with_parenthesis(solution_repo, *args, **kwargs):
         for line_num in return_lines:
             line = file_content[line_num - 1]
             if line.count('return') == 1 and 'return(' in line or 'return (' in line:
-                return False, 'return_with_parenthesis', 'строка %s' % line_num
-    return True, None, None
+                return 'return_with_parenthesis', 'строка %s' % line_num
 
 
 def has_no_cast_input_result_to_str(solution_repo, *args, **kwargs):
@@ -471,5 +435,4 @@ def has_no_cast_input_result_to_str(solution_repo, *args, **kwargs):
                 continue
             parent_function_name = getattr(call.parent.func, 'id', None)
             if function_name == 'input' and parent_function_name == 'str':
-                return False, 'str_conversion_of_input_result', ''
-    return True, None, None
+                return 'str_conversion_of_input_result', ''
