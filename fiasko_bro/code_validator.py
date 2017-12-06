@@ -184,7 +184,7 @@ class CodeValidator:
     def _is_successful_validation(validation_result):
         return not isinstance(validation_result, tuple)
 
-    def run_validator_group(self, group, arguments):
+    def _run_validator_group(self, group, arguments):
         errors = []
         for validator in group:
             validation_result = validator(**arguments)
@@ -192,13 +192,13 @@ class CodeValidator:
                 errors.append(validation_result)
         return errors
 
-    def run_warning_validators_until(self, failed_error_group_name, arguments):
+    def _run_warning_validators_until(self, failed_error_group_name, arguments):
         """Gets warnings up until but not including the failed group"""
         warnings = []
         for error_group_name in self.error_validator_groups.keys():
             if error_group_name == failed_error_group_name:
                 return warnings
-            warnings += self.run_validator_group(
+            warnings += self._run_validator_group(
                 self.warning_validator_groups.get(error_group_name, []),
                 arguments
             )
@@ -214,12 +214,12 @@ class CodeValidator:
 
         errors = []
         for error_group_name, error_group in self.error_validator_groups.items():
-            errors += self.run_validator_group(
+            errors += self._run_validator_group(
                 error_group,
                 self.validator_arguments
             )
             if errors:
-                errors += self.run_warning_validators_until(
+                errors += self._run_warning_validators_until(
                     error_group_name,
                     self.validator_arguments
                 )
