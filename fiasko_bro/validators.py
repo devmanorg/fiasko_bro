@@ -7,7 +7,6 @@ from . import ast_helpers
 from . import code_helpers
 from . import list_helpers
 from . import url_helpers
-from .validator_helpers import tokenized_validator
 
 
 def has_more_commits_than_origin(solution_repo, original_repo=None, *args, **kwargs):
@@ -148,15 +147,6 @@ def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
             return 'tabs_used_for_indents', ''
 
 
-@tokenized_validator(token=3)
-def has_min_max_functions(solution_repo, *args, **kwargs):
-    for tree in solution_repo.get_ast_trees():
-        names = ast_helpers.get_all_names_from_tree(tree)
-        if 'min' in names and 'max' in names:
-            return
-    return 'builtins', 'используй min/max для поиска подходящих баров'
-
-
 def has_no_try_without_exception(solution_repo, *args, **kwargs):
     exception_type_to_catch = 'Exception'
     for tree in solution_repo.get_ast_trees():
@@ -166,14 +156,6 @@ def has_no_try_without_exception(solution_repo, *args, **kwargs):
                 return 'broad_except', ''
             if isinstance(try_except.type, ast.Name) and try_except.type.id == exception_type_to_catch:
                 return 'broad_except', '%s – слишком широкий тип исключений; укажи подробнее, какую ошибку ты ловишь' % exception_type_to_catch
-
-
-@tokenized_validator(token=5)
-def has_counter_import(solution_repo, *args, **kwargs):
-    for tree in solution_repo.get_ast_trees():
-        if ast_helpers.uses_module(tree, 'collections'):
-            return
-    return 'builtins', 'используй collections.Counter для подсчёта слов'
 
 
 def has_frozen_requirements(solution_repo, *args, **kwargs):
@@ -216,17 +198,6 @@ def has_no_calls_with_constants(solution_repo, whitelists, *args, **kwargs):
             for arg in call.args:
                 if isinstance(arg, ast.Num):
                     return 'magic_numbers', 'например, %s' % arg.n
-
-
-@tokenized_validator(token=8)
-def fetches_only_online_friends(solution_repo, *args, **kwargs):
-    for tree in solution_repo.get_ast_trees():
-        if not ast_helpers.uses_module(tree, 'vk'):
-            return
-        if not ast_helpers.find_method_calls(tree, 'getOnline'):
-            return 'nonoptimal_api_usage', 'попробуй вытаскивать не всех друзей и ' \
-                                                  'потом фильтровать, а сразу вытаскивать ' \
-                                                  'только тех, кто онлайн.'
 
 
 def has_readme_in_single_language(solution_repo, readme_filename, min_percent_of_another_language, *args, **kwargs):
