@@ -204,11 +204,13 @@ class CodeValidator:
             )
         return warnings
 
-    def validate(self, solution_repo_path, **kwargs):
+    def validate(self, solution_repo, original_repo=None, **kwargs):
         self.validator_arguments.update(kwargs)
         self.validator_arguments['whitelists'] = self.whitelists
         self.validator_arguments['blacklists'] = self.blacklists
-        self.validator_arguments['solution_repo'] = LocalRepositoryInfo(solution_repo_path)
+        self.validator_arguments['solution_repo'] = solution_repo
+        if original_repo:
+            self.validator_arguments['original_repo'] = original_repo
 
         errors = []
         for error_group_name, error_group in self.error_validator_groups.items():
