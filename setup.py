@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
@@ -49,6 +49,6 @@ setup(
     # What does your project relate to?
     # keywords='sample setuptools development',
 
-    packages=['fiasko_bro'],
+    packages=[find_packages()],
 
 )
