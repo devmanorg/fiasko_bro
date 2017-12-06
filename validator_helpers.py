@@ -7,7 +7,5 @@ def tokenized_validator(token):
         def func_wrapper(*args, **kwargs):
             if token == kwargs.get('validator_token'):
                 return func(*args, **kwargs)
-            else:
-                return True, None, None
         return func_wrapper
     return validator_decorator
