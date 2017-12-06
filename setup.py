@@ -49,6 +49,6 @@ setup(
     # What does your project relate to?
     # keywords='sample setuptools development',
 
-    packages=find_packages(),
+    packages=['fiasko_bro'],
 
 )
