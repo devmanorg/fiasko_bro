@@ -178,15 +178,16 @@ class CodeValidator:
     def __init__(self, **kwargs):
         self.validator_arguments = dict(self._default_settings)
         self.validator_arguments.update(kwargs)
-    
-    def _is_success(self, validation_result):
+
+    @staticmethod
+    def _is_successful_validation(validation_result):
         return not isinstance(validation_result, tuple)
 
     def run_validator_group(self, group, arguments):
         errors = []
         for validator in group:
             validation_result = validator(**arguments)
-            if not self._is_success(validation_result):
+            if not self._is_successful_validation(validation_result):
                 errors.append(validation_result)
         return errors
 
