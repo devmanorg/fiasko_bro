@@ -32,7 +32,6 @@ def is_pep8_fine(solution_repo, allowed_max_pep8_violations, *args, **kwargs):
 def has_changed_readme(solution_repo, readme_filename, original_repo=None, *args, **kwargs):
     if not original_repo:
         return
-    # FIXME this check works incorrectly in case of new commit in original repo after student forked it
     original_readme_path = os.path.join(original_repo.path, readme_filename)
     solution_readme_path = os.path.join(solution_repo.path, readme_filename)
     try:
