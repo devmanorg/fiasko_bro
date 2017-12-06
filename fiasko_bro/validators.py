@@ -1,13 +1,13 @@
-import os
-import builtins
 import ast
+import builtins
+import os
 import re
 
-import ast_helpers
-import code_helpers
-import list_helpers
-import url_helpers
-from validator_helpers import tokenized_validator
+from . import ast_helpers
+from . import code_helpers
+from . import list_helpers
+from . import url_helpers
+from .validator_helpers import tokenized_validator
 
 
 def has_more_commits_than_origin(solution_repo, original_repo=None, *args, **kwargs):

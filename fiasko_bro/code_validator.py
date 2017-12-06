@@ -2,8 +2,9 @@ import sys
 from argparse import ArgumentParser
 from collections import OrderedDict
 
-import validators
-from repository_info import LocalRepositoryInfo
+from .repository_info import LocalRepositoryInfo
+
+from . import validators
 
 
 class CodeValidator:
