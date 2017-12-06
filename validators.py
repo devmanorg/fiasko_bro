@@ -149,7 +149,7 @@ def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
             return 'tabs_used_for_indents', ''
 
 
-@tokenized_validator(3)
+@tokenized_validator(token=3)
 def has_min_max_functions(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         names = ast_helpers.get_all_names_from_tree(tree)
@@ -169,7 +169,7 @@ def has_no_try_without_exception(solution_repo, *args, **kwargs):
                 return 'broad_except', '%s – слишком широкий тип исключений; укажи подробнее, какую ошибку ты ловишь' % exception_type_to_catch
 
 
-@tokenized_validator(5)
+@tokenized_validator(token=5)
 def has_counter_import(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         if ast_helpers.uses_module(tree, 'collections'):
@@ -219,7 +219,7 @@ def has_no_calls_with_constants(solution_repo, whitelists, *args, **kwargs):
                     return 'magic_numbers', 'например, %s' % arg.n
 
 
-@tokenized_validator(8)
+@tokenized_validator(token=8)
 def fetches_only_online_friends(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         if not ast_helpers.uses_module(tree, 'vk'):
