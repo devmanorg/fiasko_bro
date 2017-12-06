@@ -5,6 +5,7 @@ import re
 
 import helpers
 import ast_helpers
+import code_helpers
 
 
 def has_more_commits_than_origin(solution_repo, original_repo=None, *args, **kwargs):
@@ -21,7 +22,7 @@ def has_readme_file(solution_repo, readme_filename, *args, **kwargs):
 
 
 def is_pep8_fine(solution_repo, allowed_max_pep8_violations, *args, **kwargs):
-    violations_amount = solution_repo.count_pep8_violations()
+    violations_amount = code_helpers.count_pep8_violations(solution_repo)
     if violations_amount > allowed_max_pep8_violations:
         return 'pep8', '%s нарушений' % violations_amount
 
@@ -82,7 +83,7 @@ def is_snake_case(solution_repo, whitelists, *args, **kwargs):
 def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
     violations = []
     for filename, _ in solution_repo.get_ast_trees(with_filenames=True):
-        violations += ast_helpers.get_mccabe_violations_for_file(filename, max_complexity)
+        violations += code_helpers.get_mccabe_violations_for_file(filename, max_complexity)
     if violations:
         return 'mccabe_failure', ','.join(violations)
 

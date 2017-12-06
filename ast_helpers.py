@@ -3,7 +3,6 @@ import os
 import re
 
 from helpers import flat
-from mccabe import _read, PathGraphingAstVisitor
 
 
 def get_all_names_from_tree(tree):
@@ -34,22 +33,6 @@ def get_all_imported_names_from_tree(tree):
 
 def get_all_class_definitions_from_tree(tree):
     return {node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)}
-
-
-def get_mccabe_violations_for_file(filepath, max_complexity):
-    code = _read(filepath)
-    tree = compile(code, filepath, "exec", ast.PyCF_ONLY_AST)
-    visitor = PathGraphingAstVisitor()
-    visitor.preorder(tree, visitor)
-
-    violations = []
-    for graph in visitor.graphs.values():
-        if graph.complexity() >= max_complexity:
-            complex_function_name = graph.entity
-            if complex_function_name.startswith('If '):
-                complex_function_name = 'if __name__ == "__main__"'
-            violations.append(complex_function_name)
-    return violations
 
 
 def is_tree_has_star_imports(tree):

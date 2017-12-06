@@ -1,6 +1,5 @@
 import os
 import ast
-import pep8
 
 import git
 
@@ -51,6 +50,9 @@ class LocalRepositoryInfo:
         else:
             return list(self._ast_trees)
     
+    def get_python_file_filenames(self):
+        return self._python_filenames
+    
     def get_file(self, filename):
         for dirname, _, files in os.walk(self.path, topdown=True):
             for file in files:
@@ -66,8 +68,3 @@ class LocalRepositoryInfo:
 
     def iter_commits(self, *args, **kwargs):
         return self._repo.iter_commits(*args, **kwargs)
-
-    def count_pep8_violations(self):
-        pep8style = pep8.StyleGuide(quiet=True)
-        result = pep8style.check_files(self._python_filenames)
-        return result.total_errors
