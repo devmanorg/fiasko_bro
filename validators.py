@@ -3,9 +3,11 @@ import builtins
 import ast
 import re
 
-import helpers
 import ast_helpers
 import code_helpers
+import list_helpers
+import url_helpers
+from validator_helpers import tokenized_validator
 
 
 def has_more_commits_than_origin(solution_repo, original_repo=None, *args, **kwargs):
@@ -147,7 +149,7 @@ def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
             return 'tabs_used_for_indents', ''
 
 
-@helpers.tokenized_validator(3)
+@tokenized_validator(3)
 def has_min_max_functions(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         names = ast_helpers.get_all_names_from_tree(tree)
@@ -167,7 +169,7 @@ def has_no_try_without_exception(solution_repo, *args, **kwargs):
                 return 'broad_except', '%s – слишком широкий тип исключений; укажи подробнее, какую ошибку ты ловишь' % exception_type_to_catch
 
 
-@helpers.tokenized_validator(5)
+@tokenized_validator(5)
 def has_counter_import(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         if ast_helpers.uses_module(tree, 'collections'):
@@ -217,7 +219,7 @@ def has_no_calls_with_constants(solution_repo, whitelists, *args, **kwargs):
                     return 'magic_numbers', 'например, %s' % arg.n
 
 
-@helpers.tokenized_validator(8)
+@tokenized_validator(8)
 def fetches_only_online_friends(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         if not ast_helpers.uses_module(tree, 'vk'):
@@ -253,7 +255,7 @@ def has_no_urls_with_hardcoded_arguments(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         strings = [n.s for n in ast.walk(tree) if isinstance(n, ast.Str)]
         for string in strings:
-            if helpers.is_url_with_params(string):
+            if url_helpers.is_url_with_params(string):
                 return 'hardcoded_get_params', ''
 
 
@@ -296,7 +298,7 @@ def has_no_commit_messages_from_blacklist(solution_repo, blacklists, last_commit
 
 def has_no_libs_from_stdlib_in_requirements(solution_repo, *args, **kwargs):
     package_version_delimiters = {'<', '>', '==', '<=', '>='}
-    stdlibs_list = helpers.get_stdlibs_list()
+    stdlibs_list = list_helpers.get_stdlibs_list()
     raw_requirements = solution_repo.get_file('requirements.txt')
     if not raw_requirements:
         return

@@ -2,7 +2,7 @@ import ast
 import os
 import re
 
-from helpers import flat
+from list_helpers import flat
 
 
 def get_all_names_from_tree(tree):
