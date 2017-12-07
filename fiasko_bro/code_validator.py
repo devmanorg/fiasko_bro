@@ -1,8 +1,4 @@
-import sys
-from argparse import ArgumentParser
 from collections import OrderedDict
-
-from .repository_info import LocalRepositoryInfo
 
 from . import validators
 
@@ -225,16 +221,3 @@ class CodeValidator:
                 )
                 return errors
         return errors
-
-
-def parse_args(argv):
-    parser = ArgumentParser()
-    parser.add_argument('--repo_dir', '-f', type=str)
-    return parser.parse_args(argv)
-
-
-if __name__ == '__main__':
-    args = parse_args(sys.argv[1:])
-    code_validator = CodeValidator()
-    errors = code_validator.validate(args.repo_dir)
-    print(errors)
