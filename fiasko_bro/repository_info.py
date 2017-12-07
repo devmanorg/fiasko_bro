@@ -1,5 +1,6 @@
 import os
 import ast
+import copy
 
 import git
 
@@ -42,13 +43,14 @@ class LocalRepositoryInfo:
         return filenames, main_file_contents, ast_trees
 
     def get_ast_trees(self, with_filenames=False, with_file_content=False):
+        ast_trees_copy = copy.deepcopy(self._ast_trees)
         if with_filenames:
             if with_file_content:
-                return list(zip(self._python_filenames, self._main_file_contents, self._ast_trees))
+                return list(zip(self._python_filenames, self._main_file_contents, ast_trees_copy))
             else:
-                return list(zip(self._python_filenames, self._ast_trees))
+                return list(zip(self._python_filenames, ast_trees_copy))
         else:
-            return list(self._ast_trees)
+            return ast_trees_copy
     
     def get_python_file_filenames(self):
         return self._python_filenames
