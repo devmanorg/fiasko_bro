@@ -135,13 +135,18 @@ def has_local_var_named_as_global(solution_repo, whitelists, *args, **kwargs):
                 return 'has_locals_named_as_globals', 'например, %s' % (', '.join(bad_names))
 
 
-def has_variables_from_blacklist(solution_repo, blacklists, *args, **kwargs):
+def has_variables_from_blacklist(solution_repo, whitelists, blacklists, *args, **kwargs):
+    whitelist = whitelists.get('has_variables_from_blacklist', [])
     blacklist = blacklists.get('has_variables_from_blacklist', [])
-    for tree in solution_repo.get_ast_trees():
-        names = ast_helpers.get_all_defined_names(tree)
-        bad_names = names.intersection(blacklist)
-        if bad_names:
-            return 'bad_titles', ', '.join(bad_names)
+    for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
+        for whitelisted_part in whitelist:
+            if whitelisted_part in filename:
+                break
+        else:
+            names = ast_helpers.get_all_defined_names(tree)
+            bad_names = names.intersection(blacklist)
+            if bad_names:
+                return 'bad_titles', ', '.join(bad_names)
 
 
 def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, *args, **kwargs):

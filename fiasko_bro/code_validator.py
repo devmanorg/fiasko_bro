@@ -105,6 +105,9 @@ class CodeValidator:
         'has_local_var_named_as_global': [
             'settings.py',
         ],
+        'has_variables_from_blacklist': [
+            'apps.py',
+        ],
     }
 
     _default_settings = {
