@@ -95,7 +95,10 @@ class CodeValidator:
         'is_pep8_fine': [
             '/migrations/',
             'manage.py',
-        ]
+        ],
+        'has_no_encoding_declaration': [
+            '/migrations/',
+        ],
     }
 
     _default_settings = {

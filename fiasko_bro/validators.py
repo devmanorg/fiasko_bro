@@ -94,11 +94,16 @@ def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
         return 'mccabe_failure', ','.join(violations)
 
 
-def has_no_encoding_declaration(solution_repo, *args, **kwargs):
-    for _, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
-        first_line = file_content.strip('\n').split('\n')[0].strip().replace(' ', '')
-        if first_line.startswith('#') and 'coding:utf-8' in first_line:
-            return 'has_encoding_declarations', ''
+def has_no_encoding_declaration(solution_repo, whitelists, *args, **kwargs):
+    whitelist = whitelists.get('has_no_encoding_declaration', [])
+    for file_name, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+        for whitelisted_part in whitelist:
+            if whitelisted_part in file_name:
+                break
+        else:
+            first_line = file_content.strip('\n').split('\n')[0].strip().replace(' ', '')
+            if first_line.startswith('#') and 'coding:utf-8' in first_line:
+                return 'has_encoding_declarations', ''
 
 
 def has_no_star_imports(solution_repo, *args, **kwargs):
