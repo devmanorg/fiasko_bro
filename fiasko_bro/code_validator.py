@@ -102,6 +102,9 @@ class CodeValidator:
         'has_no_local_imports': [
             'manage.py',
         ],
+        'has_local_var_named_as_global': [
+            'settings.py',
+        ],
     }
 
     _default_settings = {
