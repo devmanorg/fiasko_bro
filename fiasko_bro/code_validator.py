@@ -91,6 +91,10 @@ class CodeValidator:
         ],
         'has_no_exit_calls_in_functions': [
             'main',
+        ],
+        'is_pep8_fine': [
+            '/migrations/',
+            'manage.py',
         ]
     }
 
@@ -103,6 +107,7 @@ class CodeValidator:
         'last_commits_to_check_amount': 5,
         'tab_size': 4,
         'functions_with_docstrings_percent_limit': 80,
+        'max_pep8_line_length': 100,
     }
 
     error_validator_groups = OrderedDict(

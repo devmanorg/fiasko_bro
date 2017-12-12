@@ -22,8 +22,14 @@ def has_readme_file(solution_repo, readme_filename, *args, **kwargs):
         return 'need_readme', 'нет %s' % readme_filename
 
 
-def is_pep8_fine(solution_repo, allowed_max_pep8_violations, *args, **kwargs):
-    violations_amount = code_helpers.count_pep8_violations(solution_repo)
+def is_pep8_fine(solution_repo, allowed_max_pep8_violations,
+                 max_pep8_line_length, whitelists, *args, **kwargs):
+    whitelist = whitelists.get('is_pep8_fine', [])
+    violations_amount = code_helpers.count_pep8_violations(
+        solution_repo,
+        max_line_length=max_pep8_line_length,
+        path_whitelist=whitelist
+    )
     if violations_amount > allowed_max_pep8_violations:
         return 'pep8', '%s нарушений' % violations_amount
 
