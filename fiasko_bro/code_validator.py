@@ -99,6 +99,9 @@ class CodeValidator:
         'has_no_encoding_declaration': [
             '/migrations/',
         ],
+        'has_no_local_imports': [
+            'manage.py',
+        ],
     }
 
     _default_settings = {
