@@ -81,8 +81,13 @@ class CodeValidator:
             'seek',
         ],
         'is_snake_case': [
-            'Base',
+            # from sqlalchemy.sqlalchemy.orm.sessionmaker
             'Session',
+            # from sqlalchemy.ext.automap
+            'Base',
+            'User',
+            'Order'
+            'Address',
         ],
         'has_no_exit_calls_in_functions': [
             'main',
