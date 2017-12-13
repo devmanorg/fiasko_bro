@@ -1,5 +1,6 @@
 import ast
 import re
+from itertools import filterfalse
 
 from .list_helpers import flat
 
@@ -58,6 +59,20 @@ def get_assigned_vars(tree, names_only=True):
     else:
         return assigned_items
 
+def is_class_attribute(assigned_item):
+    if not hasattr(assigned_item, 'parent'):
+        return False
+    if not hasattr(assigned_item.parent, 'parent'):
+        return False
+    return isinstance(assigned_item.parent.parent, ast.ClassDef)
+
+
+def get_assigned_names_excluding_class_attributes(tree):
+    assigned_items = get_assigned_vars(tree, names_only=False)
+    return {
+        getattr(node, 'id', None) for node in filterfalse(is_class_attribute, assigned_items)
+    }
+
 
 def get_iter_vars_from_for_loops(tree):
     for_nodes = [n for n in ast.walk(tree) if isinstance(n, ast.For) or isinstance(n, ast.comprehension)]
@@ -99,8 +114,11 @@ def find_method_calls(tree, attr_name):
     return attr_name in {a.attr for a in attributes}
 
 
-def get_all_defined_names(tree):
-    names = get_assigned_vars(tree)
+def get_all_defined_names(tree, include_class_attributes=True):
+    if include_class_attributes:
+        names = get_assigned_vars(tree)
+    else:
+        names = get_assigned_names_excluding_class_attributes(tree)
     names.update(get_iter_vars_from_for_loops(tree))
     names.update(get_vars_from_fuction_definitions(tree))
     names.update(get_defined_function_names(tree))  # TODO: добавить классы и методы в проверку

@@ -4,9 +4,21 @@ import ast
 from mccabe import _read, PathGraphingAstVisitor
 
 
-def count_pep8_violations(repository_info):
-    pep8style = pep8.StyleGuide(quiet=True)
-    result = pep8style.check_files(repository_info.get_python_file_filenames())
+def count_pep8_violations(repository_info, max_line_length=79, path_whitelist=None):
+    path_whitelist = path_whitelist or []
+    pep8style = pep8.StyleGuide(
+        paths=['--max-line-length', str(max_line_length)],
+        quiet=True
+    )
+    python_file_paths = repository_info.get_python_file_filenames()
+    validatable_paths = []
+    for python_file_path in python_file_paths:
+        for whitelisted_path_part in path_whitelist:
+            if whitelisted_path_part in python_file_path:
+                break
+        else:
+            validatable_paths.append(python_file_path)
+    result = pep8style.check_files(validatable_paths)
     return result.total_errors
 
 
