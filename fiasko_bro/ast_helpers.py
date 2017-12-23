@@ -51,8 +51,17 @@ def is_has_local_imports(tree):
     return False
 
 
-def get_assigned_vars(tree, names_only=True):
+def is_static_class_field(name_node):
+    try:
+        return isinstance(name_node.parent.parent, ast.ClassDef)
+    except AttributeError:
+        return False
+
+
+def get_assigned_vars(tree, names_only=True, with_static_class_properties=True):
     assigned_items = flat([n.targets for n in ast.walk(tree) if isinstance(n, ast.Assign)])
+    if not with_static_class_properties:
+        assigned_items = [i for i in assigned_items if not is_static_class_field(i)]
     if names_only:
         return {getattr(n, 'id', None) for n in assigned_items if n.col_offset > 0}
     else:
@@ -99,8 +108,8 @@ def find_method_calls(tree, attr_name):
     return attr_name in {a.attr for a in attributes}
 
 
-def get_all_defined_names(tree):
-    names = get_assigned_vars(tree)
+def get_all_defined_names(tree, with_static_class_properties=True):
+    names = get_assigned_vars(tree, with_static_class_properties=with_static_class_properties)
     names.update(get_iter_vars_from_for_loops(tree))
     names.update(get_vars_from_fuction_definitions(tree))
     names.update(get_defined_function_names(tree))  # TODO: добавить классы и методы в проверку

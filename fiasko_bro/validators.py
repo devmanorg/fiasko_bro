@@ -383,7 +383,7 @@ def has_no_slices_starts_from_zero(solution_repo, *args, **kwargs):
 def has_no_variables_that_shadow_default_names(solution_repo, *args, **kwargs):
     buildins_ = dir(builtins)
     for tree in solution_repo.get_ast_trees():
-        names = ast_helpers.get_all_defined_names(tree)
+        names = ast_helpers.get_all_defined_names(tree, with_static_class_properties=False)
         bad_names = names.intersection(buildins_)
         if bad_names:
             return 'title_shadows', ', '.join(bad_names)
