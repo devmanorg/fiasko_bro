@@ -22,8 +22,14 @@ def has_readme_file(solution_repo, readme_filename, *args, **kwargs):
         return 'need_readme', 'нет %s' % readme_filename
 
 
-def is_pep8_fine(solution_repo, allowed_max_pep8_violations, *args, **kwargs):
-    violations_amount = code_helpers.count_pep8_violations(solution_repo)
+def is_pep8_fine(solution_repo, allowed_max_pep8_violations,
+                 max_pep8_line_length, whitelists, *args, **kwargs):
+    whitelist = whitelists.get('is_pep8_fine', [])
+    violations_amount = code_helpers.count_pep8_violations(
+        solution_repo,
+        max_line_length=max_pep8_line_length,
+        path_whitelist=whitelist
+    )
     if violations_amount > allowed_max_pep8_violations:
         return 'pep8', '%s нарушений' % violations_amount
 
@@ -88,11 +94,16 @@ def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
         return 'mccabe_failure', ','.join(violations)
 
 
-def has_no_encoding_declaration(solution_repo, *args, **kwargs):
-    for _, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
-        first_line = file_content.strip('\n').split('\n')[0].strip().replace(' ', '')
-        if first_line.startswith('#') and 'coding:utf-8' in first_line:
-            return 'has_encoding_declarations', ''
+def has_no_encoding_declaration(solution_repo, whitelists, *args, **kwargs):
+    whitelist = whitelists.get('has_no_encoding_declaration', [])
+    for file_name, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+        for whitelisted_part in whitelist:
+            if whitelisted_part in file_name:
+                break
+        else:
+            first_line = file_content.strip('\n').split('\n')[0].strip().replace(' ', '')
+            if first_line.startswith('#') and 'coding:utf-8' in first_line:
+                return 'has_encoding_declarations', ''
 
 
 def has_no_star_imports(solution_repo, *args, **kwargs):
@@ -101,26 +112,41 @@ def has_no_star_imports(solution_repo, *args, **kwargs):
             return 'has_star_import', ''
 
 
-def has_no_local_imports(solution_repo, *args, **kwargs):
-    for tree in solution_repo.get_ast_trees():
-        if ast_helpers.is_has_local_imports(tree):
-            return 'has_local_import', ''
+def has_no_local_imports(solution_repo, whitelists, *args, **kwargs):
+    whitelist = whitelists.get('has_no_local_imports', [])
+    for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
+        for whitelisted_part in whitelist:
+            if whitelisted_part in filename:
+                break
+        else:
+            if ast_helpers.is_has_local_imports(tree):
+                return 'has_local_import', ''
 
 
-def has_local_var_named_as_global(solution_repo, *args, **kwargs):
-    for tree in solution_repo.get_ast_trees():
-        bad_names = ast_helpers.get_local_vars_named_as_globals(tree)
-        if bad_names:
-            return 'has_locals_named_as_globals', 'например, %s' % (', '.join(bad_names))
+def has_local_var_named_as_global(solution_repo, whitelists, *args, **kwargs):
+    whitelist = whitelists.get('has_local_var_named_as_global', [])
+    for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
+        for whitelisted_part in whitelist:
+            if whitelisted_part in filename:
+                break
+        else:
+            bad_names = ast_helpers.get_local_vars_named_as_globals(tree)
+            if bad_names:
+                return 'has_locals_named_as_globals', 'например, %s' % (', '.join(bad_names))
 
 
-def has_variables_from_blacklist(solution_repo, blacklists, *args, **kwargs):
+def has_variables_from_blacklist(solution_repo, whitelists, blacklists, *args, **kwargs):
+    whitelist = whitelists.get('has_variables_from_blacklist', [])
     blacklist = blacklists.get('has_variables_from_blacklist', [])
-    for tree in solution_repo.get_ast_trees():
-        names = ast_helpers.get_all_defined_names(tree)
-        bad_names = names.intersection(blacklist)
-        if bad_names:
-            return 'bad_titles', ', '.join(bad_names)
+    for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
+        for whitelisted_part in whitelist:
+            if whitelisted_part in filename:
+                break
+        else:
+            names = ast_helpers.get_all_defined_names(tree)
+            bad_names = names.intersection(blacklist)
+            if bad_names:
+                return 'bad_titles', ', '.join(bad_names)
 
 
 def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, *args, **kwargs):

@@ -81,12 +81,33 @@ class CodeValidator:
             'seek',
         ],
         'is_snake_case': [
-            'Base',
+            # from sqlalchemy.sqlalchemy.orm.sessionmaker
             'Session',
+            # from sqlalchemy.ext.automap
+            'Base',
+            'User',
+            'Order'
+            'Address',
         ],
         'has_no_exit_calls_in_functions': [
             'main',
-        ]
+        ],
+        'is_pep8_fine': [
+            '/migrations/',
+            'manage.py',
+        ],
+        'has_no_encoding_declaration': [
+            '/migrations/',
+        ],
+        'has_no_local_imports': [
+            'manage.py',
+        ],
+        'has_local_var_named_as_global': [
+            'settings.py',
+        ],
+        'has_variables_from_blacklist': [
+            'apps.py',
+        ],
     }
 
     _default_settings = {
@@ -98,6 +119,7 @@ class CodeValidator:
         'last_commits_to_check_amount': 5,
         'tab_size': 4,
         'functions_with_docstrings_percent_limit': 80,
+        'max_pep8_line_length': 100,
     }
 
     error_validator_groups = OrderedDict(

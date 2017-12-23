@@ -1,5 +1,6 @@
 import ast
 import re
+from itertools import filterfalse
 
 from .list_helpers import flat
 
@@ -66,6 +67,20 @@ def get_assigned_vars(tree, names_only=True, with_static_class_properties=True):
         return {getattr(n, 'id', None) for n in assigned_items if n.col_offset > 0}
     else:
         return assigned_items
+
+def is_class_attribute(assigned_item):
+    if not hasattr(assigned_item, 'parent'):
+        return False
+    if not hasattr(assigned_item.parent, 'parent'):
+        return False
+    return isinstance(assigned_item.parent.parent, ast.ClassDef)
+
+
+def get_assigned_names_excluding_class_attributes(tree):
+    assigned_items = get_assigned_vars(tree, names_only=False)
+    return {
+        getattr(node, 'id', None) for node in filterfalse(is_class_attribute, assigned_items)
+    }
 
 
 def get_iter_vars_from_for_loops(tree):
