@@ -89,11 +89,15 @@ class CodeValidator:
             'Order'
             'Address',
         ],
+        'right_assignment_for_snake_case': [
+            'Base',
+        ],
         'has_no_exit_calls_in_functions': [
             'main',
         ],
         'is_pep8_fine': [
             '/migrations/',
+            '/alembic/',
             'manage.py',
         ],
         'has_no_encoding_declaration': [
@@ -108,6 +112,10 @@ class CodeValidator:
         'has_variables_from_blacklist': [
             'apps.py',
         ],
+        'has_no_extra_dockstrings_whitelist': [
+            '/migrations/',
+            '/alembic/',
+        ]
     }
 
     _default_settings = {

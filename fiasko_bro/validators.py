@@ -69,9 +69,11 @@ def are_sources_in_utf(solution_repo, *args, **kwargs):
 
 def is_snake_case(solution_repo, whitelists, *args, **kwargs):
     whitelist = whitelists.get('is_snake_case', [])
+    right_assignment_whitelist = whitelists.get('right_assignment_for_snake_case', [])
     buildins_ = dir(builtins)
     for tree in solution_repo.get_ast_trees():
         names = ast_helpers.get_all_names_from_tree(tree)
+        whitelisted_names = ast_helpers.get_names_from_assignment_with(tree, right_assignment_whitelist)
         imported_names = ast_helpers.get_all_imported_names_from_tree(tree)
         defined_class_names = ast_helpers.get_all_class_definitions_from_tree(tree)
         namedtuples = ast_helpers.get_all_namedtuple_names(tree)
@@ -81,7 +83,8 @@ def is_snake_case(solution_repo, whitelists, *args, **kwargs):
                                 and n not in defined_class_names
                                 and n not in namedtuples
                                 and n not in buildins_
-                                and n not in whitelist]
+                                and n not in whitelist
+                                and n not in whitelisted_names]
         if names_with_uppercase:
             return 'camel_case_vars', 'переименуй, например, %s.' % ', '.join(names_with_uppercase[:3])
 
@@ -273,15 +276,20 @@ def has_no_nonpythonic_empty_list_validations(solution_repo, *args, **kwargs):
                 return 'nonpythonic_empty_list_validation', ''
 
 
-def has_no_extra_dockstrings(solution_repo, functions_with_docstrings_percent_limit, *args, **kwargs):
-    for tree in solution_repo.get_ast_trees():
-        defs = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
-        if not defs:
-            continue
+def has_no_extra_dockstrings(solution_repo, whitelists, functions_with_docstrings_percent_limit, *args, **kwargs):
+    whitelist = whitelists.get('has_no_extra_dockstrings_whitelist', [])
+    for file_name, tree in solution_repo.get_ast_trees(with_filenames=True):
+        for whitelisted_part in whitelist:  # TODO: refactor black/whitelist filtering for paths
+            if whitelisted_part in file_name:
+                break
+        else:
+            defs = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
+            if not defs:
+                continue
 
-        docstrings = [ast.get_docstring(d) for d in defs if ast.get_docstring(d) is not None]
-        if len(docstrings) / len(defs) * 100 > functions_with_docstrings_percent_limit:
-            return 'extra_comments', ''
+            docstrings = [ast.get_docstring(d) for d in defs if ast.get_docstring(d) is not None]
+            if len(docstrings) / len(defs) * 100 > functions_with_docstrings_percent_limit:
+                return 'extra_comments', ''
 
 
 def has_no_commit_messages_from_blacklist(solution_repo, blacklists, last_commits_to_check_amount, *args, **kwargs):

@@ -138,3 +138,27 @@ def get_closest_definition(node):
         if isinstance(current_node, definitions_classes):
             return current_node
         current_node = current_node.parent
+
+
+def get_base_assign_value_name(node):
+    """
+        Base.foo().bar --> 'Base'
+    """
+    current_node = node
+    while True:
+        if isinstance(current_node, ast.Attribute):
+            current_node = current_node.value
+        elif isinstance(current_node, ast.Call):
+            current_node = current_node.func
+        else:
+            break
+    return getattr(current_node, 'id', None)
+
+
+def get_names_from_assignment_with(tree, right_assignment_whitelist):
+    result_names = []
+    for assignment in [n for n in ast.walk(tree) if isinstance(n, ast.Assign)]:
+        base_assign_value_name = get_base_assign_value_name(assignment.value)
+        if base_assign_value_name in right_assignment_whitelist:
+            result_names += [t.id for t in assignment.targets]
+    return result_names
