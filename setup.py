@@ -6,7 +6,7 @@ here = path.abspath(path.dirname(__file__))
 
 
 def load_requirements():
-    return open(join(dirname(__file__), 'requirements.txt')).readlines()
+    return open(path.join(path.dirname(__file__), 'requirements.txt')).readlines()
 
 
 setup(
