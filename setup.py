@@ -4,6 +4,11 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
+
+def load_requirements():
+    return open(join(dirname(__file__), 'requirements.txt')).readlines()
+
+
 setup(
     name='Fiasko Bro',
 
@@ -50,5 +55,5 @@ setup(
     # keywords='sample setuptools development',
 
     packages=['fiasko_bro'],
-
+    install_requires=load_requirements(),
 )
