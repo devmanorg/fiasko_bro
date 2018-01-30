@@ -1,6 +1,13 @@
 from collections import OrderedDict
 
 from . import validators
+from .repository_info import LocalRepositoryInfo
+
+
+def validate_repo(path_to_repo):
+    repo_to_validate = LocalRepositoryInfo(path_to_repo)
+    code_validator = CodeValidator()
+    return code_validator.validate(repo_to_validate)
 
 
 class CodeValidator:

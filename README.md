@@ -5,10 +5,8 @@ Fiasko Bro enables you to automatically review Python code in a git repo.
 Here's the simplest usage example:
 
 ```python
->>> from fiasko_bro import CodeValidator, LocalRepositoryInfo
->>> code_validator = CodeValidator()
->>> repo_to_validate = LocalRepositoryInfo('/path/to/repo/')
->>> code_validator.validate(repo_to_validate)
+>>> import fiasko_bro
+>>> fiasko_bro.validate_repo('/path/to/repo/')
 [('camel_case_vars', 'переименуй, например, WorkBook.')]
 ```
 The `validate` method returns list of tuples which consist of an error slug and an error message.
