@@ -4,10 +4,9 @@ from . import validators
 from .repository_info import LocalRepositoryInfo
 
 
-def validate_repo(path_to_repo):
-    repo_to_validate = LocalRepositoryInfo(path_to_repo)
+def validate_repo(path_to_repo, original_repo=None):
     code_validator = CodeValidator()
-    return code_validator.validate(repo_to_validate)
+    return code_validator.validate(path_to_repo, original_repo)
 
 
 class CodeValidator:
@@ -237,11 +236,11 @@ class CodeValidator:
             )
         return warnings
 
-    def validate(self, solution_repo, original_repo=None, **kwargs):
+    def validate(self, path, original_repo=None, **kwargs):
         self.validator_arguments.update(kwargs)
         self.validator_arguments['whitelists'] = self.whitelists
         self.validator_arguments['blacklists'] = self.blacklists
-        self.validator_arguments['solution_repo'] = solution_repo
+        self.validator_arguments['solution_repo'] = LocalRepositoryInfo(path)
         if original_repo:
             self.validator_arguments['original_repo'] = original_repo
 
