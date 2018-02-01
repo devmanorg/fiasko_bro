@@ -1,4 +1,5 @@
 from collections import OrderedDict
+import os
 
 from . import validators
 from .repository_info import LocalRepositoryInfo
@@ -7,6 +8,24 @@ from .repository_info import LocalRepositoryInfo
 def validate_repo(path_to_repo, path_to_original_repo=None):
     code_validator = CodeValidator()
     return code_validator.validate(path_to_repo, path_to_original_repo)
+
+
+def py_files_count(path_to_repo):
+    counter = 0
+    for _, _, files in os.walk(path_to_repo):
+        for file in files:
+            if file.endswith('.py'):
+                counter += 1
+    return counter
+
+
+def is_repos_too_large(path_to_repo, path_to_original_repo, max_num):
+    num_of_py_files = py_files_count(path_to_repo)
+    if path_to_original_repo:
+        num_of_py_files_original_repo = py_files_count(path_to_original_repo)
+        return (num_of_py_files_original_repo > max_num or
+                num_of_py_files > max_num)
+    return num_of_py_files > max_num
 
 
 class CodeValidator:
