@@ -6,7 +6,7 @@ from fiasko_bro import validators
 from fiasko_bro.repository_info import LocalRepositoryInfo
 
 
-class HasChangedReadmeTestCase(unittest.TestCase):
+class TestHasChangedReadme(unittest.TestCase):
 
     def setUp(self):
         test_repo_dir = 'test_fixtures/general_repo'

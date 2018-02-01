@@ -162,4 +162,4 @@ $ pip install -r requirements.txt
 ```
 
 ### Launch tests
-`nosetests`
+`python -m pytest tests/`

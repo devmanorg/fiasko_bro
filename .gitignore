@@ -6,3 +6,5 @@ static/
 media/
 .coverage
 htmlcov/
+.pytest_cache/
+.idea
