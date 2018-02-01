@@ -36,3 +36,8 @@ def get_mccabe_violations_for_file(filepath, max_complexity):
                 complex_function_name = 'if __name__ == "__main__"'
             violations.append(complex_function_name)
     return violations
+
+
+def count_indentation_spaces(line, tab_size=4):
+    expanded_line = line.expandtabs(tab_size)
+    return len(line) - len(expanded_line.lstrip())
