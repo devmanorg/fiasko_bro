@@ -443,3 +443,11 @@ def has_no_cast_input_result_to_str(solution_repo, *args, **kwargs):
             parent_function_name = getattr(call.parent.func, 'id', None)
             if function_name == 'input' and parent_function_name == 'str':
                 return 'str_conversion_of_input_result', ''
+
+
+def has_no_long_files(solution_repo, max_number_of_lines, *args, **kwargs):
+    for file_path, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+        number_of_lines = file_content.count('\n')
+        if number_of_lines > max_number_of_lines:
+            file_name = file_path[file_path.rfind('/') + 1:]
+            return 'file_too_long', file_name

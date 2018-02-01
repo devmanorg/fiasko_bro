@@ -128,6 +128,7 @@ class CodeValidator:
         'tab_size': 4,
         'functions_with_docstrings_percent_limit': 80,
         'max_pep8_line_length': 100,
+        'max_number_of_lines': 200,
     }
 
     error_validator_groups = OrderedDict(
@@ -184,6 +185,7 @@ class CodeValidator:
                     validators.has_no_slices_starts_from_zero,
                     validators.has_no_cast_input_result_to_str,
                     validators.has_no_return_with_parenthesis,
+                    validators.has_no_long_files,
                 ],
             ),
         ]
