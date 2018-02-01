@@ -1,6 +1,12 @@
 from collections import OrderedDict
 
 from . import validators
+from .repository_info import LocalRepositoryInfo
+
+
+def validate_repo(path_to_repo, path_to_original_repo=None):
+    code_validator = CodeValidator()
+    return code_validator.validate(path_to_repo, path_to_original_repo)
 
 
 class CodeValidator:
@@ -230,13 +236,15 @@ class CodeValidator:
             )
         return warnings
 
-    def validate(self, solution_repo, original_repo=None, **kwargs):
+    def validate(self, repo_path, original_repo_path=None, **kwargs):
         self.validator_arguments.update(kwargs)
         self.validator_arguments['whitelists'] = self.whitelists
         self.validator_arguments['blacklists'] = self.blacklists
-        self.validator_arguments['solution_repo'] = solution_repo
-        if original_repo:
-            self.validator_arguments['original_repo'] = original_repo
+        self.validator_arguments['solution_repo'] = LocalRepositoryInfo(
+            repo_path)
+        if original_repo_path:
+            self.validator_arguments['original_repo'] = LocalRepositoryInfo(
+                original_repo_path)
 
         errors = []
         for error_group_name, error_group in self.error_validator_groups.items():
