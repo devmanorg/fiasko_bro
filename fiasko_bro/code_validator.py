@@ -264,6 +264,12 @@ class CodeValidator:
         self.validator_arguments.update(kwargs)
         self.validator_arguments['whitelists'] = self.whitelists
         self.validator_arguments['blacklists'] = self.blacklists
+        if is_repos_too_large(
+            repo_path,
+            original_repo_path,
+            self.validator_arguments['max_num_of_py_files']
+        ):
+            return [('repo is too large', '')]
         self.validator_arguments['solution_repo'] = LocalRepositoryInfo(
             repo_path)
         if original_repo_path:
