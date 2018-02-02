@@ -160,3 +160,6 @@ $ git clone https://github.com/devmanorg/fiasko_bro.git
 $ cd fiasko_bro
 $ pip install -r requirements.txt
 ```
+
+### Launch tests
+`python -m pytest tests/`

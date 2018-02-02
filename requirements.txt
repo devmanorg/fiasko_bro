@@ -2,3 +2,4 @@ GitPython==2.0.8
 stdlib-list==0.4.0
 mccabe==0.6.1
 pep8==1.7.1
+pytest==3.4.0
