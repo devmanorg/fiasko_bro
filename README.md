@@ -1,5 +1,4 @@
 # Fiasko Bro
-[![Build Status](https://travis-ci.org/patrnk/fiasko_bro.svg?branch=master)](https://travis-ci.org/patrnk/fiasko_bro)
 
 Fiasko Bro enables you to automatically review Python code in a git repo.
 
