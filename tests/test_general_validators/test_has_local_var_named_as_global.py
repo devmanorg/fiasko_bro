@@ -13,7 +13,9 @@ def test_has_local_var_named_as_global_fail(test_repo):
 
 
 def test_has_local_var_named_as_global_ok(test_repo):
-    whitelists = {'has_local_var_named_as_global': ['local_var_as_global_test_file.py']}
+    whitelists = {'has_local_var_named_as_global': [
+        'local_var_as_global_test_file.py'
+    ]}
     output = validators.has_local_var_named_as_global(
         solution_repo=test_repo,
         whitelists=whitelists,

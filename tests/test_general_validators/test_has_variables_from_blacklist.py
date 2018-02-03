@@ -15,7 +15,9 @@ def test_has_variables_from_blacklist_fail(test_repo):
 
 
 def test_has_variables_from_blacklist_with_file_in_whitelist_ok(test_repo):
-    whitelists = {'has_variables_from_blacklist': ['variables_from_blacklist_test_file.py']}
+    whitelists = {'has_variables_from_blacklist': [
+        'variables_from_blacklist_test_file.py'
+    ]}
     blacklists = CodeValidator.blacklists
     output = validators.has_variables_from_blacklist(
         solution_repo=test_repo,
