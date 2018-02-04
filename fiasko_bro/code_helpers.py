@@ -2,7 +2,7 @@ import pep8
 import ast
 
 from mccabe import _read, PathGraphingAstVisitor
-from file_helpers import count_py_files
+from .file_helpers import count_py_files
 
 
 def count_pep8_violations(repository_info, max_line_length=79, path_whitelist=None):
