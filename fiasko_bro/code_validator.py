@@ -245,6 +245,7 @@ class CodeValidator:
         self.validator_arguments.update(kwargs)
         self.validator_arguments['whitelists'] = self.whitelists
         self.validator_arguments['blacklists'] = self.blacklists
+        max_num_of_py_files = self.validator_arguments['max_num_of_py_files']
         if is_repos_too_large(
             repo_path,
             original_repo_path,
