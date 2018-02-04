@@ -10,13 +10,13 @@ def validate_repo(path_to_repo, path_to_original_repo=None):
     return code_validator.validate(path_to_repo, path_to_original_repo)
 
 
-def is_repos_too_large(path_to_repo, path_to_original_repo, max_num):
-    num_of_py_files = py_files_count(path_to_repo)
+def are_repos_too_large(path_to_repo, path_to_original_repo=None, max_py_files_count):
+    num_of_py_files = count_py_files(path_to_repo)
+    if num_of_py_files > max_py_files_count:
+        return True
     if path_to_original_repo:
-        num_of_py_files_original_repo = py_files_count(path_to_original_repo)
-        return (num_of_py_files_original_repo > max_num or
-                num_of_py_files > max_num)
-    return num_of_py_files > max_num
+        num_of_py_files_original_repo = count_py_files(path_to_original_repo)
+        return num_of_py_files_original_repo > max_py_files_count
 
 
 class CodeValidator:
