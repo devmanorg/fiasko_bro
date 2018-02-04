@@ -10,11 +10,11 @@ def validate_repo(path_to_repo, path_to_original_repo=None):
     return code_validator.validate(path_to_repo, path_to_original_repo)
 
 
-def py_files_count(path_to_repo):
+def count_py_files(directory):
     counter = 0
-    for _, _, files in os.walk(path_to_repo):
-        for file in files:
-            if file.endswith('.py'):
+    for _, _, filenames in os.walk(directory):
+        for name in filenames:
+            if name.endswith('.py'):
                 counter += 1
     return counter
 
