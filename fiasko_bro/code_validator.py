@@ -155,7 +155,7 @@ class CodeValidator:
         'max_pep8_line_length': 100,
         'max_number_of_lines': 200,
         'max_indentation_level': 4,
-        'max_num_of_py_files': 10,
+        'max_num_of_py_files': 100,
     }
 
     error_validator_groups = OrderedDict(
