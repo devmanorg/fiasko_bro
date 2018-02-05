@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from . import validators
 from .repository_info import LocalRepositoryInfo
-from .code_helpers import are_repos_too_large
+from .code_helpers import is_repo_too_large
 
 
 def validate_repo(path_to_repo, path_to_original_repo=None):
@@ -250,7 +250,7 @@ class CodeValidator:
         max_num_of_py_files = self.validator_arguments['max_num_of_py_files']
         is_checking_repo_size = self.validator_arguments['check_repo_size']
         if is_checking_repo_size:
-            if are_repos_too_large(repo_path, max_num_of_py_files, original_repo_path):
+            if is_repo_too_large(repo_path, max_num_of_py_files, original_repo_path):
                 return [('repo is too large', '')]
         self.validator_arguments['solution_repo'] = LocalRepositoryInfo(
             repo_path)
