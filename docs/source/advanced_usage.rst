@@ -67,7 +67,7 @@ Now you can add validator to one of the existing validator groups or create your
     code_validator.error_validator_groups['general'].append(has_no_syntax_errors)
 
 Compare against some "original" repo
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you want your validator to compare against some other repository, add the ``original_repo`` argument.
 ::
