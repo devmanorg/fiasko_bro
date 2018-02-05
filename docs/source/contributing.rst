@@ -19,20 +19,20 @@ First, find out which validators to add in `Github Issues <https://github.com/de
 If you have an idea of your own, make sure to create an issue first.
 
 `Write your validator <http://fiasko-bro.readthedocs.io/en/latest/advanced_usage.html#customize-validators>`_
-and put it in `validators.py` and an appropriate validator group.
+and put it in ``validators.py`` and an appropriate validator group.
 
 Make sure you have the tests for your validator.
 
 Write tests for validators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Before writing a test for validator, choose where to put it. The most suitable place would be `test_<validator group name>_validators` module
-inside `tests` folder. Inside the module, create file `test_<validator name>.py` and put all of the test cases there.
+Before writing a test for validator, choose where to put it. The most suitable place would be ``test_<validator group name>_validators`` module
+inside ``tests`` folder. Inside the module, create file ``test_<validator name>.py`` and put all of the test cases there.
 
-Every validator group should have its own fixture repository located in `test_fixtures` under the name `<validator group>_repo`. Put the fixture files there.
+Every validator group should have its own fixture repository located in ``test_fixtures`` under the name ``<validator group>_repo``. Put the fixture files there.
 
 The name of the fixture files should reflect their contents, not what they are used for.
-So the good name for a function would be `function_with_tabs` and not `function_to_test_are_tabs_used_validator`.
+So the good name for a function would be ``function_with_tabs`` and not ``function_to_test_are_tabs_used_validator``.
 This facilitates fixture reuse.
 
 Reduce technical debt
