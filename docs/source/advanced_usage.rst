@@ -1,8 +1,8 @@
 Advanced usage
 ==============
 
-Customize validators
---------------------
+Write you own validators
+------------------------
 
 How validators work
 ^^^^^^^^^^^^^^^^^^^
@@ -11,7 +11,7 @@ Of course, the standard suit of validators can be modified in a way that best su
 
 The are two kinds of validators: error validators and warning validators.
 The difference between them is that warning validators don't halt the validation process, while the error validators do.
-Error validators are `grouped <https://github.com/devmanorg/fiasko_bro/blob/master/fiasko_bro/code_validator.py#L133>`_ according to their purpose, like so::
+Error validators are grouped according to their purpose, like `in this code <https://github.com/devmanorg/fiasko_bro/blob/master/fiasko_bro/code_validator.py#L133>`_ ::
 
     error_validator_groups = OrderedDict(
         [
@@ -27,7 +27,7 @@ Error validators are `grouped <https://github.com/devmanorg/fiasko_bro/blob/mast
         ]
     )
 
-Here, for example, you have the group ``commits`` that consists only of one validator ``has_more_commits_than_origin``.
+Here, for example, you have the group ``commits`` that consists of the only ``has_more_commits_than_origin`` validator.
 
 In each group, every validator is executed.
 If some of the validators in the group fail, the ``validate`` method returns the error list without proceeding to the next group.
@@ -52,7 +52,7 @@ They are not executed if none of the error validators failed.
 Add a simple validator
 ^^^^^^^^^^^^^^^^^^^^^^
 
-A simple validator is a validator that only takes the repository to validate. It returns ``None`` is case of success
+A simple validator is a validator that only takes the repository (more precisely, ``LocalRepositoryInfo`` object) to validate. It returns ``None`` is case of success
 and a tuple of an error slug and an error message in case of a problem. Here's an example of existing validator::
 
     def has_no_syntax_errors(solution_repo, *args, **kwargs):
@@ -66,8 +66,8 @@ Now you can add validator to one of the existing validator groups or create your
 
     code_validator.error_validator_groups['general'].append(has_no_syntax_errors)
 
-Compare against original repo
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Compare against some "original" repo
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you want your validator to compare against some other repository, add the ``original_repo`` argument.
 ::
@@ -79,8 +79,27 @@ If you want your validator to compare against some other repository, add the ``o
             return 'no_new_code', None
 
 
-Notice we made sure our validator succeeds in case there's no ``original_repo``.
+Notice we made our validator succeed in case there's no ``original_repo``.
 We consider it a sensible solution for our case, but you can choose any other behavior.
+
+Parameterize your validator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To add a parameter to your validator, just add it to the arguments.
+::
+
+    def has_no_long_files(solution_repo, max_number_of_lines, *args, **kwargs):
+        for file_path, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+            number_of_lines = file_content.count('\n')
+            if number_of_lines > max_number_of_lines:
+                file_name = url_helpers.get_filename_from_path(file_path)
+                return 'file_too_long', file_name
+
+and then don't forget to pass it:
+
+    code_validator.validate(repo, max_number_of_lines=200)
+
+Of course, built-in validators have their own defaults in `_default_settings` property of `CodeValidator` class.
 
 Conditionally execute a validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -41,7 +41,7 @@ Here's the simplest usage example::
 Launch tests
 ============
 
-``python -m pytest tests/``
+``python -m pytest``
 
 
 
