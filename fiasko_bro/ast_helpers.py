@@ -104,9 +104,9 @@ def get_local_vars_named_as_globals(tree, max_depth):
         if getattr(assigned_item, 'id', None) in nonglobal_names:
             current_item = assigned_item
             for _ in range(max_depth):  # prevents the user from making this loop excessively long
-                if not hasattr(current_item, 'parent') or current_item.parent.__class__ == ast.Module:
+                if not hasattr(current_item, 'parent') or isinstance(current_item.parent, ast.Module):
                     break
-                if current_item.parent.__class__ not in [ast.ClassDef, ast.Assign, ast.If]:
+                if not isinstance(current_item.parent, (ast.ClassDef, ast.Assign, ast.If)):
                     local_vars_named_as_globals.append(assigned_item.id)
                     break
                 current_item = current_item.parent
