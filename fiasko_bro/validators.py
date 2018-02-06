@@ -126,14 +126,14 @@ def has_no_local_imports(solution_repo, whitelists, *args, **kwargs):
                 return 'has_local_import', ''
 
 
-def has_local_var_named_as_global(solution_repo, whitelists, *args, **kwargs):
+def has_local_var_named_as_global(solution_repo, whitelists, max_indentation_level, *args, **kwargs):
     whitelist = whitelists.get('has_local_var_named_as_global', [])
     for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
         for whitelisted_part in whitelist:
             if whitelisted_part in filename:
                 break
         else:
-            bad_names = ast_helpers.get_local_vars_named_as_globals(tree)
+            bad_names = ast_helpers.get_local_vars_named_as_globals(tree, max_depth=max_indentation_level)
             if bad_names:
                 return 'has_locals_named_as_globals', 'например, %s' % (', '.join(bad_names))
 

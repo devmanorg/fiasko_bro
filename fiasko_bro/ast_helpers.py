@@ -96,15 +96,14 @@ def get_defined_function_names(tree):
     return {n.name for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)}
 
 
-def get_local_vars_named_as_globals(tree):
+def get_local_vars_named_as_globals(tree, max_depth):
     assigned_items = get_assigned_vars(tree, names_only=False)
     nonglobal_names = [getattr(n, 'id', None) for n in assigned_items if n.col_offset > 0]
     local_vars_named_as_globals = []
     for assigned_item in assigned_items:
         if getattr(assigned_item, 'id', None) in nonglobal_names:
-            max_depth = 5  # chosen at by intuition, prevents unnecessarily long loops
             current_item = assigned_item
-            for _ in range(max_depth):
+            for _ in range(max_depth):  # prevents the user from making this loop excessively long
                 if not hasattr(current_item, 'parent') or current_item.parent.__class__ == ast.Module:
                     break
                 if current_item.parent.__class__ not in [ast.ClassDef, ast.Assign, ast.If]:
