@@ -133,7 +133,7 @@ def has_local_var_named_as_global(solution_repo, whitelists, max_indentation_lev
             if whitelisted_part in filename:
                 break
         else:
-            bad_names = ast_helpers.get_local_vars_named_as_globals(tree, max_depth=max_indentation_level)
+            bad_names = ast_helpers.get_local_vars_named_as_globals(tree, max_indentation_level)
             if bad_names:
                 return 'has_locals_named_as_globals', 'например, %s' % (', '.join(bad_names))
 

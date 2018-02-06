@@ -96,21 +96,30 @@ def get_defined_function_names(tree):
     return {n.name for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)}
 
 
-def get_local_vars_named_as_globals(tree, max_depth):
-    assigned_items = get_assigned_vars(tree, names_only=False)
-    nonglobal_names = [getattr(n, 'id', None) for n in assigned_items if n.col_offset > 0]
-    potentially_bad_names = [n for n in nonglobal_names if n and re.search('[a-zA-Z]', n) and n.upper() == n]
-    local_vars_named_as_globals = []
+def get_nonglobal_items_from_assigned_items(assigned_items, potentially_bad_names, max_indentation_depth):
+    nonglobal_items = []
     for assigned_item in assigned_items:
         if getattr(assigned_item, 'id', None) in potentially_bad_names:
             current_item = assigned_item
-            for _ in range(max_depth):  # prevents the user from making this loop excessively long
+            for _ in range(max_indentation_depth):  # prevents the user from making this loop excessively long
                 if not hasattr(current_item, 'parent') or isinstance(current_item.parent, ast.Module):
                     break
                 if not isinstance(current_item.parent, (ast.ClassDef, ast.Assign, ast.If)):
-                    local_vars_named_as_globals.append(assigned_item.id)
+                    nonglobal_items.append(assigned_item.id)
                     break
                 current_item = current_item.parent
+    return nonglobal_items
+
+
+def get_local_vars_named_as_globals(tree, max_indentation_depth):
+    assigned_items = get_assigned_vars(tree, names_only=False)
+    nonglobal_names = [getattr(n, 'id', None) for n in assigned_items if n.col_offset > 0]
+    potentially_bad_names = [n for n in nonglobal_names if n and re.search('[a-zA-Z]', n) and n.upper() == n]
+    local_vars_named_as_globals = get_nonglobal_items_from_assigned_items(
+        assigned_items,
+        potentially_bad_names,
+        max_indentation_depth
+    )
     return local_vars_named_as_globals
 
 
