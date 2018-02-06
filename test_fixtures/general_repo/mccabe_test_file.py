@@ -1,7 +1,7 @@
 # This file for tests/test_general_validators/test_mccabe_difficulty.py
 
 
-def function_for_test_mccabe_fail(list_of_items):
+def function_with_big_complexity(list_of_items):
     result_list = []
     for item in list_of_items:
         if item:
@@ -13,7 +13,7 @@ def function_for_test_mccabe_fail(list_of_items):
     return result_list
 
 
-def function_for_test_mccabe_ok(list_of_items):
+def function_with_small_function_with_big_complexity(list_of_items):
     result_list = []
     for item in list_of_items:
         result_list.append(item)
@@ -33,5 +33,5 @@ if __name__ == '__main__':
         },
     ]
 
-    function_for_test_mccabe_fail(list_of_items)
-    function_for_test_mccabe_ok(list_of_items)
+    function_with_big_complexity(list_of_items)
+    function_with_small_function_with_big_complexity(list_of_items)
