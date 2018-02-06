@@ -99,9 +99,10 @@ def get_defined_function_names(tree):
 def get_local_vars_named_as_globals(tree, max_depth):
     assigned_items = get_assigned_vars(tree, names_only=False)
     nonglobal_names = [getattr(n, 'id', None) for n in assigned_items if n.col_offset > 0]
+    potentially_bad_names = [n for n in nonglobal_names if n and re.search('[a-zA-Z]', n) and n.upper() == n]
     local_vars_named_as_globals = []
     for assigned_item in assigned_items:
-        if getattr(assigned_item, 'id', None) in nonglobal_names:
+        if getattr(assigned_item, 'id', None) in potentially_bad_names:
             current_item = assigned_item
             for _ in range(max_depth):  # prevents the user from making this loop excessively long
                 if not hasattr(current_item, 'parent') or isinstance(current_item.parent, ast.Module):
@@ -110,7 +111,7 @@ def get_local_vars_named_as_globals(tree, max_depth):
                     local_vars_named_as_globals.append(assigned_item.id)
                     break
                 current_item = current_item.parent
-    return [n for n in local_vars_named_as_globals if n and re.search('[a-zA-Z]', n) and n.upper() == n]
+    return local_vars_named_as_globals
 
 
 def get_vars_from_fuction_definitions(tree):
