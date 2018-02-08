@@ -6,7 +6,6 @@ def test_repo_size_fail():
     path_to_repo = 'test_fixtures/general_repo'
     expected_output = True
     output = is_repo_too_large(path_to_repo, max_py_files_count)
-
     assert output == expected_output
 
 
@@ -15,5 +14,4 @@ def test_repo_size_ok():
     path_to_repo = 'test_fixtures/general_repo'
     expected_output = False
     output = is_repo_too_large(path_to_repo, max_py_files_count)
-
     assert output == expected_output

@@ -51,5 +51,4 @@ def is_repo_too_large(path_to_repo, max_py_files_count, path_to_original_repo=No
     if path_to_original_repo:
         num_of_py_files_original_repo = count_py_files(path_to_original_repo)
         return num_of_py_files_original_repo > max_py_files_count
-
     return False

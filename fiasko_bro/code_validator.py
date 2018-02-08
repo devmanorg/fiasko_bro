@@ -255,7 +255,6 @@ class CodeValidator:
         if original_repo_path:
             self.validator_arguments['original_repo'] = LocalRepositoryInfo(
                 original_repo_path)
-
         errors = []
         for error_group_name, error_group in self.error_validator_groups.items():
             errors += self._run_validator_group(
