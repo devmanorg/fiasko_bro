@@ -19,26 +19,32 @@ class LocalRepositoryInfo:
     def does_file_exist(self, filename):
         return os.path.isfile(os.path.join(self.path, filename))
 
+    @staticmethod
+    def get_source_file_contents(repository_path, extension_list):
+        file_paths = []
+        file_contents = []
+        for dirname, _, filenames in os.walk(repository_path, topdown=True):
+            for filename in filenames:
+                extension = filename.split('.')[-1]
+                if extension in extension_list:
+                    file_paths.append(os.path.join(dirname, filename))
+        for file_path in file_paths:
+            with open(file_path, 'r', encoding='utf-8') as file_handler:
+                file_contents.append(file_handler.read())
+        return file_paths, file_contents
+
     def _get_ast_trees(self, repository_path):
-        filenames = []
-        main_file_contents = []
+        filenames, main_file_contents = self.get_source_file_contents(repository_path, ['py'])
         ast_trees = []
-        for dirname, _, files in os.walk(repository_path, topdown=True):
-            for file in files:
-                if file.endswith('.py'):
-                    filenames.append(os.path.join(dirname, file))
-        for filename in filenames:
-            with open(filename, 'r', encoding='utf-8') as file_handler:
-                main_file_content = file_handler.read()
+        for file_content in main_file_contents:
             try:
-                tree = ast.parse(main_file_content)
+                tree = ast.parse(file_content)
                 for node in ast.walk(tree):
                     for child in ast.iter_child_nodes(node):
                         child.parent = node
             except SyntaxError as e:
                 print(e)
                 tree = None
-            main_file_contents.append(main_file_content)
             ast_trees.append(tree)
         return filenames, main_file_contents, ast_trees
 
