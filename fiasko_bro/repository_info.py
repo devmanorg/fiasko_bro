@@ -10,7 +10,7 @@ class LocalRepositoryInfo:
         self.path = repository_path
         self._repo = git.Repo(self.path)
         self._python_filenames, self._main_file_contents, self._ast_trees = (
-            self._get_ast_trees(self.path)
+            self._get_ast_trees()
         )
 
     def count_commits(self):
@@ -19,11 +19,10 @@ class LocalRepositoryInfo:
     def does_file_exist(self, filename):
         return os.path.isfile(os.path.join(self.path, filename))
 
-    @staticmethod
-    def get_source_file_contents(repository_path, extension_list):
+    def get_source_file_contents(self, extension_list):
         file_paths = []
         file_contents = []
-        for dirname, _, filenames in os.walk(repository_path, topdown=True):
+        for dirname, _, filenames in os.walk(self.path, topdown=True):
             for filename in filenames:
                 extension = filename.split('.')[-1]
                 if extension in extension_list:
@@ -31,10 +30,14 @@ class LocalRepositoryInfo:
         for file_path in file_paths:
             with open(file_path, 'r', encoding='utf-8') as file_handler:
                 file_contents.append(file_handler.read())
-        return file_paths, file_contents
+        return [element for element in zip(file_paths, file_contents)]
 
-    def _get_ast_trees(self, repository_path):
-        filenames, main_file_contents = self.get_source_file_contents(repository_path, ['py'])
+    def _get_ast_trees(self):
+        filenames = []
+        main_file_contents = []
+        for filename, file_content in self.get_source_file_contents(['py']):
+            filenames.append(filename)
+            main_file_contents.append(file_content)
         ast_trees = []
         for file_content in main_file_contents:
             try:

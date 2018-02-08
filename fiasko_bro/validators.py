@@ -163,7 +163,9 @@ def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, 
 
 
 def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
-    for filepath, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+    frontend_extensions = ['html', 'css', 'js']
+    relevant_extensions = frontend_extensions + ['py']
+    for filepath, file_content in solution_repo.get_source_file_contents(relevant_extensions):
         lines = [l for l in file_content.split('\n') if l]
         tabbed_lines_amount = len([l for l in lines if l.startswith('\t')])
         _, ext = os.path.splitext(filepath)
