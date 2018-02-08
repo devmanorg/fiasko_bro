@@ -30,14 +30,14 @@ class LocalRepositoryInfo:
         for file_path in file_paths:
             with open(file_path, 'r', encoding='utf-8') as file_handler:
                 file_contents.append(file_handler.read())
-        return [element for element in zip(file_paths, file_contents)]
+        source_file_contents = list(zip(file_paths, file_contents))
+        if not source_file_contents:
+            return [(), ()]
+        return source_file_contents
 
     def _get_ast_trees(self):
-        filenames = []
-        main_file_contents = []
-        for filename, file_content in self.get_source_file_contents(['.py']):
-            filenames.append(filename)
-            main_file_contents.append(file_content)
+        py_files = list(zip(*self.get_source_file_contents(['.py']))) or [(), ()]
+        filenames, main_file_contents = py_files
         ast_trees = []
         for file_content in main_file_contents:
             try:
