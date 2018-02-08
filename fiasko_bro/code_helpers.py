@@ -2,6 +2,7 @@ import pep8
 import ast
 
 from mccabe import _read, PathGraphingAstVisitor
+from .file_helpers import count_py_files
 
 
 def count_pep8_violations(repository_info, max_line_length=79, path_whitelist=None):
@@ -41,3 +42,13 @@ def get_mccabe_violations_for_file(filepath, max_complexity):
 def count_indentation_spaces(line, tab_size=4):
     expanded_line = line.expandtabs(tab_size)
     return len(line) - len(expanded_line.lstrip())
+
+
+def is_repo_too_large(path_to_repo, max_py_files_count, path_to_original_repo=None):
+    num_of_py_files = count_py_files(path_to_repo)
+    if num_of_py_files > max_py_files_count:
+        return True
+    if path_to_original_repo:
+        num_of_py_files_original_repo = count_py_files(path_to_original_repo)
+        return num_of_py_files_original_repo > max_py_files_count
+    return False
