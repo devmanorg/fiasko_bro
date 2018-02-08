@@ -38,5 +38,13 @@ $ pip install -r requirements.txt
 [fiasko-bro.readthedocs.io](http://fiasko-bro.readthedocs.io/)
 
 
+### Contributing
+Read more about it [in the docs](http://fiasko-bro.readthedocs.io/en/latest/contributing.html)
+
+
 ### Launch tests
 `python -m pytest`
+
+
+### Versioning
+We follow [semantic versioning](https://github.com/dbrock/semver-howto/blob/master/README.md).
