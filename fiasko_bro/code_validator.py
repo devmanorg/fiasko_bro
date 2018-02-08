@@ -138,7 +138,6 @@ class CodeValidator:
         'max_number_of_lines': 200,
         'max_indentation_level': 4,
         'max_num_of_py_files': 100,
-        'check_repo_size': True,
     }
 
     error_validator_groups = OrderedDict(
