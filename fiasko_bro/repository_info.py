@@ -24,7 +24,7 @@ class LocalRepositoryInfo:
         file_contents = []
         for dirname, _, filenames in os.walk(self.path, topdown=True):
             for filename in filenames:
-                extension = filename.split('.')[-1]
+                extension = os.path.splitext(filename)[1]
                 if extension in extension_list:
                     file_paths.append(os.path.join(dirname, filename))
         for file_path in file_paths:
@@ -35,7 +35,7 @@ class LocalRepositoryInfo:
     def _get_ast_trees(self):
         filenames = []
         main_file_contents = []
-        for filename, file_content in self.get_source_file_contents(['py']):
+        for filename, file_content in self.get_source_file_contents(['.py']):
             filenames.append(filename)
             main_file_contents.append(file_content)
         ast_trees = []

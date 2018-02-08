@@ -163,13 +163,13 @@ def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, 
 
 
 def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
-    frontend_extensions = ['html', 'css', 'js']
-    relevant_extensions = frontend_extensions + ['py']
+    frontend_extensions = ['.html', '.css', '.js']
+    relevant_extensions = frontend_extensions + ['.py']
     for filepath, file_content in solution_repo.get_source_file_contents(relevant_extensions):
         lines = [l for l in file_content.split('\n') if l]
         tabbed_lines_amount = len([l for l in lines if l.startswith('\t')])
         _, ext = os.path.splitext(filepath)
-        is_frontend = ext in ('.html', '.css', '.js')
+        is_frontend = ext in frontend_extensions
         if ext == '.py':
             # строки могут начинаться с таба в многострочной строке, поэтому такая эвристика
             if tabbed_lines_amount > len(lines) / 2:
