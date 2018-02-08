@@ -4,8 +4,12 @@
 
 # Как использовать
 
+```Inline code```
+
 Необходимо импортировать `get_roots`, вызов происходит так: `root1, root2 = get_roots(a, b, c)`, тут `a, b, с` -  коэффициенты квадратного уравнения, а `root1, root2` корни.
 Пример:
+
+```Inline code```
 
 ```Python
 from quadratic_equation import get_roots

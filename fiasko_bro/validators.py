@@ -231,7 +231,7 @@ def has_no_calls_with_constants(solution_repo, whitelists, *args, **kwargs):
 
 def has_readme_in_single_language(solution_repo, readme_filename, min_percent_of_another_language, *args, **kwargs):
     raw_readme = solution_repo.get_file(readme_filename)
-    readme_no_code = re.sub("```[#!A-Za-z]*\n[\s\S]*?\n```", '', raw_readme)
+    readme_no_code = re.sub("\s```[#!A-Za-z]*\n[\s\S]*?\n```\s", '', raw_readme)
     clean_readme = re.sub("\[([^\]]+)\]\(([^)]+)\)", '', readme_no_code)
     ru_letters_amount = len(re.findall('[а-яА-Я]', clean_readme))
     en_letters_amount = len(re.findall('[a-zA-Z]', clean_readme))
