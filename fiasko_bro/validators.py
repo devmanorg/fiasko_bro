@@ -478,8 +478,9 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelis
 
 
 def has_no_string_literal_sums(solution_repo, *args, **kwargs):
-    for tree in solution_repo.get_ast_trees():
+    for file_path, tree in solution_repo.get_ast_trees(with_filenames=True):
         for node in ast.walk(tree):
-            if (isinstance(node, ast.BinOp) and isinstance(node.left, ast.Str)
-            and isinstance(node.right, ast.Str)):
-                return 'has_string_sum', ''
+            if isinstance(node, ast.BinOp):
+                if isinstance(node.left, ast.Str) and isinstance(node.right, ast.Str):
+                    file_name = url_helpers.get_filename_from_path(file_path)
+                    return 'has_string_sum', '{}: {}'.format(file_name, node.lineno)
