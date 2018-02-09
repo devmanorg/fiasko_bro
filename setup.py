@@ -23,6 +23,7 @@ class Sdist(sdist):
 
 setup(
     name='Fiasko Bro',
+    setup_requires=['Babel'],
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
