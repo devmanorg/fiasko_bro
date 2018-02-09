@@ -11,7 +11,8 @@ def test_pep8_violations_fail(test_repo):
         whitelists=whitelists,
         max_pep8_line_length=79,
     )
-    assert output == expected_output
+    assert isinstance(expected_output, tuple)
+    assert expected_output[0] == 'pep8'
 
 
 def test_pep8_violations_ok(test_repo):
