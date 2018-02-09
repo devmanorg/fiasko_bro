@@ -206,7 +206,6 @@ def has_no_directories_from_blacklist(solution_repo, blacklists, *args, **kwargs
 
 
 def has_no_vars_with_lambda(solution_repo, *args, **kwargs):
-    import pdb; pdb.set_trace()
     for tree in solution_repo.get_ast_trees():
         assigns = [n for n in ast.walk(tree) if isinstance(n, ast.Assign)]
         for assign in assigns:
