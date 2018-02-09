@@ -93,7 +93,7 @@ class CodeValidator:
             # from sqlalchemy.ext.automap
             'Base',
             'User',
-            'Order'
+            'Order',
             'Address',
         ],
         'right_assignment_for_snake_case': [
