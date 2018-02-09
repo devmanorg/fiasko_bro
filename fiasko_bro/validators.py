@@ -206,6 +206,7 @@ def has_no_directories_from_blacklist(solution_repo, blacklists, *args, **kwargs
 
 
 def has_no_vars_with_lambda(solution_repo, *args, **kwargs):
+    import pdb; pdb.set_trace()
     for tree in solution_repo.get_ast_trees():
         assigns = [n for n in ast.walk(tree) if isinstance(n, ast.Assign)]
         for assign in assigns:
@@ -475,3 +476,11 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelis
                     file_name = url_helpers.get_filename_from_path(file_path)
                     return 'too_nested', '{}:{}'.format(file_name, line_number)
             previous_line_indent = indentation_spaces_amount
+
+
+def has_no_string_sums(solution_repo, *args, **kwargs):
+    for tree in solution_repo.get_ast_trees():
+        for node in ast.walk(tree):
+            if (isinstance(node, ast.BinOp) and isinstance(node.left, ast.Str)
+            and isinstance(node.right, ast.Str)):
+                return 'has_string_sum', ''
