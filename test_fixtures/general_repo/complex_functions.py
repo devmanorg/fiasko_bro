@@ -1,4 +1,3 @@
-# This file for tests/test_general_validators/test_mccabe_difficulty.py
 
 
 def function_with_big_complexity(list_of_items):
