@@ -1,12 +1,24 @@
-from setuptools import setup, find_packages
+from setuptools import setup
+from setuptools.command.sdist import sdist
 from codecs import open
 from os import path
+from babel.messages import frontend as babel
+
 
 here = path.abspath(path.dirname(__file__))
 
 
 def load_requirements():
     return open(path.join(path.dirname(__file__), 'requirements.txt')).readlines()
+
+
+class Sdist(sdist):
+    """Custom ``sdist`` command to ensure that mo files are always created."""
+
+    def run(self):
+        self.run_command('compile_catalog')
+        # sdist is an old style class so super cannot be used.
+        sdist.run(self)
 
 
 setup(
@@ -56,4 +68,11 @@ setup(
 
     packages=['fiasko_bro'],
     install_requires=load_requirements(),
+    cmdclass = {
+        'compile_catalog': babel.compile_catalog,
+        'extract_messages': babel.extract_messages,
+        'init_catalog': babel.init_catalog,
+        'update_catalog': babel.update_catalog,
+        'sdist': Sdist,
+    }
 )
