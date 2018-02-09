@@ -477,7 +477,7 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelis
             previous_line_indent = indentation_spaces_amount
 
 
-def has_no_string_sums(solution_repo, *args, **kwargs):
+def has_no_string_literal_sums(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         for node in ast.walk(tree):
             if (isinstance(node, ast.BinOp) and isinstance(node.left, ast.Str)
