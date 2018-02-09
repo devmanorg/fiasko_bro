@@ -21,4 +21,4 @@ def test_is_snake_case_ok(test_repo):
         solution_repo=test_repo,
         whitelists=whitelists,
     )
-    assert output == expected_output
+    assert output is expected_output
