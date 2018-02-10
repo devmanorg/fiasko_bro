@@ -4,7 +4,6 @@ from fiasko_bro.i18n import _
 
 
 def test_pep8_violations_fail(test_repo):
-    expected_output = 'pep8', _('%s PEP8 violations') % 31
     whitelists = CodeValidator.whitelists
     output = validators.is_pep8_fine(
         solution_repo=test_repo,
@@ -12,7 +11,8 @@ def test_pep8_violations_fail(test_repo):
         whitelists=whitelists,
         max_pep8_line_length=79,
     )
-    assert output == expected_output
+    assert isinstance(output, tuple)
+    assert output[0] == 'pep8'
 
 
 def test_pep8_violations_ok(test_repo):

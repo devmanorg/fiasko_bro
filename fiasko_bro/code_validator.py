@@ -93,7 +93,7 @@ class CodeValidator:
             # from sqlalchemy.ext.automap
             'Base',
             'User',
-            'Order'
+            'Order',
             'Address',
         ],
         'right_assignment_for_snake_case': [
@@ -122,7 +122,13 @@ class CodeValidator:
         'has_no_extra_dockstrings_whitelist': [
             '/migrations/',
             '/alembic/',
-        ]
+        ],
+        'is_nesting_too_deep': [
+            '/migrations/',
+            '/alembic/',
+            'manage.py',
+            'settings.py',
+        ],
     }
 
     _default_settings = {

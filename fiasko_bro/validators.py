@@ -456,13 +456,17 @@ def has_no_long_files(solution_repo, max_number_of_lines, *args, **kwargs):
             return 'file_too_long', file_name
 
 
-def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, *args, **kwargs):
+def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelists, *args, **kwargs):
     """Looks at the number of spaces in the beginning and decides if the code is
         too nested.
 
         As a precondition, the code has to pass has_indents_of_spaces.
     """
+    whitelist = whitelists.get('is_nesting_too_deep', [])
     for file_path, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+        for directory in whitelist:
+            if directory in file_path:
+                continue
         lines = file_content.split('\n')
         previous_line_indent = 0
         for line_number, line in enumerate(lines):
