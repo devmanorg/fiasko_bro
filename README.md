@@ -15,7 +15,7 @@ Fiasko is a static analysis tool for python code that catches common style error
 ```python
 >>> import fiasko_bro
 >>> fiasko_bro.validate_repo('/path/to/repo/')
-[('camel_case_vars', 'переименуй, например, WorkBook.')]
+[('camel_case_vars', 'for example, rename the following: WorkBook'), ('file_too_long', 'coursera.py')]
 ```
 The `validate_repo` method returns list of tuples which consist of an error slug and an error message.
 
