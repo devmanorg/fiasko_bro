@@ -22,4 +22,3 @@ def test_has_no_try_without_exception_no_type_exception(origin_repo):
         solution_repo=origin_repo,
     )
     assert output == expected_output
-
