@@ -1,4 +1,3 @@
-# This file for tests/test_general_validators/test_has_no_calls_with_constants.py
 
 
 def function_witn_magic_number(list_with_content):

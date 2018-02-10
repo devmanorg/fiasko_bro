@@ -1,4 +1,3 @@
-# This file for tests/test_general_validators/test_has_no_try_without_exception.py
 
 
 def function_with_non_type_exception():

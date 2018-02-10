@@ -1,4 +1,3 @@
-# This file for tests/test_general_validators/test_has_no_vars_with_lambda.py
 
 
 def function_with_lambda_as_var(number_for_test):

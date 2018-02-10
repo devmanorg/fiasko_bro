@@ -1,1 +1,0 @@
-Test folder for tests/test_general_validators/test_has_no_directions_from_blackkist.py
