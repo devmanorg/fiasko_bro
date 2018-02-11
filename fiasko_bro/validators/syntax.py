@@ -1,5 +1,9 @@
 import ast
 
+from .. import ast_helpers
+from .. import file_helpers
+from ..i18n import _ as _t
+
 
 def has_no_syntax_errors(solution_repo, *args, **kwargs):
     for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
@@ -10,28 +14,18 @@ def has_no_syntax_errors(solution_repo, *args, **kwargs):
 def has_indents_of_spaces(solution_repo, tab_size, *args, **kwargs):
     """
         Иногда при парсинге дерева col_offset считается неправильно,
-        так что эта проверка может быть только предупреждением.
     """
     node_types_to_validate = (ast.For, ast.If, ast.FunctionDef, ast.With)
     for _, file_content, tree in solution_repo.get_ast_trees(
         with_filenames=True,
         with_file_content=True
     ):
-        lines_offsets = [None]
-        for line in file_content.split('\n'):
-            lines_offsets.append(len(line) - len(line.lstrip(' ')))
+        lines_offsets = file_helpers.get_line_offsets(file_content)
         for node in ast.walk(tree):
-            if not hasattr(node, 'parent'):
-                continue
-            node_line = getattr(node, 'lineno', None)
-            parent_line = getattr(node.parent, 'lineno', None)
-            if node_line is None or parent_line is None:
-                continue
-            node_offset = lines_offsets[node_line]
-            parent_offset = lines_offsets[parent_line]
-            if (
-                node_line != parent_line and node_offset > parent_offset and
-                node_offset - parent_offset != tab_size and
-                isinstance(node.parent, node_types_to_validate)
+            if not ast_helpers.is_node_offset_fine(
+                node,
+                lines_offsets,
+                node_types_to_validate,
+                tab_size,
             ):
-                return 'indent_not_four_spaces', _('for example, line number %s') % node.lineno
+                return 'indent_not_four_spaces', _t('for example, line number %s') % node.lineno

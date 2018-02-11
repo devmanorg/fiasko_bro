@@ -214,3 +214,19 @@ def is_call_has_constants(call, caller_whitelist):
         if isinstance(arg, ast.Num):
             return True
     return False
+
+
+def is_node_offset_fine(node, lines_offsets, node_types_to_validate, tab_size):
+    if not hasattr(node, 'parent'):
+        return True
+    node_line = getattr(node, 'lineno', None)
+    parent_line = getattr(node.parent, 'lineno', None)
+    if node_line is None or parent_line is None:
+        return True
+    node_offset = lines_offsets[node_line]
+    parent_offset = lines_offsets[parent_line]
+    return (
+        node_line != parent_line and node_offset > parent_offset and
+        node_offset - parent_offset != tab_size and
+        isinstance(node.parent, node_types_to_validate)
+    )
