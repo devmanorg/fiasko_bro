@@ -8,6 +8,7 @@ from . import ast_helpers
 from . import code_helpers
 from . import list_helpers
 from . import url_helpers
+from . import file_helpers
 from .i18n import _
 
 
@@ -450,16 +451,17 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelis
     """
     whitelist = whitelists.get('is_nesting_too_deep', [])
     for file_path, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
-        for whitelisted_part in whitelist:
-            if whitelisted_part in file_path:
-                break
-        else:
-            lines = file_content.split('\n')
-            previous_line_indent = 0
-            for line_number, line in enumerate(lines):
-                indentation_spaces_amount = code_helpers.count_indentation_spaces(line, tab_size)
-                if indentation_spaces_amount > tab_size * max_indentation_level:
-                    if indentation_spaces_amount - previous_line_indent == tab_size:  # make sure it's not a line continuation
-                        file_name = url_helpers.get_filename_from_path(file_path)
-                        return 'too_nested', '{}:{}'.format(file_name, line_number)
-                previous_line_indent = indentation_spaces_amount
+        if file_helpers.is_file_in_whitelist(file_path, whitelist):
+            continue
+
+        lines = file_content.split('\n')
+        previous_line_indent = 0
+        for line_number, line in enumerate(lines):
+            indentation_spaces_amount = code_helpers.count_indentation_spaces(line, tab_size)
+            if (
+                indentation_spaces_amount > tab_size * max_indentation_level
+                and indentation_spaces_amount - previous_line_indent == tab_size  # make sure it's not a line continuation
+            ):
+                file_name = url_helpers.get_filename_from_path(file_path)
+                return 'too_nested', '{}:{}'.format(file_name, line_number)
+            previous_line_indent = indentation_spaces_amount
