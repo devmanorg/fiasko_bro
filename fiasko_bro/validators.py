@@ -209,7 +209,7 @@ def has_no_directories_from_blacklist(solution_repo, blacklists, *args, **kwargs
 
 def has_no_vars_with_lambda(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
-        assigns = [n for n in ast.walk(tree) if isinstance(n, ast.Assign)]
+        assigns = ast_helpers.get_nodes_of_type(tree, ast.Assign)
         for assign in assigns:
             if isinstance(assign.value, ast.Lambda):
                 return 'named_lambda', ''
@@ -220,7 +220,7 @@ def has_no_calls_with_constants(solution_repo, whitelists, *args, **kwargs):
     for filepath, tree in solution_repo.get_ast_trees(with_filenames=True):
         if 'tests' in filepath:  # tests can have constants in asserts
             continue
-        calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)]
+        calls = ast_helpers.get_nodes_of_type(tree, ast.Call)
         for call in calls:
             if isinstance(ast_helpers.get_closest_definition(call), ast.ClassDef):  # for case of id = db.String(256)
                 continue
@@ -248,7 +248,7 @@ def has_readme_in_single_language(solution_repo, readme_filename, min_percent_of
 
 def has_no_range_from_zero(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
-        calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)]
+        calls = ast_helpers.get_nodes_of_type(tree, ast.Call)
         for call in calls:
             if getattr(call.func, 'id', None) == 'range' and call.args and len(call.args) == 2 and isinstance(call.args[0], ast.Num) and call.args[0].n == 0:
                 return 'manual_zero_in_range', ''
@@ -278,7 +278,7 @@ def has_no_extra_dockstrings(solution_repo, whitelists, functions_with_docstring
             if whitelisted_part in file_name:
                 break
         else:
-            defs = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
+            defs = ast_helpers.get_nodes_of_type(tree, ast.FunctionDef)
             if not defs:
                 continue
 
@@ -320,7 +320,7 @@ def has_no_libs_from_stdlib_in_requirements(solution_repo, *args, **kwargs):
 def has_no_exit_calls_in_functions(solution_repo, whitelists, *args, **kwargs):
     whitelist = whitelists.get('has_no_exit_calls_in_functions', [])
     for tree in solution_repo.get_ast_trees():
-        defs = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
+        defs = ast_helpers.get_nodes_of_type(tree, ast.FunctionDef)
         for function_definition in defs:
             if function_definition.name in whitelist:
                 continue
@@ -372,7 +372,7 @@ def has_no_lines_ends_with_semicolon(solution_repo, *args, **kwargs):
     for _, file_content, tree in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
         total_lines_with_semicolons = len([1 for l in file_content.split('\n') if l.endswith(';') and not l.startswith('#')])
         # TODO: check docstrings for semicolons
-        string_nodes = [n for n in ast.walk(tree) if isinstance(n, ast.Str)]
+        string_nodes = ast_helpers.get_nodes_of_type(tree, ast.Str)
         semicolons_in_string_constants_amount = sum([n.s.count(';') for n in string_nodes])
         if total_lines_with_semicolons > semicolons_in_string_constants_amount:
             return 'has_semicolons', ''
@@ -380,7 +380,7 @@ def has_no_lines_ends_with_semicolon(solution_repo, *args, **kwargs):
 
 def not_validates_response_status_by_comparing_to_200(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
-        for compare in [n for n in ast.walk(tree) if isinstance(n, ast.Compare)]:
+        for compare in ast_helpers.get_nodes_of_type(tree, ast.Compare):
             # validates blah.status_code == 200
             if (len(compare.ops) != 1 or not isinstance(compare.ops[0], ast.Eq)
                 or len(compare.comparators) != 1 or not isinstance(compare.comparators[0], ast.Num)
@@ -396,7 +396,7 @@ def has_no_mutable_default_arguments(solution_repo, *args, **kwargs):
     funcdef_types = (ast.FunctionDef, )
     mutable_types = (ast.List, ast.Dict)
     for tree in solution_repo.get_ast_trees():
-        for funcdef in [n for n in ast.walk(tree) if isinstance(n, funcdef_types)]:
+        for funcdef in ast_helpers.get_nodes_of_type(tree, funcdef_types):
             for default in getattr(funcdef.args, 'defaults', []):
                 if isinstance(default, mutable_types):
                     return 'mutable_default_arguments', ''
@@ -404,7 +404,7 @@ def has_no_mutable_default_arguments(solution_repo, *args, **kwargs):
 
 def has_no_slices_starts_from_zero(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
-        for slice in [n for n in ast.walk(tree) if isinstance(n, ast.Slice)]:
+        for slice in ast_helpers.get_nodes_of_type(tree, ast.Slice):
             if slice.step is None and isinstance(slice.lower, ast.Num) and slice.lower.n == 0:
                 return 'slice_starts_from_zero', ''
 
@@ -430,7 +430,7 @@ def has_no_return_with_parenthesis(solution_repo, *args, **kwargs):
 
 def has_no_cast_input_result_to_str(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
-        calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)]
+        calls = ast_helpers.get_nodes_of_type(tree, ast.Call)
         for call in calls:
             function_name = getattr(call.func, 'id', None)
             if not hasattr(call, 'parent') or not hasattr(call.parent, 'func'):

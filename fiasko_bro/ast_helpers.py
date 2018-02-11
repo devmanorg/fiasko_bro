@@ -5,6 +5,14 @@ from itertools import filterfalse
 from .list_helpers import flat
 
 
+def get_nodes_of_type(root_node, type_or_types):
+    return [n for n in ast.walk(root_node) if isinstance(n, type_or_types)]
+
+
+def get_all_imports(root):
+    return get_nodes_of_type(root, (ast.ImportFrom, ast.Import))
+
+
 def get_all_names_from_tree(tree):
     return list({node.id for node in ast.walk(tree) if isinstance(node, ast.Name)})
 
@@ -42,7 +50,7 @@ def is_tree_has_star_imports(tree):
 
 
 def is_has_local_imports(tree):
-    imports = [n for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) or isinstance(n, ast.Import)]
+    imports = get_all_imports(tree)
     for import_node in imports:
         if not import_node.col_offset:
             continue
@@ -68,6 +76,7 @@ def get_assigned_vars(tree, names_only=True, with_static_class_properties=True):
     else:
         return assigned_items
 
+
 def is_class_attribute(assigned_item):
     if not hasattr(assigned_item, 'parent'):
         return False
@@ -84,7 +93,7 @@ def get_assigned_names_excluding_class_attributes(tree):
 
 
 def get_iter_vars_from_for_loops(tree):
-    for_nodes = [n for n in ast.walk(tree) if isinstance(n, ast.For) or isinstance(n, ast.comprehension)]
+    for_nodes = get_nodes_of_type(tree, (ast.For, ast.comprehension))
     try:
         iter_var_names = {n.target.id for n in for_nodes}
     except AttributeError:
@@ -124,13 +133,13 @@ def get_local_vars_named_as_globals(tree, max_indentation_depth):
 
 
 def get_vars_from_fuction_definitions(tree):
-    func_defs = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
+    func_defs = get_nodes_of_type(tree, ast.FunctionDef)
     arg_names = flat([[a.arg for a in fd.args.args]for fd in func_defs])
     return set(arg_names)
 
 
 def uses_module(tree, module_name):
-    imports = [node for node in ast.walk(tree) if isinstance(node, ast.ImportFrom) or isinstance(node, ast.Import)]
+    imports = get_all_imports(tree)
     for _import in imports:
         imported_names = [n.name for n in _import.names]
         import_from = getattr(_import, 'module', None)
@@ -178,7 +187,7 @@ def get_base_assign_value_name(node):
 
 def get_names_from_assignment_with(tree, right_assignment_whitelist):
     result_names = []
-    for assignment in [n for n in ast.walk(tree) if isinstance(n, ast.Assign)]:
+    for assignment in get_nodes_of_type(tree, ast.Assign):
         base_assign_value_name = get_base_assign_value_name(assignment.value)
         if base_assign_value_name in right_assignment_whitelist:
             result_names += [t.id for t in assignment.targets]
