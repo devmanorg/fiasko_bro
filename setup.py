@@ -1,6 +1,8 @@
-from setuptools import setup, find_packages
+from setuptools import setup
+from setuptools.command.install import install
 from codecs import open
 from os import path
+
 
 here = path.abspath(path.dirname(__file__))
 
@@ -9,26 +11,32 @@ def load_requirements():
     return open(path.join(path.dirname(__file__), 'requirements.txt')).readlines()
 
 
+class InstallWithCompile(install):
+    def run(self):
+        from babel.messages.frontend import compile_catalog
+        compiler = compile_catalog(self.distribution)
+        option_dict = self.distribution.get_option_dict('compile_catalog')
+        compiler.domain = [option_dict['domain'][1]]
+        compiler.directory = option_dict['directory'][1]
+        compiler.run()
+        super().run()
+
+
 setup(
     name='Fiasko Bro',
 
-    # Versions should comply with PEP440.  For a discussion on single-sourcing
-    # the version across setup.py and the project code, see
-    # http://packaging.python.org/en/latest/tutorial.html#version
     version='0.0.1',
 
     description='Automatic code validator',
     long_description='The project validates for common pitfalls',  # TODO: generate README
 
-    # TODO: The project's main homepage.
-    # url='https://github.com/whatever/whatever',
+    url='https://github.com/devmanorg/fiasko_bro',
+
+    license='MIT',
 
     # TODO: Author details
     # author='yourname',
     # author_email='your@address.com',
-
-    # TODO: Choose your license
-    # license='MIT',
 
     # See https://PyPI.python.org/PyPI?%3Aaction=list_classifiers
     # TODO: Classifiers
@@ -51,9 +59,17 @@ setup(
     #     'Programming Language :: Python :: 2.7',
     # ],
 
-    # What does your project relate to?
+    # TODO: Keywords
     # keywords='sample setuptools development',
 
     packages=['fiasko_bro'],
+    # since babel appears both in setup_requires and install_requires,
+    # our package can't be instaled with python setup.py install command
+    # see https://github.com/pypa/setuptools/issues/391
+    setup_requires=['babel'],
     install_requires=load_requirements(),
+    cmdclass = {
+        'install': InstallWithCompile,
+    },
+    package_data={'': ['locale/*/*/*.mo', 'locale/*/*/*.po']},
 )

@@ -7,6 +7,7 @@ from . import ast_helpers
 from . import code_helpers
 from . import list_helpers
 from . import url_helpers
+from .i18n import _
 
 
 def has_more_commits_than_origin(solution_repo, original_repo=None, *args, **kwargs):
@@ -19,7 +20,7 @@ def has_more_commits_than_origin(solution_repo, original_repo=None, *args, **kwa
 
 def has_readme_file(solution_repo, readme_filename, *args, **kwargs):
     if not solution_repo.does_file_exist(readme_filename):
-        return 'need_readme', 'нет %s' % readme_filename
+        return 'need_readme', _('there is no %s') % readme_filename
 
 
 def is_pep8_fine(solution_repo, allowed_max_pep8_violations,
@@ -31,7 +32,7 @@ def is_pep8_fine(solution_repo, allowed_max_pep8_violations,
         path_whitelist=whitelist
     )
     if violations_amount > allowed_max_pep8_violations:
-        return 'pep8', '%s нарушений' % violations_amount
+        return 'pep8', _('%s PEP8 violations') % violations_amount
 
 
 def has_changed_readme(solution_repo, readme_filename, original_repo=None, *args, **kwargs):
@@ -56,7 +57,7 @@ def has_changed_readme(solution_repo, readme_filename, original_repo=None, *args
 def has_no_syntax_errors(solution_repo, *args, **kwargs):
     for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
         if tree is None:
-            return 'syntax_error', 'в %s' % filename
+            return 'syntax_error', filename
 
 
 def are_sources_in_utf(solution_repo, *args, **kwargs):
@@ -86,7 +87,7 @@ def is_snake_case(solution_repo, whitelists, *args, **kwargs):
                                 and n not in whitelist
                                 and n not in whitelisted_names]
         if names_with_uppercase:
-            return 'camel_case_vars', 'переименуй, например, %s.' % ', '.join(names_with_uppercase[:3])
+            return 'camel_case_vars', _('for example, rename the following: %s') % ', '.join(names_with_uppercase[:3])
 
 
 def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
@@ -135,7 +136,7 @@ def has_local_var_named_as_global(solution_repo, whitelists, max_indentation_lev
         else:
             bad_names = ast_helpers.get_local_vars_named_as_globals(tree, max_indentation_level)
             if bad_names:
-                return 'has_locals_named_as_globals', 'например, %s' % (', '.join(bad_names))
+                return 'has_locals_named_as_globals', _('for example, %s') % (', '.join(bad_names))
 
 
 def has_variables_from_blacklist(solution_repo, whitelists, blacklists, *args, **kwargs):
@@ -186,7 +187,7 @@ def has_no_try_without_exception(solution_repo, *args, **kwargs):
             if try_except.type is None:
                 return 'broad_except', ''
             if isinstance(try_except.type, ast.Name) and try_except.type.id == exception_type_to_catch:
-                return 'broad_except', '%s – слишком широкий тип исключений; укажи подробнее, какую ошибку ты ловишь' % exception_type_to_catch
+                return 'broad_except', _('%s class is too broad; use a more specific exception type') % exception_type_to_catch
 
 
 def has_frozen_requirements(solution_repo, *args, **kwargs):
@@ -195,7 +196,7 @@ def has_frozen_requirements(solution_repo, *args, **kwargs):
         return
     for requirement_line in requirements.split('\n'):
         if requirement_line and '==' not in requirement_line:
-            return 'unfrozen_requirements', 'например, %s' % requirement_line
+            return 'unfrozen_requirements', _('for example, %s') % requirement_line
 
 
 def has_no_directories_from_blacklist(solution_repo, blacklists, *args, **kwargs):
@@ -228,7 +229,7 @@ def has_no_calls_with_constants(solution_repo, whitelists, *args, **kwargs):
                 continue
             for arg in call.args:
                 if isinstance(arg, ast.Num):
-                    return 'magic_numbers', 'например, %s' % arg.n
+                    return 'magic_numbers', _('for example, %s') % arg.n
 
 
 def has_readme_in_single_language(solution_repo, readme_filename, min_percent_of_another_language, *args, **kwargs):
@@ -372,7 +373,7 @@ def has_indents_of_spaces(solution_repo, tab_size, *args, **kwargs):
                 node_line != parent_line and node_offset > parent_offset and
                 node_offset - parent_offset != tab_size and isinstance(node.parent, node_types_to_validate)
             ):
-                return 'indent_not_four_spaces', 'например, строка %s' % node.lineno
+                return 'indent_not_four_spaces', _('for example, line number %s') % node.lineno
 
 
 def has_no_lines_ends_with_semicolon(solution_repo, *args, **kwargs):
@@ -432,7 +433,7 @@ def has_no_return_with_parenthesis(solution_repo, *args, **kwargs):
         for line_num in return_lines:
             line = file_content[line_num - 1]
             if line.count('return') == 1 and 'return(' in line or 'return (' in line:
-                return 'return_with_parenthesis', 'строка %s' % line_num
+                return 'return_with_parenthesis', _('for example, the line number %s') % line_num
 
 
 def has_no_cast_input_result_to_str(solution_repo, *args, **kwargs):
@@ -463,15 +464,16 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelis
     """
     whitelist = whitelists.get('is_nesting_too_deep', [])
     for file_path, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
-        for directory in whitelist:
-            if directory in file_path:
-                continue
-        lines = file_content.split('\n')
-        previous_line_indent = 0
-        for line_number, line in enumerate(lines):
-            indentation_spaces_amount = code_helpers.count_indentation_spaces(line, tab_size)
-            if indentation_spaces_amount > tab_size * max_indentation_level:
-                if indentation_spaces_amount - previous_line_indent == tab_size:  # make sure it's not a line continuation
-                    file_name = url_helpers.get_filename_from_path(file_path)
-                    return 'too_nested', '{}:{}'.format(file_name, line_number)
-            previous_line_indent = indentation_spaces_amount
+        for whitelisted_part in whitelist:
+            if whitelisted_part in file_path:
+                break
+        else:
+            lines = file_content.split('\n')
+            previous_line_indent = 0
+            for line_number, line in enumerate(lines):
+                indentation_spaces_amount = code_helpers.count_indentation_spaces(line, tab_size)
+                if indentation_spaces_amount > tab_size * max_indentation_level:
+                    if indentation_spaces_amount - previous_line_indent == tab_size:  # make sure it's not a line continuation
+                        file_name = url_helpers.get_filename_from_path(file_path)
+                        return 'too_nested', '{}:{}'.format(file_name, line_number)
+                previous_line_indent = indentation_spaces_amount
