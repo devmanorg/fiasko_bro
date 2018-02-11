@@ -202,6 +202,7 @@ class CodeValidator:
                     validators.has_no_return_with_parenthesis,
                     validators.has_no_long_files,
                     validators.is_nesting_too_deep,
+                    validators.has_no_string_literal_sums,
                 ],
             ),
         ]
