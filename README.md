@@ -5,6 +5,7 @@
 [![Build Status](https://travis-ci.org/devmanorg/fiasko_bro.svg?branch=master)](https://travis-ci.org/devmanorg/fiasko_bro)
 [![codecov](https://codecov.io/gh/devmanorg/fiasko_bro/branch/master/graph/badge.svg)](https://codecov.io/gh/devmanorg/fiasko_bro)
 [![Documentation Status](https://readthedocs.org/projects/fiasko-bro/badge/?version=latest)](http://fiasko-bro.readthedocs.io/en/latest/?badge=latest)
+[![Maintainability](https://api.codeclimate.com/v1/badges/4f26aec50f07294b37e3/maintainability)](https://codeclimate.com/github/devmanorg/fiasko_bro/maintainability)
 
 Fiasko is a static analysis tool for python code that catches common style errors.
 
