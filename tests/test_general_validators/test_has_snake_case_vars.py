@@ -14,7 +14,11 @@ def test_is_snake_case_fail(test_repo):
 
 def test_is_snake_case_ok(test_repo):
     expected_output = None
-    vars_used_not_in_snake_case = ['CamelCaseVar', 'lowerCamelCaseVar', 'SoMeWieRdCasE']
+    vars_used_not_in_snake_case = [
+        'CamelCaseVar',
+        'lowerCamelCaseVar',
+        'SoMeWieRdCasE'
+    ]
     whitelists = CodeValidator.whitelists
     whitelists['is_snake_case'].extend(vars_used_not_in_snake_case)
     output = validators.is_snake_case(
