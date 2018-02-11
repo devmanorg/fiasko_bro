@@ -3,6 +3,7 @@ import builtins
 import os
 import re
 
+from . import ast_nodes_validators
 from . import ast_helpers
 from . import code_helpers
 from . import list_helpers
@@ -266,16 +267,7 @@ def has_no_nonpythonic_empty_list_validations(solution_repo, *args, **kwargs):
         ifs_compare_tests = [n.test for n in ast.walk(tree) if
                              isinstance(n, ast.If) and isinstance(n.test, ast.Compare)]
         for compare in ifs_compare_tests:
-            # validates if `len(s) >/== 0` pattern
-            if (len(compare.ops) == 1 and
-                isinstance(compare.left, ast.Call) and
-                hasattr(compare.left, 'func') and
-                hasattr(compare.left.func, 'id') and
-                compare.left.func.id == 'len' and
-                isinstance(compare.ops[0], (ast.Gt, ast.Eq)) and
-                isinstance(compare.comparators[0], ast.Num) and
-                compare.comparators[0].n == 0
-            ):
+            if ast_nodes_validators.is_len_compared_to_zero(compare):
                 return 'nonpythonic_empty_list_validation', ''
 
 
