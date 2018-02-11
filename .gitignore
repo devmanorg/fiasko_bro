@@ -8,3 +8,5 @@ media/
 htmlcov/
 .pytest_cache/
 .idea
+*.mo
+*.pot
