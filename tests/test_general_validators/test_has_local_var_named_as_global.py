@@ -1,9 +1,10 @@
 from fiasko_bro import validators
 from fiasko_bro.code_validator import CodeValidator
+from fiasko_bro.i18n import _
 
 
 def test_has_local_var_named_as_global_fail(test_repo):
-    expected_output = 'has_locals_named_as_globals', 'например, LOCAL_VAR'
+    expected_output = 'has_locals_named_as_globals', _('for example, %s') % 'LOCAL_VAR'
     whitelists = CodeValidator.whitelists
     output = validators.has_local_var_named_as_global(
         solution_repo=test_repo,
