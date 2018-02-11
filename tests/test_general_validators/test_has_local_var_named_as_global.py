@@ -9,9 +9,7 @@ def test_has_local_var_named_as_global_fail(test_repo):
     output = validators.has_local_var_named_as_global(
         solution_repo=test_repo,
         whitelists=whitelists,
-        max_indentation_level=CodeValidator._default_settings[
-            'max_indentation_level'
-        ]
+        max_indentation_level=CodeValidator._default_settings['max_indentation_level']
     )
     assert output == expected_output
 
