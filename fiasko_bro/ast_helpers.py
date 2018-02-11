@@ -9,6 +9,10 @@ def get_nodes_of_type(root_node, type_or_types):
     return [n for n in ast.walk(root_node) if isinstance(n, type_or_types)]
 
 
+def get_unique_node_names_of_types(root_node, type_or_types):
+    return {node.name for node in ast.walk(root_node) if isinstance(node, type_or_types)}
+
+
 def get_all_imports(root):
     return get_nodes_of_type(root, (ast.ImportFrom, ast.Import))
 
@@ -40,7 +44,7 @@ def get_all_imported_names_from_tree(tree):
 
 
 def get_all_class_definitions_from_tree(tree):
-    return {node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)}
+    return get_unique_node_names_of_types(tree, ast.ClassDef)
 
 
 def is_tree_has_star_imports(tree):
@@ -102,7 +106,7 @@ def get_iter_vars_from_for_loops(tree):
 
 
 def get_defined_function_names(tree):
-    return {n.name for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)}
+    return get_unique_node_names_of_types(tree, ast.FunctionDef)
 
 
 def get_nonglobal_items_from_assigned_items(assigned_items, potentially_bad_names, max_indentation_depth):
