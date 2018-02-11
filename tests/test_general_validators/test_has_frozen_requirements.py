@@ -2,7 +2,7 @@ from fiasko_bro import validators
 
 
 def test_has_frozen_requirements_no_frozen(test_repo):
-    expected_output = 'unfrozen_requirements', 'например, django'
+    expected_output = 'unfrozen_requirements', 'for example, django'
     output = validators.has_frozen_requirements(
         solution_repo=test_repo,
     )

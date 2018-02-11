@@ -4,7 +4,7 @@ from fiasko_bro.code_validator import CodeValidator
 
 def test_has_no_calls_with_constants_fail(test_repo):
     whitelists = CodeValidator.whitelists
-    expected_output = 'magic_numbers', 'например, 5'
+    expected_output = 'magic_numbers', 'for example, 5'
     output = validators.has_no_calls_with_constants(
         solution_repo=test_repo,
         whitelists=whitelists,
