@@ -15,7 +15,8 @@ from .i18n import _
 def has_more_commits_than_origin(solution_repo, original_repo=None, *args, **kwargs):
     if not original_repo:
         return
-    # FIXME this check works incorrectly in case of new commit in original repo after student forked it
+    # FIXME this check works incorrectly in case of
+    # new commit in original repo after student forked it
     if solution_repo.count_commits() <= original_repo.count_commits():
         return 'no_new_code', None
 
@@ -76,7 +77,10 @@ def is_snake_case(solution_repo, whitelists, *args, **kwargs):
     buildins_ = dir(builtins)
     for tree in solution_repo.get_ast_trees():
         names = ast_helpers.get_all_names_from_tree(tree)
-        whitelisted_names = ast_helpers.get_names_from_assignment_with(tree, right_assignment_whitelist)
+        whitelisted_names = ast_helpers.get_names_from_assignment_with(
+            tree,
+            right_assignment_whitelist
+        )
         imported_names = ast_helpers.get_all_imported_names_from_tree(tree)
         defined_class_names = ast_helpers.get_all_class_definitions_from_tree(tree)
         namedtuples = ast_helpers.get_all_namedtuple_names(tree)
@@ -89,7 +93,10 @@ def is_snake_case(solution_repo, whitelists, *args, **kwargs):
                                 and n not in whitelist
                                 and n not in whitelisted_names]
         if names_with_uppercase:
-            return 'camel_case_vars', _('for example, rename the following: %s') % ', '.join(names_with_uppercase[:3])
+            message = _(
+                'for example, rename the following: %s'
+            ) % ', '.join(names_with_uppercase[:3])
+            return 'camel_case_vars', message
 
 
 def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
@@ -102,7 +109,10 @@ def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
 
 def has_no_encoding_declaration(solution_repo, whitelists, *args, **kwargs):
     whitelist = whitelists.get('has_no_encoding_declaration', [])
-    for file_name, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+    for file_name, file_content, _ in solution_repo.get_ast_trees(
+        with_filenames=True,
+        with_file_content=True
+    ):
         for whitelisted_part in whitelist:
             if whitelisted_part in file_name:
                 break
@@ -138,7 +148,8 @@ def has_local_var_named_as_global(solution_repo, whitelists, max_indentation_lev
         else:
             bad_names = ast_helpers.get_local_vars_named_as_globals(tree, max_indentation_level)
             if bad_names:
-                return 'has_locals_named_as_globals', _('for example, %s') % (', '.join(bad_names))
+                message = _('for example, %s') % (', '.join(bad_names))
+                return 'has_locals_named_as_globals', message
 
 
 def has_variables_from_blacklist(solution_repo, whitelists, blacklists, *args, **kwargs):
@@ -160,7 +171,8 @@ def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, 
     short_names = []
     for tree in solution_repo.get_ast_trees():
         names = ast_helpers.get_all_defined_names(tree)
-        short_names += [n for n in names if len(n) < minimum_name_length and n not in whitelist]
+        short_names += [n for n in names
+                        if len(n) < minimum_name_length and n not in whitelist]
     if short_names:
         return 'bad_titles', ', '.join(list(set(short_names)))
 
@@ -188,8 +200,14 @@ def has_no_try_without_exception(solution_repo, *args, **kwargs):
         for try_except in tryes:
             if try_except.type is None:
                 return 'broad_except', ''
-            if isinstance(try_except.type, ast.Name) and try_except.type.id == exception_type_to_catch:
-                return 'broad_except', _('%s class is too broad; use a more specific exception type') % exception_type_to_catch
+            if (
+                isinstance(try_except.type, ast.Name) and
+                try_except.type.id == exception_type_to_catch
+            ):
+                message = _(
+                    '%s class is too broad; use a more specific exception type'
+                ) % exception_type_to_catch
+                return 'broad_except', message
 
 
 def has_frozen_requirements(solution_repo, *args, **kwargs):
@@ -235,7 +253,8 @@ def has_readme_in_single_language(solution_repo, readme_filename, min_percent_of
     en_letters_amount = len(re.findall('[a-zA-Z]', clean_readme))
     if not (ru_letters_amount + en_letters_amount):
         return
-    another_language_percent = min([ru_letters_amount, en_letters_amount]) / (ru_letters_amount + en_letters_amount) * 100
+    another_language_percent = min([ru_letters_amount, en_letters_amount]) * 100
+    another_language_percent /= (ru_letters_amount + en_letters_amount)
     if another_language_percent > min_percent_of_another_language:
         return 'bilingual_readme', ''
 
@@ -244,7 +263,11 @@ def has_no_range_from_zero(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         calls = ast_helpers.get_nodes_of_type(tree, ast.Call)
         for call in calls:
-            if getattr(call.func, 'id', None) == 'range' and call.args and len(call.args) == 2 and isinstance(call.args[0], ast.Num) and call.args[0].n == 0:
+            if (
+                getattr(call.func, 'id', None) == 'range' and call.args and
+                len(call.args) == 2 and isinstance(call.args[0], ast.Num) and
+                call.args[0].n == 0
+            ):
                 return 'manual_zero_in_range', ''
 
 
@@ -318,16 +341,26 @@ def has_no_exit_calls_in_functions(solution_repo, whitelists, *args, **kwargs):
         for function_definition in defs:
             if function_definition.name in whitelist:
                 continue
-            calls = [c for c in ast.walk(function_definition) if isinstance(c, ast.Call) and hasattr(c, 'func')]
-            has_exit_calls = any([c.func.id == 'exit' for c in calls if isinstance(c.func, ast.Name)])
-            has_sys_exit_calls = any([hasattr(c.func.value, 'id') and c.func.value.id == 'sys' and c.func.attr == 'exit' for c in calls if isinstance(c.func, ast.Attribute)])
+            calls = [c for c in ast.walk(function_definition)
+                     if isinstance(c, ast.Call) and hasattr(c, 'func')]
+            has_exit_calls = any(
+                [c.func.id == 'exit' for c in calls if isinstance(c.func, ast.Name)]
+            )
+            has_sys_exit_calls = any(
+                [hasattr(c.func.value, 'id') and
+                 c.func.value.id == 'sys' and
+                 c.func.attr == 'exit' for c in calls if isinstance(c.func, ast.Attribute)]
+            )
             if has_exit_calls or has_sys_exit_calls:
                 return 'has_exit_calls_in_function', function_definition.name
 
 
 def has_no_bom(solution_repo, *args, **kwargs):
     bom = '\ufeff'
-    for _, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+    for _, file_content, _ in solution_repo.get_ast_trees(
+        with_filenames=True,
+        with_file_content=True
+    ):
         if file_content.startswith(bom):
             return 'has_bom', ''
 
@@ -342,7 +375,10 @@ def has_indents_of_spaces(solution_repo, tab_size, *args, **kwargs):
         так что эта проверка может быть только предупреждением.
     """
     node_types_to_validate = (ast.For, ast.If, ast.FunctionDef, ast.With)
-    for _, file_content, tree in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+    for _, file_content, tree in solution_repo.get_ast_trees(
+        with_filenames=True,
+        with_file_content=True
+    ):
         lines_offsets = [None]
         for line in file_content.split('\n'):
             lines_offsets.append(len(line) - len(line.lstrip(' ')))
@@ -357,14 +393,20 @@ def has_indents_of_spaces(solution_repo, tab_size, *args, **kwargs):
             parent_offset = lines_offsets[parent_line]
             if (
                 node_line != parent_line and node_offset > parent_offset and
-                node_offset - parent_offset != tab_size and isinstance(node.parent, node_types_to_validate)
+                node_offset - parent_offset != tab_size and
+                isinstance(node.parent, node_types_to_validate)
             ):
                 return 'indent_not_four_spaces', _('for example, line number %s') % node.lineno
 
 
 def has_no_lines_ends_with_semicolon(solution_repo, *args, **kwargs):
-    for _, file_content, tree in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
-        total_lines_with_semicolons = len([1 for l in file_content.split('\n') if l.endswith(';') and not l.startswith('#')])
+    for _, file_content, tree in solution_repo.get_ast_trees(
+        with_filenames=True,
+        with_file_content=True
+    ):
+        total_lines_with_semicolons = len(
+            [1 for l in file_content.split('\n') if l.endswith(';') and not l.startswith('#')]
+        )
         # TODO: check docstrings for semicolons
         string_nodes = ast_helpers.get_nodes_of_type(tree, ast.Str)
         semicolons_in_string_constants_amount = sum([n.s.count(';') for n in string_nodes])
@@ -407,13 +449,17 @@ def has_no_variables_that_shadow_default_names(solution_repo, *args, **kwargs):
 
 
 def has_no_return_with_parenthesis(solution_repo, *args, **kwargs):
-    for _, file_content, tree in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+    for _, file_content, tree in solution_repo.get_ast_trees(
+        with_filenames=True,
+        with_file_content=True
+    ):
         file_content = file_content.split('\n')
         return_lines = [n.lineno for n in ast.walk(tree) if isinstance(n, ast.Return)]
         for line_num in return_lines:
             line = file_content[line_num - 1]
             if line.count('return') == 1 and 'return(' in line or 'return (' in line:
-                return 'return_with_parenthesis', _('for example, the line number %s') % line_num
+                message = _('for example, the line number %s') % line_num
+                return 'return_with_parenthesis', message
 
 
 def has_no_cast_input_result_to_str(solution_repo, *args, **kwargs):
@@ -429,21 +475,28 @@ def has_no_cast_input_result_to_str(solution_repo, *args, **kwargs):
 
 
 def has_no_long_files(solution_repo, max_number_of_lines, *args, **kwargs):
-    for file_path, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+    for file_path, file_content, _ in solution_repo.get_ast_trees(
+        with_filenames=True,
+        with_file_content=True
+    ):
         number_of_lines = file_content.count('\n')
         if number_of_lines > max_number_of_lines:
             file_name = url_helpers.get_filename_from_path(file_path)
             return 'file_too_long', file_name
 
 
-def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelists, *args, **kwargs):
-    """Looks at the number of spaces in the beginning and decides if the code is
+def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelists):
+    """
+        Looks at the number of spaces in the beginning and decides if the code is
         too nested.
 
         As a precondition, the code has to pass has_indents_of_spaces.
     """
     whitelist = whitelists.get('is_nesting_too_deep', [])
-    for file_path, file_content, _ in solution_repo.get_ast_trees(with_filenames=True, with_file_content=True):
+    for file_path, file_content, _ in solution_repo.get_ast_trees(
+        with_filenames=True,
+        with_file_content=True
+    ):
         if file_helpers.is_file_in_whitelist(file_path, whitelist):
             continue
 
@@ -453,7 +506,8 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelis
             indentation_spaces_amount = code_helpers.count_indentation_spaces(line, tab_size)
             if (
                 indentation_spaces_amount > tab_size * max_indentation_level
-                and indentation_spaces_amount - previous_line_indent == tab_size  # make sure it's not a line continuation
+                # make sure it's not a line continuation
+                and indentation_spaces_amount - previous_line_indent == tab_size
             ):
                 file_name = url_helpers.get_filename_from_path(file_path)
                 return 'too_nested', '{}:{}'.format(file_name, line_number)

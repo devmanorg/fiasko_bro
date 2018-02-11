@@ -28,4 +28,3 @@ def test_is_nesting_too_deep_succeeds(origin_repo):
         whitelists=CodeValidator.whitelists,
     )
     assert output is None
-

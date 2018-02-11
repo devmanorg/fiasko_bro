@@ -60,17 +60,17 @@ class LocalRepositoryInfo:
                 return list(zip(self._python_filenames, ast_trees_copy))
         else:
             return ast_trees_copy
-    
+
     def get_python_file_filenames(self):
         return self._python_filenames
-    
+
     def get_file(self, filename):
         for dirname, _, files in os.walk(self.path, topdown=True):
             for file in files:
                 if file == filename:
                     with open(os.path.join(dirname, file), encoding='utf-8') as file_handler:
                         return file_handler.read()
-    
+
     def does_directory_exist(self, dirname_to_find):
         for dirname, dirs, _ in os.walk(self.path, topdown=True):
             if dirname == dirname_to_find or dirname_to_find in dirs:

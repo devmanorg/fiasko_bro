@@ -114,8 +114,12 @@ def get_nonglobal_items_from_assigned_items(assigned_items, potentially_bad_name
     for assigned_item in assigned_items:
         if getattr(assigned_item, 'id', None) in potentially_bad_names:
             current_item = assigned_item
-            for _ in range(max_indentation_depth):  # prevents the user from making this loop excessively long
-                if not hasattr(current_item, 'parent') or isinstance(current_item.parent, ast.Module):
+            # prevents the user from making this loop excessively long
+            for _ in range(max_indentation_depth):
+                if (
+                    not hasattr(current_item, 'parent') or
+                    isinstance(current_item.parent, ast.Module)
+                ):
                     break
                 if not isinstance(current_item.parent, (ast.ClassDef, ast.Assign, ast.If)):
                     nonglobal_items.append(assigned_item.id)
@@ -127,7 +131,8 @@ def get_nonglobal_items_from_assigned_items(assigned_items, potentially_bad_name
 def get_local_vars_named_as_globals(tree, max_indentation_depth):
     assigned_items = get_assigned_vars(tree, names_only=False)
     nonglobal_names = [getattr(n, 'id', None) for n in assigned_items if n.col_offset > 0]
-    potentially_bad_names = [n for n in nonglobal_names if n and re.search('[a-zA-Z]', n) and n.upper() == n]
+    potentially_bad_names = [n for n in nonglobal_names
+                             if n and re.search('[a-zA-Z]', n) and n.upper() == n]
     local_vars_named_as_globals = get_nonglobal_items_from_assigned_items(
         assigned_items,
         potentially_bad_names,
@@ -161,7 +166,7 @@ def get_all_defined_names(tree, with_static_class_properties=True):
     names = get_assigned_vars(tree, with_static_class_properties=with_static_class_properties)
     names.update(get_iter_vars_from_for_loops(tree))
     names.update(get_vars_from_fuction_definitions(tree))
-    names.update(get_defined_function_names(tree))  # TODO: добавить классы и методы в проверку
+    names.update(get_defined_function_names(tree))  # TODO: add class and methods names
     return set([n for n in names if n])
 
 
@@ -199,8 +204,8 @@ def get_names_from_assignment_with(tree, right_assignment_whitelist):
 
 
 def is_call_has_constants(call, caller_whitelist):
-    if isinstance(get_closest_definition(call), ast.ClassDef):  # for case of id = db.String(256)
-        return False
+    if isinstance(get_closest_definition(call), ast.ClassDef):
+        return False  # for case of id = db.String(256)
     attr_to_get_name = 'id' if hasattr(call.func, 'id') else 'attr'
     function_name = getattr(call.func, attr_to_get_name, None)
     if not function_name or function_name in caller_whitelist:
