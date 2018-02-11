@@ -381,13 +381,7 @@ def has_no_lines_ends_with_semicolon(solution_repo, *args, **kwargs):
 def not_validates_response_status_by_comparing_to_200(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         for compare in ast_helpers.get_nodes_of_type(tree, ast.Compare):
-            # validates blah.status_code == 200
-            if (len(compare.ops) != 1 or not isinstance(compare.ops[0], ast.Eq)
-                or len(compare.comparators) != 1 or not isinstance(compare.comparators[0], ast.Num)
-                or compare.comparators[0].n != 200
-                or not isinstance(compare.left, ast.Attribute)
-                or compare.left.attr != 'status_code'
-            ):
+            if ast_nodes_validators.is_status_code_compared_to_200(compare):
                 continue
             return 'compare_response_status_to_200', ''
 
