@@ -192,3 +192,16 @@ def get_names_from_assignment_with(tree, right_assignment_whitelist):
         if base_assign_value_name in right_assignment_whitelist:
             result_names += [t.id for t in assignment.targets]
     return result_names
+
+
+def is_call_has_constants(call, caller_whitelist):
+    if isinstance(get_closest_definition(call), ast.ClassDef):  # for case of id = db.String(256)
+        return False
+    attr_to_get_name = 'id' if hasattr(call.func, 'id') else 'attr'
+    function_name = getattr(call.func, attr_to_get_name, None)
+    if not function_name or function_name in caller_whitelist:
+        return False
+    for arg in call.args:
+        if isinstance(arg, ast.Num):
+            return True
+    return False

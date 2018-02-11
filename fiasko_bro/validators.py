@@ -223,15 +223,8 @@ def has_no_calls_with_constants(solution_repo, whitelists, *args, **kwargs):
             continue
         calls = ast_helpers.get_nodes_of_type(tree, ast.Call)
         for call in calls:
-            if isinstance(ast_helpers.get_closest_definition(call), ast.ClassDef):  # for case of id = db.String(256)
-                continue
-            attr_to_get_name = 'id' if hasattr(call.func, 'id') else 'attr'
-            function_name = getattr(call.func, attr_to_get_name, None)
-            if not function_name or function_name in whitelist:
-                continue
-            for arg in call.args:
-                if isinstance(arg, ast.Num):
-                    return 'magic_numbers', _('for example, %s') % arg.n
+            if ast_helpers.is_call_has_constants(call, whitelist):
+                return 'magic_numbers', _('line %s') % call.lineno
 
 
 def has_readme_in_single_language(solution_repo, readme_filename, min_percent_of_another_language, *args, **kwargs):
