@@ -11,7 +11,7 @@ def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
         return 'mccabe_failure', ','.join(violations)
 
 
-def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelists):
+def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelists, *args, **kwargs):
     """
         Looks at the number of spaces in the beginning and decides if the code is
         too nested.
