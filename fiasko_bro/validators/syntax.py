@@ -2,7 +2,7 @@ import ast
 
 from .. import ast_helpers
 from .. import file_helpers
-from ..i18n import _ as _t
+from .. import url_helpers
 
 
 def has_no_syntax_errors(solution_repo, *args, **kwargs):
@@ -13,10 +13,11 @@ def has_no_syntax_errors(solution_repo, *args, **kwargs):
 
 def has_indents_of_spaces(solution_repo, tab_size, *args, **kwargs):
     """
-        Иногда при парсинге дерева col_offset считается неправильно,
+        Since there are cases for which col_offset is computed incorrectly,
+        this validator must be nothing more than a simple warning.
     """
     node_types_to_validate = (ast.For, ast.If, ast.FunctionDef, ast.With)
-    for _, file_content, tree in solution_repo.get_ast_trees(
+    for filepath, file_content, tree in solution_repo.get_ast_trees(
         with_filenames=True,
         with_file_content=True
     ):
@@ -28,4 +29,5 @@ def has_indents_of_spaces(solution_repo, tab_size, *args, **kwargs):
                 node_types_to_validate,
                 tab_size,
             ):
-                return 'indent_not_four_spaces', _t('for example, line number %s') % node.lineno
+                filename = url_helpers.get_filename_from_path(filepath)
+                return 'indent_not_four_spaces', '{}:{}'.format(filename, node.lineno)
