@@ -14,7 +14,7 @@ class LocalRepositoryInfo:
         )
 
     def count_commits(self):
-        return len(list(self._repo.iter_commits(paths=self.path)))
+        return len(list(self._repo.iter_commits()))
 
     def does_file_exist(self, filename):
         return os.path.isfile(os.path.join(self.path, filename))
