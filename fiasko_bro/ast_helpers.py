@@ -225,7 +225,7 @@ def is_node_offset_fine(node, lines_offsets, node_types_to_validate, tab_size):
         return True
     node_offset = lines_offsets[node_line]
     parent_offset = lines_offsets[parent_line]
-    return (
+    return not (
         node_line != parent_line and node_offset > parent_offset and
         node_offset - parent_offset != tab_size and
         isinstance(node.parent, node_types_to_validate)
