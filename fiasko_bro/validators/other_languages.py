@@ -1,6 +1,7 @@
 import ast
 
 from .. import ast_helpers
+from .. import i18n
 
 
 def has_no_return_with_parenthesis(solution_repo, *args, **kwargs):
@@ -13,7 +14,7 @@ def has_no_return_with_parenthesis(solution_repo, *args, **kwargs):
         for line_num in return_lines:
             line = file_content[line_num - 1]
             if line.count('return') == 1 and 'return(' in line or 'return (' in line:
-                message = _('for example, the line number %s') % line_num
+                message = i18n._('for example, the line number %s') % line_num
                 return 'return_with_parenthesis', message
 
 

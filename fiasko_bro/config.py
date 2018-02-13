@@ -1,3 +1,6 @@
+import os.path
+
+
 VALIDATOR_SETTINGS = {
     'readme_filename': 'README.md',
     'allowed_max_pep8_violations': 5,
@@ -105,12 +108,12 @@ DEFAULT_WHITELISTS = {
         'main',
     ],
     'is_pep8_fine': [
-        '/migrations/',
-        '/alembic/',
+        '{sep}migrations{sep}'.format(sep=os.path.sep),
+        '{sep}alembic{sep}'.format(sep=os.path.sep),
         'manage.py',
     ],
     'has_no_encoding_declaration': [
-        '/migrations/',
+        '{sep}migrations{sep}'.format(sep=os.path.sep),
     ],
     'has_no_local_imports': [
         'manage.py',
@@ -122,12 +125,12 @@ DEFAULT_WHITELISTS = {
         'apps.py',
     ],
     'has_no_extra_dockstrings_whitelist': [
-        '/migrations/',
-        '/alembic/',
+        '{sep}migrations{sep}'.format(sep=os.path.sep),
+        '{sep}alembic{sep}'.format(sep=os.path.sep),
     ],
     'is_nesting_too_deep': [
-        '/migrations/',
-        '/alembic/',
+        '{sep}migrations{sep}'.format(sep=os.path.sep),
+        '{sep}alembic{sep}'.format(sep=os.path.sep),
         'manage.py',
         'settings.py',
     ],
