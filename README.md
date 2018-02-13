@@ -40,7 +40,11 @@ $ pip install -r requirements.txt
 
 
 ### Contributing
-Read more about it [in the docs](http://fiasko-bro.readthedocs.io/en/latest/contributing.html)
+
+To contribute, [pick an issue](https://github.com/devmanorg/fiasko_bro/issues) to work on and leave a comment saying 
+that you've taken the issue. Don't forget to mention when you want to submit the pull request.
+
+You can read more about contribution guidelines [in the docs](http://fiasko-bro.readthedocs.io/en/latest/contributing.html)
 
 
 ### Launch tests

@@ -1,6 +1,9 @@
 Contributing info
 =================
 
+To contribute, `pick an issue <https://github.com/devmanorg/fiasko_bro/issues>`_ to work on and leave a comment saying
+that you've taken the issue. Don't forget to mention when you want to submit the pull request.
+
 There are three main ways you can contribute at the moment:
 
 - by adding new validators;
