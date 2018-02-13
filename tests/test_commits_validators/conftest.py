@@ -1,5 +1,6 @@
-import pytest
+import os.path
 
+import pytest
 import git
 
 from fiasko_bro.repository_info import LocalRepositoryInfo
@@ -7,7 +8,7 @@ from fiasko_bro.repository_info import LocalRepositoryInfo
 
 @pytest.fixture(scope="module")
 def test_repo():
-    test_repo_dir = 'test_fixtures/commits_repo'
+    test_repo_dir = 'test_fixtures{}commits_repo'.format(os.path.sep)
     repo = git.Repo.init(test_repo_dir)
     repo.index.add(['initial_file.py'])
     repo.index.commit('Initial commit')
@@ -18,7 +19,7 @@ def test_repo():
 
 @pytest.fixture(scope="module")
 def origin_repo():
-    origin_repo_dir = 'test_fixtures/commits_repo_origin'
+    origin_repo_dir = 'test_fixtures{}commits_repo_origin'.format(os.path.sep)
     repo = git.Repo.init(origin_repo_dir)
     repo.index.add(['initial_file.py'])
     repo.index.commit('Initial commit')
