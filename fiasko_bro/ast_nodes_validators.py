@@ -35,7 +35,7 @@ def _has_compare_to_200(node):
 def _has_attr_call(node, attr_name):
     return (
        isinstance(node.left, ast.Attribute)
-       and node.left.attr != attr_name
+       and node.left.attr == attr_name
     )
 
 
