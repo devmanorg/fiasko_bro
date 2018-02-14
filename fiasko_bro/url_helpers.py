@@ -1,3 +1,4 @@
+import os.path
 
 
 def is_url_with_params(string):
@@ -11,4 +12,4 @@ def is_url_with_params(string):
 
 
 def get_filename_from_path(path):
-    return path[path.rfind('/') + 1:]
+    return path[path.rfind(os.path.sep) + 1:]

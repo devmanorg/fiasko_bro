@@ -98,8 +98,7 @@ def not_validates_response_status_by_comparing_to_200(solution_repo, *args, **kw
     for tree in solution_repo.get_ast_trees():
         for compare in ast_helpers.get_nodes_of_type(tree, ast.Compare):
             if ast_nodes_validators.is_status_code_compared_to_200(compare):
-                continue
-            return 'compare_response_status_to_200', ''
+                return 'compare_response_status_to_200', ''
 
 
 def has_no_mutable_default_arguments(solution_repo, *args, **kwargs):
