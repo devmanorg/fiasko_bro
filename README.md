@@ -6,6 +6,7 @@
 [![codecov](https://codecov.io/gh/devmanorg/fiasko_bro/branch/master/graph/badge.svg)](https://codecov.io/gh/devmanorg/fiasko_bro)
 [![Documentation Status](https://readthedocs.org/projects/fiasko-bro/badge/?version=latest)](http://fiasko-bro.readthedocs.io/en/latest/?badge=latest)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4f26aec50f07294b37e3/maintainability)](https://codeclimate.com/github/devmanorg/fiasko_bro/maintainability)
+[![PyPI version](https://badge.fury.io/py/Fiasko-Bro.svg)](https://badge.fury.io/py/Fiasko-Bro)
 
 Fiasko is a static analysis tool for python code that catches common style errors.
 
@@ -41,7 +42,7 @@ $ pip install -r requirements.txt
 
 ### Contributing
 
-To contribute, [pick an issue](https://github.com/devmanorg/fiasko_bro/issues) to work on and leave a comment saying 
+To contribute, [pick an issue](https://github.com/devmanorg/fiasko_bro/issues) to work on and leave a comment saying
 that you've taken the issue. Don't forget to mention when you want to submit the pull request.
 
 You can read more about contribution guidelines [in the docs](http://fiasko-bro.readthedocs.io/en/latest/contributing.html)
