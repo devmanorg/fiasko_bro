@@ -126,33 +126,36 @@ class CodeValidator:
             )
         return warnings
 
+    def run_validator_group(self, group, pre_validation=False, *args, **kwargs):
+        errors = []
+        for error_group_name, error_group in group.items():
+            errors += self._run_validator_group(
+                error_group,
+                self.validator_arguments
+            )
+        if pre_validation and errors:
+            return errors
+        if errors:
+            errors += self._run_warning_validators_until(
+                error_group_name,
+                self.validator_arguments
+            )
+            return errors
+        return errors
+
     def validate(self, repo_path, original_repo_path=None, check_repo_size=True, **kwargs):
         self.validator_arguments.update(kwargs)
         self.validator_arguments['path_to_repo'] = repo_path
         self.validator_arguments['original_repo_path'] = original_repo_path
         self.validator_arguments['whitelists'] = self.whitelists
         self.validator_arguments['blacklists'] = self.blacklists
-        errors = []
-        for error_group_name, error_group in self.pre_validation_checks.items():
-            errors += self._run_validator_group(
-                error_group,
-                self.validator_arguments
-                )
-            if errors:
-                return errors
+        pre_validation_errors = self.run_validator_group(
+            self.pre_validation_checks,
+            pre_validation=True
+        )
+        if pre_validation_errors:
+            return pre_validation_errors
         self.validator_arguments['solution_repo'] = LocalRepositoryInfo(repo_path)
         if original_repo_path:
             self.validator_arguments['original_repo'] = LocalRepositoryInfo(original_repo_path)
-        errors = []
-        for error_group_name, error_group in self.error_validator_groups.items():
-            errors += self._run_validator_group(
-                error_group,
-                self.validator_arguments
-            )
-            if errors:
-                errors += self._run_warning_validators_until(
-                    error_group_name,
-                    self.validator_arguments
-                )
-                return errors
-        return errors
+        return self.run_validator_group(self.error_validator_groups)
