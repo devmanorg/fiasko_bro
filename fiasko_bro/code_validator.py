@@ -126,14 +126,14 @@ class CodeValidator:
             )
         return warnings
 
-    def run_validator_group(self, group, pre_validation=False, *args, **kwargs):
+    def run_validator_group(self, group, add_warnings=False, *args, **kwargs):
         errors = []
         for error_group_name, error_group in group.items():
             errors += self._run_validator_group(
                 error_group,
                 self.validator_arguments
             )
-        if pre_validation and errors:
+        if add_warnings and errors:
             return errors
         if errors:
             errors += self._run_warning_validators_until(
@@ -151,7 +151,7 @@ class CodeValidator:
         self.validator_arguments['blacklists'] = self.blacklists
         pre_validation_errors = self.run_validator_group(
             self.pre_validation_checks,
-            pre_validation=True
+            add_warnings=True
         )
         if pre_validation_errors:
             return pre_validation_errors
