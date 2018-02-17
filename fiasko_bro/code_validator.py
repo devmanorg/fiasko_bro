@@ -134,12 +134,12 @@ class CodeValidator:
                 self.validator_arguments
             )
         if add_warnings and errors:
-            return errors
-        if errors:
             errors += self._run_warning_validators_until(
                 error_group_name,
                 self.validator_arguments
             )
+            return errors
+        if errors:
             return errors
         return errors
 
@@ -149,13 +149,10 @@ class CodeValidator:
         self.validator_arguments['original_repo_path'] = original_repo_path
         self.validator_arguments['whitelists'] = self.whitelists
         self.validator_arguments['blacklists'] = self.blacklists
-        pre_validation_errors = self.run_validator_group(
-            self.pre_validation_checks,
-            add_warnings=True
-        )
+        pre_validation_errors = self.run_validator_group(self.pre_validation_checks)
         if pre_validation_errors:
             return pre_validation_errors
         self.validator_arguments['solution_repo'] = LocalRepositoryInfo(repo_path)
         if original_repo_path:
             self.validator_arguments['original_repo'] = LocalRepositoryInfo(original_repo_path)
-        return self.run_validator_group(self.error_validator_groups)
+        return self.run_validator_group(self.error_validator_groups, add_warnings=True)
