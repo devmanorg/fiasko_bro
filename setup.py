@@ -57,6 +57,11 @@ setup(
     # see https://github.com/pypa/setuptools/issues/391
     setup_requires=['babel'],
     install_requires=load_requirements(),
+    entry_points={
+        'console_scripts': [
+            'fiasko = bin.fiasko:main',
+        ],
+    },
     cmdclass = {
         'install': InstallWithCompile,
     },

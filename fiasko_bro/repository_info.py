@@ -4,6 +4,8 @@ import copy
 
 import git
 
+from fiasko_bro.config import VALIDATOR_SETTINGS
+
 
 class LocalRepositoryInfo:
     def __init__(self, repository_path):
@@ -22,7 +24,11 @@ class LocalRepositoryInfo:
     def get_source_file_contents(self, extension_list):
         file_paths = []
         file_contents = []
-        for dirname, _, filenames in os.walk(self.path, topdown=True):
+        for dirname, directories_list, filenames in os.walk(self.path, topdown=True):
+            directories_list[:] = [
+                d for d in directories_list
+                if d not in VALIDATOR_SETTINGS['directories_to_skip']
+                ]
             for filename in filenames:
                 extension = os.path.splitext(filename)[1]
                 if extension in extension_list:

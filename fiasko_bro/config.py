@@ -14,6 +14,10 @@ VALIDATOR_SETTINGS = {
     'max_number_of_lines': 200,
     'max_indentation_level': 4,
     'max_num_of_py_files': 100,
+    'directories_to_skip': [
+        'build',
+        'dist',
+    ]
 }
 
 DEFAULT_BLACKLISTS = {

@@ -14,6 +14,26 @@ Fiasko is a static analysis tool for python code that catches common style error
 
 ### Example
 
+From command line:
+```bash
+$ LANGUAGE=en fiasko -p ~/projects/fiasko_bro/ --skip_check_repo_size
+data_in_repo
+pep8                                    	28 PEP8 violations
+mccabe_failure                          	has_changed_readme,has_no_libs_from_stdlib_in_requirements
+has_star_import
+has_local_import
+bad_titles                              	value, name
+bad_titles                              	n, l, t, i
+compare_response_status_to_200
+return_with_parenthesis                 	for example, the line number 16
+file_too_long                           	ast_helpers.py
+too_nested                              	duplicates_test.py:83
+==================================================
+Total 11 violations
+```
+See `fiasko --help` for more CLI arguments.
+
+From python code:
 ```python
 >>> import fiasko_bro
 >>> fiasko_bro.validate_repo('/path/to/repo/')
