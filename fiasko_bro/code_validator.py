@@ -139,8 +139,6 @@ class CodeValidator:
                 self.validator_arguments
             )
             return errors
-        if errors:
-            return errors
         return errors
 
     def validate(self, repo_path, original_repo_path=None, check_repo_size=True, **kwargs):
