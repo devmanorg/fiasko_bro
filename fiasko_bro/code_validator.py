@@ -1,8 +1,8 @@
 from collections import OrderedDict
 
 from . import validators
+from . import pre_validation_checks
 from .repository_info import LocalRepositoryInfo
-from .code_helpers import is_repo_too_large
 from . import config
 
 
@@ -18,6 +18,15 @@ class CodeValidator:
 
     _default_settings = config.VALIDATOR_SETTINGS
 
+    pre_validation_checks = {
+        'encoding': [
+            pre_validation_checks.are_sources_in_utf
+        ],
+        'size': [
+            pre_validation_checks.are_repos_too_large
+        ]
+    }
+
     error_validator_groups = OrderedDict(
         [
             (
@@ -27,10 +36,6 @@ class CodeValidator:
             (
                 'readme',
                 [validators.has_readme_file],
-            ),
-            (
-                'encoding',
-                [validators.are_sources_in_utf],
             ),
             (
                 'bom',
@@ -121,29 +126,31 @@ class CodeValidator:
             )
         return warnings
 
-    def validate(self, repo_path, original_repo_path=None, check_repo_size=True, **kwargs):
-        self.validator_arguments.update(kwargs)
-        self.validator_arguments['whitelists'] = self.whitelists
-        self.validator_arguments['blacklists'] = self.blacklists
-        max_num_of_py_files = self.validator_arguments['max_num_of_py_files']
-        if check_repo_size:
-            if is_repo_too_large(repo_path, max_num_of_py_files, original_repo_path):
-                return [('repo is too large', '')]
-        self.validator_arguments['solution_repo'] = LocalRepositoryInfo(
-            repo_path)
-        if original_repo_path:
-            self.validator_arguments['original_repo'] = LocalRepositoryInfo(
-                original_repo_path)
+    def run_validator_group(self, group, add_warnings=False, *args, **kwargs):
         errors = []
-        for error_group_name, error_group in self.error_validator_groups.items():
+        for error_group_name, error_group in group.items():
             errors += self._run_validator_group(
                 error_group,
                 self.validator_arguments
             )
-            if errors:
-                errors += self._run_warning_validators_until(
-                    error_group_name,
-                    self.validator_arguments
-                )
-                return errors
+        if add_warnings and errors:
+            errors += self._run_warning_validators_until(
+                error_group_name,
+                self.validator_arguments
+            )
+            return errors
         return errors
+
+    def validate(self, repo_path, original_repo_path=None, check_repo_size=True, **kwargs):
+        self.validator_arguments.update(kwargs)
+        self.validator_arguments['path_to_repo'] = repo_path
+        self.validator_arguments['original_repo_path'] = original_repo_path
+        self.validator_arguments['whitelists'] = self.whitelists
+        self.validator_arguments['blacklists'] = self.blacklists
+        pre_validation_errors = self.run_validator_group(self.pre_validation_checks)
+        if pre_validation_errors:
+            return pre_validation_errors
+        self.validator_arguments['solution_repo'] = LocalRepositoryInfo(repo_path)
+        if original_repo_path:
+            self.validator_arguments['original_repo'] = LocalRepositoryInfo(original_repo_path)
+        return self.run_validator_group(self.error_validator_groups, add_warnings=True)
