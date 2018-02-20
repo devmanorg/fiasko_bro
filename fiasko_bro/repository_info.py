@@ -57,13 +57,16 @@ class LocalRepositoryInfo:
             ast_trees.append(tree)
         return filenames, main_file_contents, ast_trees
 
-    def get_ast_trees(self, with_filenames=False, with_file_content=False):
+    def get_ast_trees(self, with_filenames=False, with_file_content=False, whitelist=None):
         ast_trees_copy = copy.deepcopy(self._ast_trees)
+        all_items = zip(self._python_filenames, self._main_file_contents, ast_trees_copy)
+        filtered_items = self.filter_file_paths(all_items, whitelist)
+
         if with_filenames:
             if with_file_content:
-                return list(zip(self._python_filenames, self._main_file_contents, ast_trees_copy))
+                return filtered_items
             else:
-                return list(zip(self._python_filenames, ast_trees_copy))
+                return [(f, t) for (f, c, t) in filtered_items]
         else:
             return ast_trees_copy
 
@@ -85,3 +88,19 @@ class LocalRepositoryInfo:
 
     def iter_commits(self, *args, **kwargs):
         return self._repo.iter_commits(*args, **kwargs)
+
+    @staticmethod
+    def filter_file_paths(all_items, whitelist):
+        if whitelist:
+            filtered_items = []
+            for file_name, file_content, ast_tree in all_items:
+                for whitelisted_part in whitelist:
+                    if whitelisted_part in file_name:
+                        break
+                else:
+                    filtered_items.append(
+                        (file_name, file_content, ast_tree)
+                    )
+        else:
+            filtered_items = all_items
+        return filtered_items
