@@ -33,3 +33,10 @@ def is_in_utf8(name):
     except UnicodeDecodeError:
         return False
     return True
+
+
+def is_filename_in_whitelist(file_name, whitelist):
+    for whitelisted_part in whitelist:
+        if whitelisted_part in file_name:
+            return True
+    return False

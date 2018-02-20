@@ -5,6 +5,7 @@ import copy
 import git
 
 from fiasko_bro.config import VALIDATOR_SETTINGS
+from . import file_helpers
 
 
 class LocalRepositoryInfo:
@@ -91,16 +92,12 @@ class LocalRepositoryInfo:
 
     @staticmethod
     def filter_file_paths(all_items, whitelist):
-        if whitelist:
-            filtered_items = []
-            for file_name, file_content, ast_tree in all_items:
-                for whitelisted_part in whitelist:
-                    if whitelisted_part in file_name:
-                        break
-                else:
-                    filtered_items.append(
-                        (file_name, file_content, ast_tree)
-                    )
-        else:
-            filtered_items = all_items
+        if not whitelist:
+            return all_items
+        filtered_items = []
+        for file_name, file_content, ast_tree in all_items:
+            if not file_helpers.is_filename_in_whitelist(file_name, whitelist):
+                filtered_items.append(
+                    (file_name, file_content, ast_tree)
+                )
         return filtered_items
