@@ -119,8 +119,12 @@ def has_no_cast_input_result_to_str(solution_repo, *args, **kwargs):
 def has_no_string_literal_sums(solution_repo, *args, **kwargs):
     for file_path, tree in solution_repo.get_ast_trees(with_filenames=True):
         for node in ast.walk(tree):
-            if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
-                if isinstance(node.left, ast.Str) and isinstance(node.right, ast.Str):
+            if (
+                    isinstance(node, ast.BinOp) and
+                    isinstance(node.op, ast.Add) and
+                    isinstance(node.left, ast.Str) and
+                    isinstance(node.right, ast.Str)
+               ):
                     file_name = url_helpers.get_filename_from_path(file_path)
                     return 'has_string_sum', '{}: {}'.format(file_name, node.lineno)
 
