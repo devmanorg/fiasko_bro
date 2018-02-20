@@ -12,22 +12,27 @@ def has_frozen_requirements(solution_repo, *args, **kwargs):
 
 
 def has_no_libs_from_stdlib_in_requirements(solution_repo, *args, **kwargs):
-    package_version_delimiters = {'<', '>', '==', '<=', '>='}
-    stdlibs_list = list_helpers.get_stdlibs_list()
     raw_requirements = solution_repo.get_file('requirements.txt')
     if not raw_requirements:
         return
 
     stdlib_packages_in_requirements = []
     for requirement in raw_requirements.split('\n'):
-        package_name = None
-        for delimiter in package_version_delimiters:
-            if delimiter in requirement:
-                package_name = requirement.split(delimiter)[0]
-        if not package_name:
-            package_name = requirement
-        if package_name in stdlibs_list:
-            stdlib_packages_in_requirements.append(package_name)
+        if _is_stdlib_requirement(requirement):
+            stdlib_packages_in_requirements.append(requirement)
 
     if stdlib_packages_in_requirements:
         return 'stdlib_in_requirements', ', '.join(stdlib_packages_in_requirements)
+
+
+def _is_stdlib_requirement(raw_requirement_line):
+    package_version_delimiters = {'<', '>', '==', '<=', '>='}
+    stdlibs_list = list_helpers.get_stdlibs_list()
+
+    package_name = None
+    for delimiter in package_version_delimiters:
+        if delimiter in raw_requirement_line:
+            package_name = raw_requirement_line.split(delimiter)[0]
+    if not package_name:
+        package_name = raw_requirement_line
+    return package_name in stdlibs_list
