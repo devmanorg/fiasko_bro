@@ -7,28 +7,20 @@ from ..i18n import _
 def has_variables_from_blacklist(solution_repo, whitelists, blacklists, *args, **kwargs):
     whitelist = whitelists.get('has_variables_from_blacklist', [])
     blacklist = blacklists.get('has_variables_from_blacklist', [])
-    for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
-        for whitelisted_part in whitelist:
-            if whitelisted_part in filename:
-                break
-        else:
-            names = ast_helpers.get_all_defined_names(tree)
-            bad_names = names.intersection(blacklist)
-            if bad_names:
-                return 'bad_titles', ', '.join(bad_names)
+    for filename, tree in solution_repo.get_ast_trees(with_filenames=True, whitelist=whitelist):
+        names = ast_helpers.get_all_defined_names(tree)
+        bad_names = names.intersection(blacklist)
+        if bad_names:
+            return 'bad_titles', ', '.join(bad_names)
 
 
 def has_local_var_named_as_global(solution_repo, whitelists, max_indentation_level, *args, **kwargs):
     whitelist = whitelists.get('has_local_var_named_as_global', [])
-    for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
-        for whitelisted_part in whitelist:
-            if whitelisted_part in filename:
-                break
-        else:
-            bad_names = ast_helpers.get_local_vars_named_as_globals(tree, max_indentation_level)
-            if bad_names:
-                message = _('for example, %s') % (', '.join(bad_names))
-                return 'has_locals_named_as_globals', message
+    for filename, tree in solution_repo.get_ast_trees(with_filenames=True, whitelist=whitelist):
+        bad_names = ast_helpers.get_local_vars_named_as_globals(tree, max_indentation_level)
+        if bad_names:
+            message = _('for example, %s') % (', '.join(bad_names))
+            return 'has_locals_named_as_globals', message
 
 
 def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, *args, **kwargs):

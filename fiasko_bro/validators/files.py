@@ -34,15 +34,12 @@ def has_no_encoding_declaration(solution_repo, whitelists, *args, **kwargs):
     whitelist = whitelists.get('has_no_encoding_declaration', [])
     for file_name, file_content, _ in solution_repo.get_ast_trees(
         with_filenames=True,
-        with_file_content=True
+        with_file_content=True,
+        whitelist=whitelist,
     ):
-        for whitelisted_part in whitelist:
-            if whitelisted_part in file_name:
-                break
-        else:
-            first_line = file_content.strip('\n').split('\n')[0].strip().replace(' ', '')
-            if first_line.startswith('#') and 'coding:utf-8' in first_line:
-                return 'has_encoding_declarations', ''
+        first_line = file_content.strip('\n').split('\n')[0].strip().replace(' ', '')
+        if first_line.startswith('#') and 'coding:utf-8' in first_line:
+            return 'has_encoding_declarations', ''
 
 
 def has_no_directories_from_blacklist(solution_repo, blacklists, *args, **kwargs):
