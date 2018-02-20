@@ -112,20 +112,26 @@ def get_defined_function_names(tree):
 def get_nonglobal_items_from_assigned_items(assigned_items, potentially_bad_names, max_indentation_depth):
     nonglobal_items = []
     for assigned_item in assigned_items:
-        if getattr(assigned_item, 'id', None) in potentially_bad_names:
-            current_item = assigned_item
-            # prevents the user from making this loop excessively long
-            for _ in range(max_indentation_depth):
-                if (
-                    not hasattr(current_item, 'parent') or
-                    isinstance(current_item.parent, ast.Module)
-                ):
-                    break
-                if not isinstance(current_item.parent, (ast.ClassDef, ast.Assign, ast.If)):
-                    nonglobal_items.append(assigned_item.id)
-                    break
-                current_item = current_item.parent
+        if getattr(assigned_item, 'id', None) not in potentially_bad_names:
+            continue
+        if is_nonglobal_item(assigned_item, max_indentation_depth):
+            nonglobal_items.append(assigned_item.id)
     return nonglobal_items
+
+
+def is_nonglobal_item(node, max_indentation_depth):
+    current_item = node
+    # prevents the user from making this loop excessively long
+    for _ in range(max_indentation_depth):
+        if (
+                not hasattr(current_item, 'parent') or
+                isinstance(current_item.parent, ast.Module)
+        ):
+            break
+        if not isinstance(current_item.parent, (ast.ClassDef, ast.Assign, ast.If)):
+            return True
+        current_item = current_item.parent
+    return False
 
 
 def get_local_vars_named_as_globals(tree, max_indentation_depth):

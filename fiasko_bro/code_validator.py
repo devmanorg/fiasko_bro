@@ -1,4 +1,5 @@
 from collections import OrderedDict
+import logging
 
 from . import validators
 from . import pre_validation_checks
@@ -6,9 +7,13 @@ from .repository_info import LocalRepositoryInfo
 from . import config
 
 
-def validate_repo(path_to_repo, path_to_original_repo=None):
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+
+def validate_repo(path_to_repo, path_to_original_repo=None, **kwargs):
     code_validator = CodeValidator()
-    return code_validator.validate(path_to_repo, path_to_original_repo)
+    return code_validator.validate(path_to_repo, path_to_original_repo, **kwargs)
 
 
 class CodeValidator:
