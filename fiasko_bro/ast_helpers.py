@@ -250,3 +250,13 @@ def has_exit_calls(function_definition):
          c.func.attr == 'exit' for c in calls if isinstance(c.func, ast.Attribute)]
     )
     return has_plain_exit_calls or has_sys_exit_calls
+
+
+def is_str_call_of_input(call):
+    function_name = getattr(call.func, 'id', None)
+    if not hasattr(call, 'parent') or not hasattr(call.parent, 'func'):
+        return False
+    parent_function_name = getattr(call.parent.func, 'id', None)
+    if function_name == 'input' and parent_function_name == 'str':
+        return True
+    return False

@@ -112,11 +112,7 @@ def has_no_cast_input_result_to_str(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
         calls = ast_helpers.get_nodes_of_type(tree, ast.Call)
         for call in calls:
-            function_name = getattr(call.func, 'id', None)
-            if not hasattr(call, 'parent') or not hasattr(call.parent, 'func'):
-                continue
-            parent_function_name = getattr(call.parent.func, 'id', None)
-            if function_name == 'input' and parent_function_name == 'str':
+            if ast_helpers.is_str_call_of_input(call):
                 return 'str_conversion_of_input_result', ''
 
 
