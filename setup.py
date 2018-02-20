@@ -62,7 +62,7 @@ setup(
             'fiasko = bin.fiasko:main',
         ],
     },
-    cmdclass = {
+    cmdclass={
         'install': InstallWithCompile,
     },
     package_data={'': ['locale/*/*/*.mo', 'locale/*/*/*.po']},

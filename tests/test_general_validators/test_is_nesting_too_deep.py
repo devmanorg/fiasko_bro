@@ -9,7 +9,7 @@ def test_is_nesting_too_deep_fails(test_repo):
     output = validators.is_nesting_too_deep(
         solution_repo=test_repo,
         tab_size=CodeValidator._default_settings['tab_size'],
-        max_indentation_level=max_indentation_level,
+        max_indentation=max_indentation_level,
         whitelists=CodeValidator.whitelists,
     )
     assert isinstance(output, tuple)
@@ -24,7 +24,7 @@ def test_is_nesting_too_deep_succeeds(origin_repo):
     output = validators.is_nesting_too_deep(
         solution_repo=origin_repo,
         tab_size=CodeValidator._default_settings['tab_size'],
-        max_indentation_level=max_indentation_level,
+        max_indentation=max_indentation_level,
         whitelists=CodeValidator.whitelists,
     )
     assert output is None

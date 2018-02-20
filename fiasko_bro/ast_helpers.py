@@ -109,12 +109,12 @@ def get_defined_function_names(tree):
     return get_unique_node_names_of_types(tree, ast.FunctionDef)
 
 
-def get_nonglobal_items_from_assigned_items(assigned_items, potentially_bad_names, max_indentation_depth):
+def get_nonglobal_items_from_assigned_items(assigned_items, potentially_bad_names, max_depth):
     nonglobal_items = []
     for assigned_item in assigned_items:
         if getattr(assigned_item, 'id', None) not in potentially_bad_names:
             continue
-        if is_nonglobal_item(assigned_item, max_indentation_depth):
+        if is_nonglobal_item(assigned_item, max_depth):
             nonglobal_items.append(assigned_item.id)
     return nonglobal_items
 
