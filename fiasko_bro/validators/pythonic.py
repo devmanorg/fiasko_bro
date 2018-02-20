@@ -80,17 +80,7 @@ def has_no_exit_calls_in_functions(solution_repo, whitelists, *args, **kwargs):
         for function_definition in defs:
             if function_definition.name in whitelist:
                 continue
-            calls = [c for c in ast.walk(function_definition)
-                     if isinstance(c, ast.Call) and hasattr(c, 'func')]
-            has_exit_calls = any(
-                [c.func.id == 'exit' for c in calls if isinstance(c.func, ast.Name)]
-            )
-            has_sys_exit_calls = any(
-                [hasattr(c.func.value, 'id') and
-                 c.func.value.id == 'sys' and
-                 c.func.attr == 'exit' for c in calls if isinstance(c.func, ast.Attribute)]
-            )
-            if has_exit_calls or has_sys_exit_calls:
+            if ast_helpers.has_exit_calls(function_definition):
                 return 'has_exit_calls_in_function', function_definition.name
 
 

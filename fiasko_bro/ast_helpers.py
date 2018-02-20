@@ -236,3 +236,17 @@ def is_node_offset_fine(node, lines_offsets, node_types_to_validate, tab_size):
         node_offset - parent_offset != tab_size and
         isinstance(node.parent, node_types_to_validate)
     )
+
+
+def has_exit_calls(function_definition):
+    calls = [c for c in ast.walk(function_definition)
+             if isinstance(c, ast.Call) and hasattr(c, 'func')]
+    has_plain_exit_calls = any(
+        [c.func.id == 'exit' for c in calls if isinstance(c.func, ast.Name)]
+    )
+    has_sys_exit_calls = any(
+        [hasattr(c.func.value, 'id') and
+         c.func.value.id == 'sys' and
+         c.func.attr == 'exit' for c in calls if isinstance(c.func, ast.Attribute)]
+    )
+    return has_plain_exit_calls or has_sys_exit_calls
