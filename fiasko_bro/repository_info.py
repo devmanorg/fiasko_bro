@@ -29,7 +29,7 @@ class LocalRepositoryInfo:
             directories_list[:] = [
                 d for d in directories_list
                 if d not in VALIDATOR_SETTINGS['directories_to_skip']
-                ]
+            ]
             for filename in filenames:
                 extension = os.path.splitext(filename)[1]
                 if extension in extension_list:

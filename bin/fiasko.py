@@ -13,7 +13,6 @@ def parse_args():
     return parser.parse_args()
 
 
-
 def main():
     args = parse_args()
     config_path = args.config_path or os.path.join(args.path, 'setup.cfg')

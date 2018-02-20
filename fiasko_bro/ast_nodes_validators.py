@@ -26,16 +26,16 @@ def _has_eq_compare(node):
 
 def _has_compare_to_200(node):
     return (
-       len(node.comparators) == 1
-       and isinstance(node.comparators[0], ast.Num)
-       and node.comparators[0].n == 200
+        len(node.comparators) == 1
+        and isinstance(node.comparators[0], ast.Num)
+        and node.comparators[0].n == 200
     )
 
 
 def _has_attr_call(node, attr_name):
     return (
-       isinstance(node.left, ast.Attribute)
-       and node.left.attr == attr_name
+        isinstance(node.left, ast.Attribute)
+        and node.left.attr == attr_name
     )
 
 
