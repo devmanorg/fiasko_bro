@@ -52,8 +52,7 @@ class LocalRepositoryInfo:
                 for node in ast.walk(tree):
                     for child in ast.iter_child_nodes(node):
                         child.parent = node
-            except SyntaxError as e:
-                print(e)
+            except SyntaxError:
                 tree = None
             ast_trees.append(tree)
         return filenames, main_file_contents, ast_trees
