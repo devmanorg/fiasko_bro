@@ -21,11 +21,9 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation, whitelists, *a
     whitelist = whitelists.get('is_nesting_too_deep', [])
     for file_path, file_content, _ in solution_repo.get_ast_trees(
         with_filenames=True,
-        with_file_content=True
+        with_file_content=True,
+        whitelist=whitelist
     ):
-        if file_helpers.is_file_in_whitelist(file_path, whitelist):
-            continue
-
         lines = file_content.split('\n')
         previous_line_indent = 0
         for line_number, line in enumerate(lines):
