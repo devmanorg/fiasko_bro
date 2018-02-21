@@ -11,7 +11,7 @@ def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
         return 'mccabe_failure', ','.join(violations)
 
 
-def is_nesting_too_deep(solution_repo, tab_size, max_indentation, whitelists, *args, **kwargs):
+def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelists, *args, **kwargs):
     """
         Looks at the number of spaces in the beginning and decides if the code is
         too nested.
@@ -21,17 +21,15 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation, whitelists, *a
     whitelist = whitelists.get('is_nesting_too_deep', [])
     for file_path, file_content, _ in solution_repo.get_ast_trees(
         with_filenames=True,
-        with_file_content=True
+        with_file_content=True,
+        whitelist=whitelist
     ):
-        if file_helpers.is_file_in_whitelist(file_path, whitelist):
-            continue
-
         lines = file_content.split('\n')
         previous_line_indent = 0
         for line_number, line in enumerate(lines):
             indentation_spaces_amount = code_helpers.count_indentation_spaces(line, tab_size)
             if (
-                indentation_spaces_amount > tab_size * max_indentation
+                indentation_spaces_amount > tab_size * max_indentation_level
                 # make sure it's not a line continuation
                 and indentation_spaces_amount - previous_line_indent == tab_size
             ):

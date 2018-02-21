@@ -36,10 +36,11 @@ def get_all_namedtuple_names(tree):
 def get_all_imported_names_from_tree(tree):
     imported_names = []
     for node in ast.walk(tree):
-        if isinstance(node, ast.ImportFrom):
-            for name in node.names:
-                imported_name = name.asname or name.name
-                imported_names.append(imported_name)
+        if not isinstance(node, ast.ImportFrom):
+            continue
+        for name in node.names:
+            imported_name = name.asname or name.name
+            imported_names.append(imported_name)
     return set(imported_names)
 
 
@@ -259,4 +260,18 @@ def is_str_call_of_input(call):
     parent_function_name = getattr(call.parent.func, 'id', None)
     if function_name == 'input' and parent_function_name == 'str':
         return True
+    return False
+
+
+def is_funcdef_has_arguments_of_types(funcdef, mutable_types):
+    for default in getattr(funcdef.args, 'defaults', []):
+        if isinstance(default, mutable_types):
+            return True
+    return False
+
+
+def is_tree_has_slices_from_zero(tree):
+    for slice in get_nodes_of_type(tree, ast.Slice):
+        if slice.step is None and isinstance(slice.lower, ast.Num) and slice.lower.n == 0:
+            return True
     return False

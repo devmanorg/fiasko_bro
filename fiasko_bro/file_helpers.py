@@ -1,20 +1,11 @@
 import os
 
+from fiasko_bro.list_helpers import flat
+
 
 def count_py_files(directory):
-    counter = 0
-    for _, _, filenames in os.walk(directory):
-        for name in filenames:
-            if name.endswith('.py'):
-                counter += 1
-    return counter
-
-
-def is_file_in_whitelist(file_path, whitelist):
-    for whitelisted_part in whitelist:
-        if whitelisted_part in file_path:
-            return True
-    return False
+    all_files = flat([r[2] for r in os.walk(directory)])
+    return len([f for f in all_files if f.endswith('.py')])
 
 
 def get_line_offsets(file_content):

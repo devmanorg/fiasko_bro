@@ -49,11 +49,10 @@ class LocalRepositoryInfo:
         for file_content in main_file_contents:
             try:
                 tree = ast.parse(file_content)
-                for node in ast.walk(tree):
-                    for child in ast.iter_child_nodes(node):
-                        child.parent = node
-            except SyntaxError:
+            except SyntaxError as e:
                 tree = None
+            if tree:
+                self._set_parents(tree)
             ast_trees.append(tree)
         return filenames, main_file_contents, ast_trees
 
@@ -100,3 +99,9 @@ class LocalRepositoryInfo:
                     (file_name, file_content, ast_tree)
                 )
         return filtered_items
+
+    @staticmethod
+    def _set_parents(tree):
+        for node in ast.walk(tree):
+            for child in ast.iter_child_nodes(node):
+                child.parent = node

@@ -96,16 +96,14 @@ def has_no_mutable_default_arguments(solution_repo, *args, **kwargs):
     mutable_types = (ast.List, ast.Dict)
     for tree in solution_repo.get_ast_trees():
         for funcdef in ast_helpers.get_nodes_of_type(tree, funcdef_types):
-            for default in getattr(funcdef.args, 'defaults', []):
-                if isinstance(default, mutable_types):
-                    return 'mutable_default_arguments', ''
+            if ast_helpers.is_funcdef_has_arguments_of_types(funcdef, mutable_types):
+                return 'mutable_default_arguments', ''
 
 
 def has_no_slices_starts_from_zero(solution_repo, *args, **kwargs):
     for tree in solution_repo.get_ast_trees():
-        for slice in ast_helpers.get_nodes_of_type(tree, ast.Slice):
-            if slice.step is None and isinstance(slice.lower, ast.Num) and slice.lower.n == 0:
-                return 'slice_starts_from_zero', ''
+        if ast_helpers.is_tree_has_slices_from_zero(tree):
+            return 'slice_starts_from_zero', ''
 
 
 def has_no_cast_input_result_to_str(solution_repo, *args, **kwargs):
