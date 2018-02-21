@@ -260,3 +260,10 @@ def is_str_call_of_input(call):
     if function_name == 'input' and parent_function_name == 'str':
         return True
     return False
+
+
+def is_funcdef_has_arguments_of_types(funcdef, mutable_types):
+    for default in getattr(funcdef.args, 'defaults', []):
+        if isinstance(default, mutable_types):
+            return True
+    return False
