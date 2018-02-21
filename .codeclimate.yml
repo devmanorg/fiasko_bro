@@ -24,12 +24,6 @@ checks:
   return-statements:
     config:
       threshold: 4
-  similar-code:
-    config:
-      threshold: 5
-  identical-code:
-    config:
-      threshold: 5
 exclude_patterns:
 - "config/"
 - "db/"
