@@ -2,7 +2,7 @@ from fiasko_bro.validators import has_no_mutable_default_arguments
 
 
 def test_has_no_mutable_default_arguments_fails(test_repo):
-    expected_output = 'mutable_default_arguments', ''
+    expected_output = 'mutable_default_arguments', 'file_with_mutable_default_arguments.py:3'
     output = has_no_mutable_default_arguments(test_repo)
     assert output == expected_output
 
