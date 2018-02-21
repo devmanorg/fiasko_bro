@@ -2,7 +2,7 @@ from fiasko_bro import validators
 
 
 def test_has_no_vars_with_lambda_fail(test_repo):
-    expected_output = 'named_lambda', ''
+    expected_output = 'named_lambda', 'has_no_vars_with_lambda_test_file.py:4'
     output = validators.has_no_vars_with_lambda(
         solution_repo=test_repo,
     )
