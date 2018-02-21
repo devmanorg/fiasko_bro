@@ -3,7 +3,7 @@ from fiasko_bro.code_validator import CodeValidator
 
 
 def test_has_no_extra_docstrings_fail(test_repo):
-    expected_output = 'extra_comments', ''
+    expected_output = 'extra_comments', 'file_with_too_many_docstrings.py'
     output = has_no_extra_dockstrings(
         solution_repo=test_repo,
         whitelists=CodeValidator.whitelists,
