@@ -1,13 +1,11 @@
 import os
 
+from fiasko_bro.list_helpers import flat
+
 
 def count_py_files(directory):
-    counter = 0
-    for _, _, filenames in os.walk(directory):
-        for name in filenames:
-            if name.endswith('.py'):
-                counter += 1
-    return counter
+    all_files = flat([r[2] for r in os.walk(directory)])
+    return len([f for f in all_files if f.endswith('.py')])
 
 
 def get_line_offsets(file_content):
