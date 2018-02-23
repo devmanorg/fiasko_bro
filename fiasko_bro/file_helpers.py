@@ -1,10 +1,16 @@
 import os
 
-from fiasko_bro.list_helpers import flat
+from fiasko_bro.config import VALIDATOR_SETTINGS
 
 
 def count_py_files(directory):
-    all_files = flat([r[2] for r in os.walk(directory)])
+    all_files = []
+    for directory, dirs, files in os.walk(directory, topdown=True):
+        dirs[:] = [
+            d for d in dirs
+            if d not in VALIDATOR_SETTINGS['directories_to_skip']
+        ]
+        all_files += files
     return len([f for f in all_files if f.endswith('.py')])
 
 

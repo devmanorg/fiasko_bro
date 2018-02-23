@@ -146,7 +146,7 @@ class CodeValidator:
             return errors
         return errors
 
-    def validate(self, repo_path, original_repo_path=None, check_repo_size=True, **kwargs):
+    def validate(self, repo_path, original_repo_path=None, **kwargs):
         self.validator_arguments.update(kwargs)
         self.validator_arguments['path_to_repo'] = repo_path
         self.validator_arguments['original_repo_path'] = original_repo_path
