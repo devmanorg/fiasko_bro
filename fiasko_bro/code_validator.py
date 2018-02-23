@@ -146,14 +146,10 @@ class CodeValidator:
             return errors
         return errors
 
-    def get_syntax_errors_in_repos(self, solution_repo, original_repo=None):
-        syntax_errors = validators.has_no_syntax_errors(solution_repo)
+    def get_syntax_errors_in_repo(self, repo):
+        syntax_errors = validators.has_no_syntax_errors(repo)
         if syntax_errors:
             return [syntax_errors]
-        if original_repo:
-            syntax_errors = validators.has_no_syntax_errors(original_repo)
-            if syntax_errors:
-                return [syntax_errors]
 
     def validate(self, repo_path, original_repo_path=None, **kwargs):
         self.validator_arguments.update(kwargs)
@@ -167,9 +163,8 @@ class CodeValidator:
         self.validator_arguments['solution_repo'] = LocalRepositoryInfo(repo_path)
         if original_repo_path:
             self.validator_arguments['original_repo'] = LocalRepositoryInfo(original_repo_path)
-        syntax_errors = self.get_syntax_errors_in_repos(
-            self.validator_arguments['solution_repo'],
-            self.validator_arguments.get('original_repo', None)
+        syntax_errors = self.get_syntax_errors_in_repo(
+            self.validator_arguments['solution_repo']
         )
         if syntax_errors:
             return syntax_errors
