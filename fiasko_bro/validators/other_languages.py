@@ -13,7 +13,14 @@ def has_no_return_with_parenthesis(solution_repo, *args, **kwargs):
         return_lines = [n.lineno for n in ast.walk(tree) if isinstance(n, ast.Return)]
         for line_num in return_lines:
             line = file_content[line_num - 1]
-            if line.count('return') == 1 and 'return(' in line or 'return (' in line:
+            if (
+                line.count('return') == 1
+                and (
+                    'return(' in line
+                    or 'return (' in line
+                )
+                and line.strip().endswith(')')
+            ):
                 filename = url_helpers.get_filename_from_path(filepath)
                 return 'return_with_parenthesis', '{}:{}'.format(filename, line_num)
 
