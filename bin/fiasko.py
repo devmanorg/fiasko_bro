@@ -9,7 +9,6 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Static code analyser.')
     parser.add_argument('-p', '--path', type=str, default='.', dest='path')
     parser.add_argument('--config', type=str, default=None, dest='config_path')
-    parser.add_argument('--skip_check_repo_size', action='store_true', dest='skip_check_repo_size')
     return parser.parse_args()
 
 
