@@ -29,6 +29,9 @@ class CodeValidator:
         ],
         'size': [
             pre_validation_checks.are_repos_too_large
+        ],
+        'bom': [
+            pre_validation_checks.has_no_bom
         ]
     }
 
@@ -41,10 +44,6 @@ class CodeValidator:
             (
                 'readme',
                 [validators.has_readme_file],
-            ),
-            (
-                'bom',
-                [validators.has_no_bom],
             ),
             (
                 'syntax',
