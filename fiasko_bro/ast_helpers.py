@@ -18,6 +18,8 @@ def get_all_imports(root):
 
 
 def get_all_names_from_tree(tree):
+    if tree is None:
+        return []
     return list({node.id for node in ast.walk(tree) if isinstance(node, ast.Name)})
 
 
