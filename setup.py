@@ -2,13 +2,16 @@ from setuptools import setup, find_packages
 from setuptools.command.install import install
 from codecs import open
 from os import path
+from pip.req import parse_requirements
 
 
 here = path.abspath(path.dirname(__file__))
 
 
 def load_requirements():
-    return open(path.join(path.dirname(__file__), 'requirements.txt')).readlines()
+    requirements = [str(r.req) for r in
+                    parse_requirements('requirements.txt', session=False)]
+    return requirements
 
 
 class InstallWithCompile(install):
