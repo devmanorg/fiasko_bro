@@ -1,0 +1,21 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+gitpython = "*"
+stdlib-list = "*"
+mccabe = "*"
+"pep8" = "*"
+
+
+[dev-packages]
+
+pytest = "*"
+pytest-cov = "*"
+codecov = "*"
+babel = "*"
