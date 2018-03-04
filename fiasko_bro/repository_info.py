@@ -38,8 +38,6 @@ class LocalRepositoryInfo:
             with open(file_path, 'r', encoding='utf-8') as file_handler:
                 file_contents.append(file_handler.read())
         source_file_contents = list(zip(file_paths, file_contents))
-        if not source_file_contents:
-            return [(), ()]
         return source_file_contents
 
     def _get_ast_trees(self):

@@ -17,7 +17,10 @@ def has_no_long_files(solution_repo, max_number_of_lines, *args, **kwargs):
 def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
     frontend_extensions = ['.html', '.css', '.js']
     relevant_extensions = frontend_extensions + ['.py']
-    for filepath, file_content in solution_repo.get_source_file_contents(relevant_extensions):
+    files_info = solution_repo.get_source_file_contents(relevant_extensions)
+    if not files_info:
+        return
+    for filepath, file_content in files_info:
         lines = [l for l in file_content.split('\n') if l]
         tabbed_lines_amount = len([l for l in lines if l.startswith('\t')])
         _, ext = os.path.splitext(filepath)
