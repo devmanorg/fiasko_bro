@@ -158,4 +158,9 @@ class CodeValidator:
         self.validator_arguments['solution_repo'] = LocalRepositoryInfo(repo_path)
         if original_repo_path:
             self.validator_arguments['original_repo'] = LocalRepositoryInfo(original_repo_path)
+        syntax_errors = validators.has_no_syntax_errors(
+            self.validator_arguments['solution_repo']
+        )
+        if syntax_errors:
+            return [syntax_errors]
         return self.run_validator_group(self.error_validator_groups, add_warnings=True)
