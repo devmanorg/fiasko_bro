@@ -1,5 +1,4 @@
 from .commits import *
-from .encoding import *
 from .readme import *
 from .syntax import *
 from .pythonic import *
