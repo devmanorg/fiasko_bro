@@ -54,11 +54,14 @@ class LocalRepositoryInfo:
             ast_trees.append(tree)
         return filenames, main_file_contents, ast_trees
 
-    def get_ast_trees(self, with_filenames=False, with_file_content=False, whitelist=None):
+    def get_ast_trees(self, with_filenames=False, with_file_content=False, whitelist=None, return_none=False):
         ast_trees_copy = copy.deepcopy(self._ast_trees)
         all_items = zip(self._python_filenames, self._main_file_contents, ast_trees_copy)
         filtered_items = self.filter_file_paths(all_items, whitelist)
-        filtered_items = [r for r in filtered_items if r[2] is not None]
+        if return_none:
+            filtered_items = [r for r in filtered_items]
+        else:
+            filtered_items = [r for r in filtered_items if r[2] is not None]
 
         if with_filenames:
             if with_file_content:

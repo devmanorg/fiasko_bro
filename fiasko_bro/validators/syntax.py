@@ -6,7 +6,7 @@ from .. import url_helpers
 
 
 def has_no_syntax_errors(solution_repo, *args, **kwargs):
-    for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
+    for filename, tree in solution_repo.get_ast_trees(with_filenames=True, return_none=True):
         if tree is None:
             return 'syntax_error', filename
 
