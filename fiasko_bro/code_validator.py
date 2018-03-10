@@ -42,12 +42,12 @@ class CodeValidator:
                 [validators.has_more_commits_than_origin],
             ),
             (
-                'readme',
-                [validators.has_readme_file],
-            ),
-            (
                 'syntax',
                 [validators.has_no_syntax_errors],
+            ),
+            (
+                'readme',
+                [validators.has_readme_file],
             ),
             (
                 'general',
