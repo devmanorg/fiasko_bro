@@ -54,19 +54,24 @@ class LocalRepositoryInfo:
             ast_trees.append(tree)
         return filenames, main_file_contents, ast_trees
 
-    def get_ast_trees(self, with_filenames=False, with_file_content=False, whitelist=None):
+    def get_ast_trees(self, with_filenames=False, with_file_content=False, whitelist=None,
+                      with_syntax_error_trees=False):
         ast_trees_copy = copy.deepcopy(self._ast_trees)
         all_items = zip(self._python_filenames, self._main_file_contents, ast_trees_copy)
         filtered_items = self.filter_file_paths(all_items, whitelist)
-        filtered_items = [r for r in filtered_items if r[2] is not None]
 
         if with_filenames:
+            if not with_syntax_error_trees:
+                filtered_items = [r for r in filtered_items if r[2] is not None]
             if with_file_content:
                 return filtered_items
             else:
                 return [(f, t) for (f, c, t) in filtered_items]
         else:
-            return [t for t in ast_trees_copy if t is not None]
+            if with_syntax_error_trees:
+                return ast_trees_copy
+            else:
+                return [t for t in ast_trees_copy if t is not None]
 
     def get_python_file_filenames(self):
         return self._python_filenames
