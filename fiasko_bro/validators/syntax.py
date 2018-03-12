@@ -6,8 +6,9 @@ from .. import url_helpers
 
 
 def has_no_syntax_errors(solution_repo, *args, **kwargs):
-    for filename, tree in solution_repo.get_ast_trees(with_filenames=True):
+    for filepath, tree in solution_repo.get_ast_trees(with_filenames=True):
         if tree is None:
+            filename = url_helpers.get_filename_from_path(filepath)
             return 'syntax_error', filename
 
 

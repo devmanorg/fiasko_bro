@@ -137,12 +137,13 @@ class CodeValidator:
                 error_group,
                 self.validator_arguments
             )
-        if add_warnings and errors:
-            errors += self._run_warning_validators_until(
-                error_group_name,
-                self.validator_arguments
-            )
-            return errors
+            if errors:
+                if add_warnings:
+                    errors += self._run_warning_validators_until(
+                        error_group_name,
+                        self.validator_arguments
+                    )
+                return errors
         return errors
 
     def validate(self, repo_path, original_repo_path=None, **kwargs):
