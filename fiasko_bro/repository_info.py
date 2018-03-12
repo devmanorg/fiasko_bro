@@ -58,6 +58,7 @@ class LocalRepositoryInfo:
         ast_trees_copy = copy.deepcopy(self._ast_trees)
         all_items = zip(self._python_filenames, self._main_file_contents, ast_trees_copy)
         filtered_items = self.filter_file_paths(all_items, whitelist)
+        filtered_items = [r for r in filtered_items if r[2] is not None]
 
         if with_filenames:
             if with_file_content:
@@ -65,7 +66,7 @@ class LocalRepositoryInfo:
             else:
                 return [(f, t) for (f, c, t) in filtered_items]
         else:
-            return ast_trees_copy
+            return [t for t in ast_trees_copy if t is not None]
 
     def get_python_file_filenames(self):
         return self._python_filenames
