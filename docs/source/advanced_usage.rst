@@ -108,7 +108,7 @@ If you want the validator to be executed only for certain types of repositories,
 
     from fiasko_bro import tokenized_validator
 
-    @tokenized_validator(token='min_max_challenge')
+    @tokenized_validator(list_of_tokens=['min_max_challenge'])
     def has_min_max_functions(solution_repo, *args, **kwargs):
         for tree in solution_repo.get_ast_trees():
             names = get_all_names_from_tree(tree)
@@ -124,7 +124,11 @@ and when calling ``validate`` for certain repo, pass the token:
 
     code_validator.validate(solution_repo=solution_repo, validator_token='min_max_challenge')
 
-The validator won't be executed for any other repository.
+If you wish to pass multiple tokens for certain repo, pass tokens as a list:
+
+    code_validator.validate(solution_repo=solution_repo, validator_token=['min_max_challenge', 'some_other_token'])
+
+The validator will be executed if atleast one token is a match.
 
 Blacklist/whitelists for validators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
