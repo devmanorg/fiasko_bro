@@ -32,5 +32,4 @@ def if_any(tokens, repo_tokens):
 
 
 def if_all(tokens, repo_tokens):
-    print(tokens, repo_tokens)
     return set(tokens) == set(repo_tokens)
