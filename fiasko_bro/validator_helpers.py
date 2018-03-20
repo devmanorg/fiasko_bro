@@ -33,3 +33,8 @@ def if_any(tokens, repo_tokens):
 
 def if_all(tokens, repo_tokens):
     return set(tokens) == set(repo_tokens)
+
+
+def check_code_validator_arguments_tokens(**kwargs):
+    if kwargs.get('validator_token') and kwargs.get('validator_tokens'):
+        raise ValueError("Please specify either 'token' or 'tokens'")
