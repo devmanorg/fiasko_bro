@@ -122,8 +122,8 @@ You can also use decorator with single token as a string
     ``@tokenized_validator_run_if(token):``
 
 Example:
-
 ::
+
     from fiasko_bro import tokenized_validator_run_if
 
     @tokenized_validator_run_if('min_max_challenge')
