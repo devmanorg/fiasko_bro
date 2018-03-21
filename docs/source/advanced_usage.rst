@@ -104,11 +104,29 @@ Of course, built-in validators have their own defaults in `_default_settings` pr
 Conditionally execute a validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you want the validator to be executed only for certain types of repositories, add ``tokenized_validator`` to it::
+If you want the validator to be executed only for certain types of repositories, wrap it in one of the ``tokenized_validator_run_`` decorators
+There are three decorators:
+    
+    ``@tokenized_validator_run_if_any(tokens)``
 
-    from fiasko_bro import tokenized_validator
+decorated validator will be run if repo is marked by any of the tokens
 
-    @tokenized_validator(list_of_tokens=['min_max_challenge'])
+    ``@tokenized_validator_run_if_all(tokens)``
+
+in this case validator will be run only if repo is marked by all of the tokens
+
+decorator's parameter ``tokens`` can be any kind of iterable i.e. ``['django', 'sqlalchemy']``
+
+You can also use decorator with single token as a string
+
+    ``@tokenized_validator_run_if(token):``
+
+Example:
+
+::
+    from fiasko_bro import tokenized_validator_run_if
+
+    @tokenized_validator_run_if('min_max_challenge')
     def has_min_max_functions(solution_repo, *args, **kwargs):
         for tree in solution_repo.get_ast_trees():
             names = get_all_names_from_tree(tree)
@@ -120,15 +138,13 @@ then add the validator to the appropriate group
 
     code_validator.error_validator_groups['general'].append(has_min_max_functions)
 
-and when calling ``validate`` for certain repo, pass the token:
+and when calling ``validate`` for certain repo, mark repo with the token:
 
     code_validator.validate(solution_repo=solution_repo, validator_token='min_max_challenge')
 
-If you wish to pass multiple tokens for certain repo, pass tokens as a list:
+If you wish to mark repo with multiple tokens use an iterable and keyword argument ``validator_tokens``:
 
-    code_validator.validate(solution_repo=solution_repo, validator_token=['min_max_challenge', 'some_other_token'])
-
-The validator will be executed if atleast one token is a match.
+    code_validator.validate(solution_repo=solution_repo, validator_tokens={'min_max_challenge', 'django'})
 
 Blacklist/whitelists for validators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
