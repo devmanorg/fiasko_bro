@@ -18,7 +18,7 @@ def origin_repo():
     return repo_path
 
 
-def test_mark_repo_with_both(origin_repo, code_validator):
+def test_mark_repo_with_both_fail(origin_repo, code_validator):
     token = 'django'
     tokens = ('djano', 'celery')
     with pytest.raises(ValueError):

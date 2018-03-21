@@ -35,6 +35,6 @@ def if_all(tokens, repo_tokens):
     return set(tokens) == set(repo_tokens)
 
 
-def check_code_validator_arguments_tokens(**kwargs):
+def ensure_repo_tokens_mutually_exclusive(**kwargs):
     if kwargs.get('validator_token') and kwargs.get('validator_tokens'):
         raise ValueError("Please specify either 'token' or 'tokens'")
