@@ -15,15 +15,15 @@ def _general_tokenized_validator(tokens, check_method):
     return validator_decorator
 
 
-def tokenized_validator_run_if_any(tokens):
+def run_if_any(tokens):
     return _general_tokenized_validator(tokens, if_any)
 
 
-def tokenized_validator_run_if_all(tokens):
+def run_if_all(tokens):
     return _general_tokenized_validator(tokens, if_all)
 
 
-def tokenized_validator_run_if(token):
+def run_if(token):
     return _general_tokenized_validator(token, if_all)
 
 
