@@ -1,27 +1,27 @@
 from functools import wraps
 
 
-def _general_tokenized_validator(tokens, check_method):
+def run_if_tokens_satisfy_condition(tokens, condition):
     def validator_decorator(func):
         @wraps(func)
         def func_wrapper(*args, **kwargs):
             repo_tokens = kwargs.get('validator_token') or kwargs.get('validator_tokens')
-            if repo_tokens and check_method(tokens, repo_tokens):
+            if repo_tokens and condition(tokens, repo_tokens):
                 return func(*args, **kwargs)
         return func_wrapper
     return validator_decorator
 
 
 def run_if_any(tokens):
-    return _general_tokenized_validator(tokens, if_any)
+    return run_if_tokens_satisfy_condition(tokens, if_any)
 
 
 def run_if_all(tokens):
-    return _general_tokenized_validator(tokens, if_all)
+    return run_if_tokens_satisfy_condition(tokens, if_all)
 
 
 def run_if(token):
-    return _general_tokenized_validator(token, if_all)
+    return run_if_tokens_satisfy_condition(token, if_all)
 
 
 def if_any(tokens, repo_tokens):
