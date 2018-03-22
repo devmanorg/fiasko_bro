@@ -5,7 +5,6 @@ from . import validators
 from . import pre_validation_checks
 from .repository_info import LocalRepositoryInfo
 from . import config
-from .validator_helpers import ensure_repo_tokens_mutually_exclusive
 
 
 logger = logging.getLogger(__name__)
@@ -156,7 +155,6 @@ class CodeValidator:
         pre_validation_errors = self.run_validator_group(self.pre_validation_checks)
         if pre_validation_errors:
             return pre_validation_errors
-        ensure_repo_tokens_mutually_exclusive(**kwargs)
         self.validator_arguments['solution_repo'] = LocalRepositoryInfo(repo_path)
         if original_repo_path:
             self.validator_arguments['original_repo'] = LocalRepositoryInfo(original_repo_path)
