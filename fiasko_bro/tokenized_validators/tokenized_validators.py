@@ -1,4 +1,5 @@
 from functools import wraps
+from ..validator_helpers import if_any, if_all
 
 
 def run_if_tokens_satisfy_condition(tokens, condition):
@@ -22,16 +23,3 @@ def run_if_all(tokens):
 
 def run_if(token):
     return run_if_tokens_satisfy_condition(token, if_all)
-
-
-def if_any(tokens, repo_tokens):
-    return any(token for token in tokens if token in repo_tokens)
-
-
-def if_all(tokens, repo_tokens):
-    return set(tokens) == set(repo_tokens)
-
-
-def ensure_repo_tokens_mutually_exclusive(**kwargs):
-    if kwargs.get('validator_token') and kwargs.get('validator_tokens'):
-        raise ValueError("Please specify either 'token' or 'tokens'")
