@@ -4,7 +4,7 @@ def ensure_repo_tokens_mutually_exclusive(**kwargs):
 
 
 def if_any(tokens, repo_tokens):
-    return any(token for token in tokens if token in repo_tokens)
+    return any(token in repo_tokens for token in tokens)
 
 
 def if_all(tokens, repo_tokens):
