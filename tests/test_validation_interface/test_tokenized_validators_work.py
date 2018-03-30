@@ -65,7 +65,7 @@ def test_tokenized_validator_with_single_token_fail(origin_repo, code_validator)
 
 
 def test_validator_with_two_disjunct_tokens_ok(origin_repo, code_validator):
-    output = code_validator.validate(origin_repo, validator_tokens=['maximize', 'minmax', 'sql'])
+    output = code_validator.validate(origin_repo, validator_tokens=['minmax', 'sql'])
     assert (MESSAGE_DISJUNCT_TOKENS,) in output
 
 
