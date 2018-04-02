@@ -9,3 +9,7 @@ def if_any(tokens, repo_tokens):
 
 def if_all(tokens, repo_tokens):
     return set(tokens) == set(repo_tokens)
+
+
+def if_(token, repo_tokens):
+    return token in repo_tokens
