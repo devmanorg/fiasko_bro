@@ -11,6 +11,7 @@ gitpython = "*"
 stdlib-list = "*"
 mccabe = "*"
 "pep8" = "*"
+tox = "*"
 
 
 [dev-packages]
