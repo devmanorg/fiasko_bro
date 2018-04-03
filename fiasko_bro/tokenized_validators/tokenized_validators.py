@@ -6,7 +6,12 @@ def run_if_tokens_satisfy_condition(tokens, condition):
     def validator_decorator(func):
         @wraps(func)
         def func_wrapper(*args, **kwargs):
-            repo_tokens = kwargs.get('validator_token') or kwargs.get('validator_tokens')
+            repo_token = kwargs.get('validator_token')
+            if repo_token is not None:
+                repo_token = [repo_token]
+            repo_tokens = repo_token or kwargs.get('validator_tokens')
+            print("------------")
+            print(repo_tokens)
             if repo_tokens and condition(tokens, repo_tokens):
                 return func(*args, **kwargs)
         return func_wrapper
