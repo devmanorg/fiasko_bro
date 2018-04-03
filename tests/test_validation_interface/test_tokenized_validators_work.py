@@ -38,7 +38,7 @@ def get_validator_with_two_conjunct_tokens(iterable):
 @pytest.fixture(scope='module')
 def code_validator():
     code_validator = CodeValidator()
-    validator_with_single_token = get_validator_with_single_token('sqlalchemy')
+    validator_with_single_token = get_validator_with_single_token(1)
     validator_with_two_disjunct_tokens = get_validator_with_two_disjunct_tokens({'minmax', 'maximize'})
     validator_with_two_conjunct_tokens = get_validator_with_two_conjunct_tokens(['django', 'twisted'])
     code_validator.error_validator_groups['commits'].append(validator_with_single_token)
@@ -55,7 +55,7 @@ def origin_repo():
 
 
 def test_tokenized_validator_with_single_token_ok(origin_repo, code_validator):
-    output = code_validator.validate(origin_repo, validator_token='sqlalchemy')
+    output = code_validator.validate(origin_repo, validator_token=1)
     assert (MESSAGE_SINGLE_TOKEN,) in output
 
 
