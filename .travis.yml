@@ -1,16 +1,18 @@
 language: python
 python:
+  - "3.5"
   - "3.6"
+  - "3.7-dev"
 install:
   - pip install -r requirements.txt
   - pip install -r requirements-dev.txt
+  - pip install tox-travis
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - python -m pytest --cov=. --cov-report xml
-  - LANGUAGE=ru python -m pytest
+  - tox
   - codecov --token=$CODECOV_TOKEN
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
