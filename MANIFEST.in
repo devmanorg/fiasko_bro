@@ -1,1 +1,3 @@
 recursive-include fiasko_bro/locale *
+include requirements.txt
+include requirements-dev.txt
