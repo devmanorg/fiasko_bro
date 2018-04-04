@@ -10,8 +10,6 @@ def run_if_tokens_satisfy_condition(tokens, condition):
             if repo_token is not None:
                 repo_token = [repo_token]
             repo_tokens = repo_token or kwargs.get('validator_tokens')
-            print("------------")
-            print(repo_tokens)
             if repo_tokens and condition(tokens, repo_tokens):
                 return func(*args, **kwargs)
         return func_wrapper
