@@ -35,6 +35,10 @@ def get_all_namedtuple_names(tree):
     return nametuples_names
 
 
+def is_multiple_imports_on_one_line(node):
+    return isinstance(node, ast.Import) and len(node.names) > 1
+
+
 def get_all_imported_names_from_tree(tree):
     imported_names = []
     for node in ast.walk(tree):
