@@ -15,3 +15,10 @@ def has_no_local_imports(solution_repo, whitelists, *args, **kwargs):
         if ast_helpers.is_has_local_imports(tree):
             filename = url_helpers.get_filename_from_path(filepath)
             return 'has_local_import', filename
+
+
+def has_no_pdb_breakpoints(solution_repo, *args, **kwargs):
+    for filepath, tree in solution_repo.get_ast_trees(with_filenames=True):
+        if 'pdb' in ast_helpers.get_all_import_names_mentioned_in_import(tree):
+            filename = url_helpers.get_filename_from_path(filepath)
+            return 'has_pdb_breakpoint', filename
