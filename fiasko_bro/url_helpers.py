@@ -9,3 +9,7 @@ def is_url_with_params(string):
         if '=' not in key_value_pair:
             return False
     return True
+
+
+def get_filename_from_path(path):
+    return path[path.rfind(os.path.sep) + 1:]
