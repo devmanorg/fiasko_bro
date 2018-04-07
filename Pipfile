@@ -7,7 +7,7 @@ name = "pypi"
 
 [packages]
 
-gitpython = "*"
+GitPython = "*"
 stdlib-list = "*"
 mccabe = "*"
 "pep8" = "*"
@@ -18,5 +18,5 @@ mccabe = "*"
 pytest = "*"
 pytest-cov = "*"
 codecov = "*"
-babel = "*"
+Babel = "*"
 tox = "*"
