@@ -7,8 +7,8 @@ from ..i18n import _
 def has_variables_from_blacklist(solution_repo, whitelists, blacklists, *args, **kwargs):
     whitelist = whitelists.get('has_variables_from_blacklist', [])
     blacklist = blacklists.get('has_variables_from_blacklist', [])
-    for filename, tree in solution_repo.get_ast_trees(with_filenames=True, whitelist=whitelist):
-        names = ast_helpers.get_all_defined_names(tree)
+    for parsed_file in solution_repo.get_parsed_py_files(whitelist=whitelist):
+        names = ast_helpers.get_all_defined_names(parsed_file.ast_tree)
         bad_names = names.intersection(blacklist)
         if bad_names:
             return 'bad_titles', ', '.join(bad_names)
@@ -16,8 +16,8 @@ def has_variables_from_blacklist(solution_repo, whitelists, blacklists, *args, *
 
 def has_local_var_named_as_global(solution_repo, whitelists, max_indentation_level, *args, **kwargs):
     whitelist = whitelists.get('has_local_var_named_as_global', [])
-    for filename, tree in solution_repo.get_ast_trees(with_filenames=True, whitelist=whitelist):
-        bad_names = ast_helpers.get_local_vars_named_as_globals(tree, max_indentation_level)
+    for parsed_file in solution_repo.get_parsed_py_files(whitelist=whitelist):
+        bad_names = ast_helpers.get_local_vars_named_as_globals(parsed_file.ast_tree, max_indentation_level)
         if bad_names:
             message = _('for example, %s') % (', '.join(bad_names))
             return 'has_locals_named_as_globals', message
@@ -26,8 +26,8 @@ def has_local_var_named_as_global(solution_repo, whitelists, max_indentation_lev
 def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, *args, **kwargs):
     whitelist = whitelists.get('has_no_short_variable_names', [])
     short_names = []
-    for tree in solution_repo.get_ast_trees():
-        names = ast_helpers.get_all_defined_names(tree)
+    for parsed_file in solution_repo.get_parsed_py_files():
+        names = ast_helpers.get_all_defined_names(parsed_file.ast_tree)
         short_names += [n for n in names
                         if len(n) < minimum_name_length and n not in whitelist]
     if short_names:
@@ -38,15 +38,15 @@ def is_snake_case(solution_repo, whitelists, *args, **kwargs):
     whitelist = whitelists.get('is_snake_case', [])
     right_assignment_whitelist = whitelists.get('right_assignment_for_snake_case', [])
     buildins_ = dir(builtins)
-    for tree in solution_repo.get_ast_trees():
-        names = ast_helpers.get_all_names_from_tree(tree)
+    for parsed_file in solution_repo.get_parsed_py_files():
+        names = ast_helpers.get_all_names_from_tree(parsed_file.ast_tree)
         whitelisted_names = ast_helpers.get_names_from_assignment_with(
-            tree,
+            parsed_file.ast_tree,
             right_assignment_whitelist
         )
-        imported_names = ast_helpers.get_all_imported_names_from_tree(tree)
-        defined_class_names = ast_helpers.get_all_class_definitions_from_tree(tree)
-        namedtuples = ast_helpers.get_all_namedtuple_names(tree)
+        imported_names = ast_helpers.get_all_imported_names_from_tree(parsed_file.ast_tree)
+        defined_class_names = ast_helpers.get_all_class_definitions_from_tree(parsed_file.ast_tree)
+        namedtuples = ast_helpers.get_all_namedtuple_names(parsed_file.ast_tree)
         names_with_uppercase = [n for n in names
                                 if n.lower() != n and n.upper() != n
                                 and n not in imported_names
@@ -64,8 +64,8 @@ def is_snake_case(solution_repo, whitelists, *args, **kwargs):
 
 def has_no_variables_that_shadow_default_names(solution_repo, *args, **kwargs):
     buildins_ = dir(builtins)
-    for tree in solution_repo.get_ast_trees():
-        names = ast_helpers.get_all_defined_names(tree, with_static_class_properties=False)
+    for parsed_file in solution_repo.get_parsed_py_files():
+        names = ast_helpers.get_all_defined_names(parsed_file.ast_tree, with_static_class_properties=False)
         bad_names = names.intersection(buildins_)
         if bad_names:
             return 'title_shadows', ', '.join(bad_names)

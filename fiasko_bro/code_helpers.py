@@ -11,7 +11,7 @@ def count_pep8_violations(repository_info, max_line_length=79, path_whitelist=No
         paths=['--max-line-length', str(max_line_length)],
         quiet=True
     )
-    python_file_paths = repository_info.get_python_file_filenames()
+    python_file_paths = [parsed_file.path for parsed_file in repository_info.get_parsed_py_files()]
     validatable_paths = []
     for python_file_path in python_file_paths:
         for whitelisted_path_part in path_whitelist:

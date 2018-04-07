@@ -4,14 +4,10 @@ from .. import url_helpers
 
 
 def has_no_long_files(solution_repo, max_number_of_lines, *args, **kwargs):
-    for file_path, file_content, _ in solution_repo.get_ast_trees(
-        with_filenames=True,
-        with_file_content=True
-    ):
-        number_of_lines = file_content.count('\n')
+    for parsed_file in solution_repo.get_parsed_py_files():
+        number_of_lines = parsed_file.content.count('\n')
         if number_of_lines > max_number_of_lines:
-            file_name = url_helpers.get_filename_from_path(file_path)
-            return 'file_too_long', file_name
+            return 'file_too_long', parsed_file.name
 
 
 def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
@@ -36,15 +32,10 @@ def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
 
 def has_no_encoding_declaration(solution_repo, whitelists, *args, **kwargs):
     whitelist = whitelists.get('has_no_encoding_declaration', [])
-    for filepath, file_content, _ in solution_repo.get_ast_trees(
-        with_filenames=True,
-        with_file_content=True,
-        whitelist=whitelist,
-    ):
-        first_line = file_content.strip('\n').split('\n')[0].strip().replace(' ', '')
+    for parsed_file in solution_repo.get_parsed_py_files(whitelist=whitelist):
+        first_line = parsed_file.content.strip('\n').split('\n')[0].strip().replace(' ', '')
         if first_line.startswith('#') and 'coding:utf-8' in first_line:
-            filename = url_helpers.get_filename_from_path(filepath)
-            return 'has_encoding_declarations', filename
+            return 'has_encoding_declarations', parsed_file.name
 
 
 def has_no_directories_from_blacklist(solution_repo, blacklists, *args, **kwargs):

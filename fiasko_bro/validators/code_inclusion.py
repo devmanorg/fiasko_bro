@@ -5,8 +5,8 @@ from .. import file_helpers
 
 def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
     violations = []
-    for filename, _ in solution_repo.get_ast_trees(with_filenames=True):
-        violations += code_helpers.get_mccabe_violations_for_file(filename, max_complexity)
+    for parsed_file in solution_repo.get_parsed_py_files():
+        violations += code_helpers.get_mccabe_violations_for_file(parsed_file.path, max_complexity)
     if violations:
         return 'mccabe_failure', ','.join(violations)
 
@@ -19,12 +19,8 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelis
         As a precondition, the code has to pass has_indents_of_spaces.
     """
     whitelist = whitelists.get('is_nesting_too_deep', [])
-    for file_path, file_content, _ in solution_repo.get_ast_trees(
-        with_filenames=True,
-        with_file_content=True,
-        whitelist=whitelist
-    ):
-        lines = file_content.split('\n')
+    for parsed_file in solution_repo.get_parsed_py_files(whitelist=whitelist):
+        lines = parsed_file.content.split('\n')
         previous_line_indent = 0
         for line_number, line in enumerate(lines):
             indentation_spaces_amount = code_helpers.count_indentation_spaces(line, tab_size)
@@ -33,6 +29,5 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelis
                 # make sure it's not a line continuation
                 and indentation_spaces_amount - previous_line_indent == tab_size
             ):
-                file_name = url_helpers.get_filename_from_path(file_path)
-                return 'too_nested', '{}:{}'.format(file_name, line_number)
+                return 'too_nested', '{}:{}'.format(parsed_file.name, line_number)
             previous_line_indent = indentation_spaces_amount
