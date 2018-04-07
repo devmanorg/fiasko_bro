@@ -13,7 +13,7 @@ def syntax_error_repo():
     return repo_path
 
 
-def test_warnings_show_up_after_fail(syntax_error_repo):
+def test_syntax_error_shows_up(syntax_error_repo):
     expected_output = [
         ('syntax_error', 'file_with_syntax_error.py')
     ]
