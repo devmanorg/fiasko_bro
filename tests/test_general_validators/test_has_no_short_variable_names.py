@@ -7,7 +7,7 @@ def test_has_no_short_variable_names_fail(test_repo):
     whitelists = CodeValidator.whitelists
     minimum_name_length = 3
     output = validators.has_no_short_variable_names(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         whitelists=whitelists,
         minimum_name_length=minimum_name_length,
     )
@@ -18,7 +18,7 @@ def test_has_no_short_variable_names_ok(test_repo):
     whitelists = {'has_no_short_variable_names': ['sv']}
     minimum_name_length = 3
     output = validators.has_no_short_variable_names(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         whitelists=whitelists,
         minimum_name_length=minimum_name_length,
     )

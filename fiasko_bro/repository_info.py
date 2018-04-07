@@ -49,14 +49,27 @@ class ParsedPyFile:
         return 'ParsedPyFile object for the file {}'.format(self.name)
 
 
-class LocalRepositoryInfo:
+class LocalRepository:
+
     def __init__(self, repository_path):
-        self.path = repository_path
-        self._repo = git.Repo(self.path)
-        self._parsed_py_files = self._get_parsed_py_files()
+        self._repo = git.Repo(repository_path)
 
     def count_commits(self):
         return len(list(self._repo.iter_commits()))
+
+    def iter_commits(self, *args, **kwargs):
+        return self._repo.iter_commits(*args, **kwargs)
+
+
+class ProjectFolder:
+
+    def __init__(self, path):
+        self.path = path
+        self._parsed_py_files = self._get_parsed_py_files()
+        try:
+            self.repo = LocalRepository(path)
+        except git.InvalidGitRepositoryError:
+            self.repo = None
 
     def does_file_exist(self, filename):
         return os.path.isfile(os.path.join(self.path, filename))
@@ -105,6 +118,3 @@ class LocalRepositoryInfo:
             if dirname == dirname_to_find or dirname_to_find in dirs:
                 return True
         return False
-
-    def iter_commits(self, *args, **kwargs):
-        return self._repo.iter_commits(*args, **kwargs)

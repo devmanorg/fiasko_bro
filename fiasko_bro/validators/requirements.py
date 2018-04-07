@@ -2,8 +2,8 @@ from .. import list_helpers
 from ..i18n import _
 
 
-def has_frozen_requirements(solution_repo, *args, **kwargs):
-    requirements = solution_repo.get_file('requirements.txt')
+def has_frozen_requirements(project_folder, *args, **kwargs):
+    requirements = project_folder.get_file('requirements.txt')
     if not requirements:
         return
     for requirement_line in requirements.split('\n'):
@@ -11,8 +11,8 @@ def has_frozen_requirements(solution_repo, *args, **kwargs):
             return 'unfrozen_requirements', _('for example, %s') % requirement_line
 
 
-def has_no_libs_from_stdlib_in_requirements(solution_repo, *args, **kwargs):
-    raw_requirements = solution_repo.get_file('requirements.txt')
+def has_no_libs_from_stdlib_in_requirements(project_folder, *args, **kwargs):
+    raw_requirements = project_folder.get_file('requirements.txt')
     if not raw_requirements:
         return
 

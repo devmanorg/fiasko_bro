@@ -7,7 +7,7 @@ def test_is_nesting_too_deep_fails(test_repo):
         'max_indentation_level'
     ]
     output = validators.is_nesting_too_deep(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         tab_size=CodeValidator._default_settings['tab_size'],
         max_indentation_level=max_indentation_level,
         whitelists=CodeValidator.whitelists,
@@ -22,7 +22,7 @@ def test_is_nesting_too_deep_succeeds(origin_repo):
         'max_indentation_level'
     ]
     output = validators.is_nesting_too_deep(
-        solution_repo=origin_repo,
+        project_folder=origin_repo,
         tab_size=CodeValidator._default_settings['tab_size'],
         max_indentation_level=max_indentation_level,
         whitelists=CodeValidator.whitelists,

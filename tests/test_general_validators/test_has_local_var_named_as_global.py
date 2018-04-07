@@ -7,7 +7,7 @@ def test_has_local_var_named_as_global_fail(test_repo):
     expected_output = 'has_locals_named_as_globals', _('for example, %s') % 'LOCAL_VAR'
     whitelists = CodeValidator.whitelists
     output = validators.has_local_var_named_as_global(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         whitelists=whitelists,
         max_indentation_level=CodeValidator._default_settings['max_indentation_level']
     )
@@ -22,7 +22,7 @@ def test_has_local_var_named_as_global_ok(test_repo):
         'max_indentation_level'
     ]
     output = validators.has_local_var_named_as_global(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         whitelists=whitelists,
         max_indentation_level=max_indentation_level,
     )

@@ -4,29 +4,29 @@ from .. import ast_helpers
 from ..i18n import _
 
 
-def has_variables_from_blacklist(solution_repo, whitelists, blacklists, *args, **kwargs):
+def has_variables_from_blacklist(project_folder, whitelists, blacklists, *args, **kwargs):
     whitelist = whitelists.get('has_variables_from_blacklist', [])
     blacklist = blacklists.get('has_variables_from_blacklist', [])
-    for parsed_file in solution_repo.get_parsed_py_files(whitelist=whitelist):
+    for parsed_file in project_folder.get_parsed_py_files(whitelist=whitelist):
         names = ast_helpers.get_all_defined_names(parsed_file.ast_tree)
         bad_names = names.intersection(blacklist)
         if bad_names:
             return 'bad_titles', ', '.join(bad_names)
 
 
-def has_local_var_named_as_global(solution_repo, whitelists, max_indentation_level, *args, **kwargs):
+def has_local_var_named_as_global(project_folder, whitelists, max_indentation_level, *args, **kwargs):
     whitelist = whitelists.get('has_local_var_named_as_global', [])
-    for parsed_file in solution_repo.get_parsed_py_files(whitelist=whitelist):
+    for parsed_file in project_folder.get_parsed_py_files(whitelist=whitelist):
         bad_names = ast_helpers.get_local_vars_named_as_globals(parsed_file.ast_tree, max_indentation_level)
         if bad_names:
             message = _('for example, %s') % (', '.join(bad_names))
             return 'has_locals_named_as_globals', message
 
 
-def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, *args, **kwargs):
+def has_no_short_variable_names(project_folder, minimum_name_length, whitelists, *args, **kwargs):
     whitelist = whitelists.get('has_no_short_variable_names', [])
     short_names = []
-    for parsed_file in solution_repo.get_parsed_py_files():
+    for parsed_file in project_folder.get_parsed_py_files():
         names = ast_helpers.get_all_defined_names(parsed_file.ast_tree)
         short_names += [n for n in names
                         if len(n) < minimum_name_length and n not in whitelist]
@@ -34,11 +34,11 @@ def has_no_short_variable_names(solution_repo, minimum_name_length, whitelists, 
         return 'bad_titles', ', '.join(list(set(short_names)))
 
 
-def is_snake_case(solution_repo, whitelists, *args, **kwargs):
+def is_snake_case(project_folder, whitelists, *args, **kwargs):
     whitelist = whitelists.get('is_snake_case', [])
     right_assignment_whitelist = whitelists.get('right_assignment_for_snake_case', [])
     buildins_ = dir(builtins)
-    for parsed_file in solution_repo.get_parsed_py_files():
+    for parsed_file in project_folder.get_parsed_py_files():
         names = ast_helpers.get_all_names_from_tree(parsed_file.ast_tree)
         whitelisted_names = ast_helpers.get_names_from_assignment_with(
             parsed_file.ast_tree,
@@ -62,9 +62,9 @@ def is_snake_case(solution_repo, whitelists, *args, **kwargs):
             return 'camel_case_vars', message
 
 
-def has_no_variables_that_shadow_default_names(solution_repo, *args, **kwargs):
+def has_no_variables_that_shadow_default_names(project_folder, *args, **kwargs):
     buildins_ = dir(builtins)
-    for parsed_file in solution_repo.get_parsed_py_files():
+    for parsed_file in project_folder.get_parsed_py_files():
         names = ast_helpers.get_all_defined_names(parsed_file.ast_tree, with_static_class_properties=False)
         bad_names = names.intersection(buildins_)
         if bad_names:

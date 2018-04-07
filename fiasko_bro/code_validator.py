@@ -3,7 +3,7 @@ import logging
 
 from . import validators
 from . import pre_validation_checks
-from .repository_info import LocalRepositoryInfo
+from .repository_info import ProjectFolder
 from . import config
 
 
@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def validate_repo(path_to_repo, path_to_original_repo=None, **kwargs):
+def validate(project_path, original_project_path=None, **kwargs):
     code_validator = CodeValidator()
-    return code_validator.validate(path_to_repo, path_to_original_repo, **kwargs)
+    return code_validator.validate(project_path, original_project_path, **kwargs)
 
 
 class CodeValidator:
@@ -146,16 +146,16 @@ class CodeValidator:
                 return errors
         return errors
 
-    def validate(self, repo_path, original_repo_path=None, **kwargs):
+    def validate(self, project_path, original_project_path=None, **kwargs):
         self.validator_arguments.update(kwargs)
-        self.validator_arguments['path_to_repo'] = repo_path
-        self.validator_arguments['original_repo_path'] = original_repo_path
+        self.validator_arguments['project_path'] = project_path
+        self.validator_arguments['original_project_path'] = original_project_path
         self.validator_arguments['whitelists'] = self.whitelists
         self.validator_arguments['blacklists'] = self.blacklists
         pre_validation_errors = self.run_validator_group(self.pre_validation_checks)
         if pre_validation_errors:
             return pre_validation_errors
-        self.validator_arguments['solution_repo'] = LocalRepositoryInfo(repo_path)
-        if original_repo_path:
-            self.validator_arguments['original_repo'] = LocalRepositoryInfo(original_repo_path)
+        self.validator_arguments['project_folder'] = ProjectFolder(project_path)
+        if original_project_path:
+            self.validator_arguments['original_project_folder'] = ProjectFolder(original_project_path)
         return self.run_validator_group(self.error_validator_groups, add_warnings=True)

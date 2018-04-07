@@ -3,7 +3,7 @@ import os.path
 import pytest
 
 from .utils import initialize_repo
-from fiasko_bro import validate_repo
+from fiasko_bro import validate
 
 
 @pytest.fixture(scope="module")
@@ -19,5 +19,5 @@ def test_warnings_show_up_after_fail(long_file_3_spaces_repo_path):
         ('file_too_long', 'long_file_3_spaces.py'),
         ('indent_not_four_spaces', 'long_file_3_spaces.py:16')
     ]
-    output = validate_repo(long_file_3_spaces_repo_path)
+    output = validate(long_file_3_spaces_repo_path)
     assert output == expected_output

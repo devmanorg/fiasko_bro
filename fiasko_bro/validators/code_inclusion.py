@@ -3,15 +3,15 @@ from .. import url_helpers
 from .. import file_helpers
 
 
-def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):
+def is_mccabe_difficulty_ok(project_folder, max_complexity, *args, **kwargs):
     violations = []
-    for parsed_file in solution_repo.get_parsed_py_files():
+    for parsed_file in project_folder.get_parsed_py_files():
         violations += code_helpers.get_mccabe_violations_for_file(parsed_file.path, max_complexity)
     if violations:
         return 'mccabe_failure', ','.join(violations)
 
 
-def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelists, *args, **kwargs):
+def is_nesting_too_deep(project_folder, tab_size, max_indentation_level, whitelists, *args, **kwargs):
     """
         Looks at the number of spaces in the beginning and decides if the code is
         too nested.
@@ -19,7 +19,7 @@ def is_nesting_too_deep(solution_repo, tab_size, max_indentation_level, whitelis
         As a precondition, the code has to pass has_indents_of_spaces.
     """
     whitelist = whitelists.get('is_nesting_too_deep', [])
-    for parsed_file in solution_repo.get_parsed_py_files(whitelist=whitelist):
+    for parsed_file in project_folder.get_parsed_py_files(whitelist=whitelist):
         lines = parsed_file.content.split('\n')
         previous_line_indent = 0
         for line_number, line in enumerate(lines):

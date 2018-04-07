@@ -7,7 +7,7 @@ def test_has_variables_from_blacklist_fail(test_repo):
     whitelists = CodeValidator.whitelists
     blacklists = CodeValidator.blacklists
     output = validators.has_variables_from_blacklist(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         whitelists=whitelists,
         blacklists=blacklists,
     )
@@ -20,7 +20,7 @@ def test_has_variables_from_blacklist_with_file_in_whitelist_ok(test_repo):
     ]}
     blacklists = CodeValidator.blacklists
     output = validators.has_variables_from_blacklist(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         whitelists=whitelists,
         blacklists=blacklists,
     )
@@ -33,7 +33,7 @@ def test_has_variables_from_blacklist_with_var_in_blacklist_ok(test_repo):
     blacklist_for_test = blacklists_original.copy()
     blacklist_for_test['has_variables_from_blacklist'].remove('data')
     output = validators.has_variables_from_blacklist(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         whitelists=whitelists,
         blacklists=blacklist_for_test,
     )

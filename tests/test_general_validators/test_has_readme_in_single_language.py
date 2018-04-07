@@ -8,7 +8,7 @@ def test_has_readme_in_single_language_succeeds(test_repo):
         'min_percent_of_another_language'
     ]
     output = validators.has_readme_in_single_language(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         readme_filename=readme_filename,
         min_percent_of_another_language=min_percent,
     )
@@ -22,7 +22,7 @@ def test_has_readme_in_single_language_fails(test_repo):
         'min_percent_of_another_language'
     ]
     output = validators.has_readme_in_single_language(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         readme_filename=readme_filename,
         min_percent_of_another_language=min_percent,
     )

@@ -3,7 +3,7 @@ import os.path
 import pytest
 import git
 
-from fiasko_bro.repository_info import LocalRepositoryInfo
+from fiasko_bro.repository_info import ProjectFolder
 
 
 @pytest.fixture(scope="module")
@@ -14,7 +14,7 @@ def test_repo():
     repo.index.commit('Initial commit')
     repo.index.add(['second_commit_file.py'])
     repo.index.commit('win')
-    return LocalRepositoryInfo(test_repo_dir)
+    return ProjectFolder(test_repo_dir)
 
 
 @pytest.fixture(scope="module")
@@ -23,4 +23,4 @@ def origin_repo():
     repo = git.Repo.init(origin_repo_dir)
     repo.index.add(['initial_file.py'])
     repo.index.commit('Initial commit')
-    return LocalRepositoryInfo(origin_repo_dir)
+    return ProjectFolder(origin_repo_dir)

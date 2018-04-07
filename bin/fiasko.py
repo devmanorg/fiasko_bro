@@ -17,7 +17,7 @@ def main():
     config_path = args.config_path or os.path.join(args.path, 'setup.cfg')
     updated_config = extract_fiasko_config_from_cfg_file(config_path)
     fiasko_bro.config.VALIDATOR_SETTINGS.update(updated_config)
-    violations = fiasko_bro.validate_repo(args.path)
+    violations = fiasko_bro.validate(args.path)
     for violation_slug, violation_message in violations:
         print('%-40s\t%s' % (violation_slug, violation_message))
     print('=' * 50)

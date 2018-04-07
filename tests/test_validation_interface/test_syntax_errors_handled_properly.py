@@ -3,7 +3,7 @@ import os.path
 import pytest
 
 from .utils import initialize_repo
-from fiasko_bro import validate_repo
+from fiasko_bro import validate
 
 
 @pytest.fixture(scope="module")
@@ -17,5 +17,5 @@ def test_syntax_error_shows_up(syntax_error_repo):
     expected_output = [
         ('syntax_error', 'file_with_syntax_error.py')
     ]
-    output = validate_repo(syntax_error_repo)
+    output = validate(syntax_error_repo)
     assert output == expected_output

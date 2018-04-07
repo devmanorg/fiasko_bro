@@ -4,8 +4,8 @@ from .. import ast_helpers
 from .. import url_helpers
 
 
-def has_no_return_with_parenthesis(solution_repo, *args, **kwargs):
-    for parsed_file in solution_repo.get_parsed_py_files():
+def has_no_return_with_parenthesis(project_folder, *args, **kwargs):
+    for parsed_file in project_folder.get_parsed_py_files():
         file_content = parsed_file.content.split('\n')
         return_lines = [n.lineno for n in ast.walk(parsed_file.ast_tree) if isinstance(n, ast.Return)]
         for line_num in return_lines:
@@ -21,8 +21,8 @@ def has_no_return_with_parenthesis(solution_repo, *args, **kwargs):
                 return 'return_with_parenthesis', '{}:{}'.format(parsed_file.name, line_num)
 
 
-def has_no_lines_ends_with_semicolon(solution_repo, *args, **kwargs):
-    for parsed_file in solution_repo.get_parsed_py_files():
+def has_no_lines_ends_with_semicolon(project_folder, *args, **kwargs):
+    for parsed_file in project_folder.get_parsed_py_files():
         total_lines_with_semicolons = len(
             [1 for l in parsed_file.content.split('\n') if l.endswith(';') and not l.startswith('#')]
         )

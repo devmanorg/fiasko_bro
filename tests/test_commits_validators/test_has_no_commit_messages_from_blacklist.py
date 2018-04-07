@@ -6,7 +6,7 @@ def test_has_no_commit_messages_from_blacklist_fails(test_repo):
     expected_output = 'git_history_warning', ''
     last_commits_to_check_amount = CodeValidator._default_settings['last_commits_to_check_amount']
     output = has_no_commit_messages_from_blacklist(
-        solution_repo=test_repo,
+        project_folder=test_repo,
         blacklists=CodeValidator.blacklists,
         last_commits_to_check_amount=last_commits_to_check_amount
     )
@@ -16,7 +16,7 @@ def test_has_no_commit_messages_from_blacklist_fails(test_repo):
 def test_has_no_commit_messages_from_blacklist_succeeds(origin_repo):
     last_commits_to_check_amount = CodeValidator._default_settings['last_commits_to_check_amount']
     output = has_no_commit_messages_from_blacklist(
-        solution_repo=origin_repo,
+        project_folder=origin_repo,
         blacklists=CodeValidator.blacklists,
         last_commits_to_check_amount=last_commits_to_check_amount
     )
