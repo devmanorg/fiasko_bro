@@ -1,12 +1,10 @@
 import os
 import ast
-import copy
 from itertools import filterfalse
 
 import git
 
 from fiasko_bro.config import VALIDATOR_SETTINGS
-from . import file_helpers
 from .url_helpers import get_filename_from_path
 
 
@@ -55,9 +53,6 @@ class LocalRepositoryInfo:
     def __init__(self, repository_path):
         self.path = repository_path
         self._repo = git.Repo(self.path)
-        self._python_filenames, self._main_file_contents, self._ast_trees = (
-            self._get_ast_trees()
-        )
         self._parsed_py_files = self._get_parsed_py_files()
 
     def count_commits(self):
@@ -84,43 +79,10 @@ class LocalRepositoryInfo:
         source_file_contents = list(zip(file_paths, file_contents))
         return source_file_contents
 
-    def _get_ast_trees(self):
-        py_files = list(zip(*self.get_source_file_contents(['.py']))) or [(), ()]
-        filenames, main_file_contents = py_files
-        ast_trees = []
-        for file_content in main_file_contents:
-            try:
-                tree = ast.parse(file_content)
-            except SyntaxError as e:
-                tree = None
-            if tree:
-                self._set_parents(tree)
-            ast_trees.append(tree)
-        return filenames, main_file_contents, ast_trees
-
     def _get_parsed_py_files(self):
         py_files = self.get_source_file_contents(['.py']) or [(), ()]
         parsed_py_files = [ParsedPyFile(path, content) for path, content in py_files]
         return parsed_py_files
-
-    def get_ast_trees(self, with_filenames=False, with_file_content=False, whitelist=None,
-                      with_syntax_error_trees=False):
-        ast_trees_copy = copy.deepcopy(self._ast_trees)
-        all_items = zip(self._python_filenames, self._main_file_contents, ast_trees_copy)
-        filtered_items = self.filter_file_paths(all_items, whitelist)
-
-        if with_filenames:
-            if not with_syntax_error_trees:
-                filtered_items = [r for r in filtered_items if r[2] is not None]
-            if with_file_content:
-                return filtered_items
-            else:
-                return [(f, t) for (f, c, t) in filtered_items]
-        else:
-            if with_syntax_error_trees:
-                return ast_trees_copy
-            else:
-                return [t for t in ast_trees_copy if t is not None]
 
     def get_parsed_py_files(self, whitelist=None):
         parsed_py_files = self._parsed_py_files
@@ -130,9 +92,6 @@ class LocalRepositoryInfo:
                 parsed_py_files
             )
         return iter(parsed_py_files)
-
-    def get_python_file_filenames(self):
-        return self._python_filenames
 
     def get_file(self, filename):
         for dirname, _, files in os.walk(self.path, topdown=True):
@@ -149,21 +108,3 @@ class LocalRepositoryInfo:
 
     def iter_commits(self, *args, **kwargs):
         return self._repo.iter_commits(*args, **kwargs)
-
-    @staticmethod
-    def filter_file_paths(all_items, whitelist):
-        if not whitelist:
-            return all_items
-        filtered_items = []
-        for file_name, file_content, ast_tree in all_items:
-            if not file_helpers.is_filename_in_whitelist(file_name, whitelist):
-                filtered_items.append(
-                    (file_name, file_content, ast_tree)
-                )
-        return filtered_items
-
-    @staticmethod
-    def _set_parents(tree):
-        for node in ast.walk(tree):
-            for child in ast.iter_child_nodes(node):
-                child.parent = node
