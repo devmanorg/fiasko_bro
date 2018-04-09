@@ -104,7 +104,7 @@ class ProjectFolder:
                 lambda parsed_file: parsed_file.is_in_whitelist(whitelist),
                 parsed_py_files
             )
-        return iter(parsed_py_files)
+        return parsed_py_files
 
     def get_file(self, filename):
         for dirname, _, files in os.walk(self.path, topdown=True):
