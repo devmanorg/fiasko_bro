@@ -1,13 +1,12 @@
+from fiasko_bro import defaults
 from fiasko_bro import validators
-from fiasko_bro.code_validator import CodeValidator
 
 
 def test_no_local_imports_fail(test_repo):
     expected_output = 'has_local_import', 'no_local_imports_test_file.py'
-    whitelists = CodeValidator.whitelists
     output = validators.has_no_local_imports(
         project_folder=test_repo,
-        whitelists=whitelists,
+        whitelists=defaults.WHITELISTS,
     )
     assert output == expected_output
 

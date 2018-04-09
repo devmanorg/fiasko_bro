@@ -1,4 +1,8 @@
 import os.path
+from collections import OrderedDict
+
+from . import pre_validation_checks
+from . import validators
 
 
 VALIDATOR_SETTINGS = {
@@ -139,3 +143,82 @@ WHITELISTS = {
         'settings.py',
     ],
 }
+
+PRE_VALIDATION_CHECKS = {
+    'encoding': [
+        pre_validation_checks.are_sources_in_utf
+    ],
+    'size': [
+        pre_validation_checks.are_repos_too_large
+    ],
+    'bom': [
+        pre_validation_checks.has_no_bom
+    ]
+}
+
+ERROR_VALIDATOR_GROUPS = OrderedDict(
+    [
+        (
+            'commits',
+            [validators.has_more_commits_than_origin],
+        ),
+        (
+            'readme',
+            [validators.has_readme_file],
+        ),
+        (
+            'syntax',
+            [validators.has_no_syntax_errors],
+        ),
+        (
+            'general',
+            [
+                validators.has_no_directories_from_blacklist,
+                validators.is_pep8_fine,
+                validators.has_changed_readme,
+                validators.is_snake_case,
+                validators.is_mccabe_difficulty_ok,
+                validators.has_no_encoding_declaration,
+                validators.has_no_star_imports,
+                validators.has_no_local_imports,
+                validators.has_local_var_named_as_global,
+                validators.has_variables_from_blacklist,
+                validators.has_no_short_variable_names,
+                validators.has_no_range_from_zero,
+                validators.are_tabs_used_for_indentation,
+                validators.has_no_try_without_exception,
+                validators.has_frozen_requirements,
+                validators.has_no_vars_with_lambda,
+                validators.has_no_calls_with_constants,
+                validators.has_readme_in_single_language,
+                validators.has_no_urls_with_hardcoded_arguments,
+                validators.has_no_nonpythonic_empty_list_validations,
+                validators.has_no_extra_dockstrings,
+                validators.has_no_exit_calls_in_functions,
+                validators.has_no_libs_from_stdlib_in_requirements,
+                validators.has_no_lines_ends_with_semicolon,
+                validators.not_validates_response_status_by_comparing_to_200,
+                validators.has_no_mutable_default_arguments,
+                validators.has_no_slices_starts_from_zero,
+                validators.has_no_cast_input_result_to_str,
+                validators.has_no_return_with_parenthesis,
+                validators.has_no_long_files,
+                validators.is_nesting_too_deep,
+                validators.has_no_string_literal_sums,
+            ],
+        ),
+    ]
+)
+
+WARNING_VALIDATOR_GROUPS = {
+    'commits': [
+        validators.has_no_commit_messages_from_blacklist,
+    ],
+    'syntax': [
+        validators.has_indents_of_spaces,
+        validators.has_no_variables_that_shadow_default_names,
+    ]
+}
+
+for name in WARNING_VALIDATOR_GROUPS:
+    assert name in ERROR_VALIDATOR_GROUPS.keys()
