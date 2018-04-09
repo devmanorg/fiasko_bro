@@ -147,11 +147,11 @@ class CodeValidator:
         return errors
 
     def validate(self, project_path, original_project_path=None, **kwargs):
-        self.validator_arguments.update(kwargs)
         self.validator_arguments['project_path'] = project_path
         self.validator_arguments['original_project_path'] = original_project_path
         self.validator_arguments['whitelists'] = self.whitelists
         self.validator_arguments['blacklists'] = self.blacklists
+        self.validator_arguments.update(kwargs)
         pre_validation_errors = self.run_validator_group(self.pre_validation_checks)
         if pre_validation_errors:
             return pre_validation_errors
