@@ -44,8 +44,8 @@ def count_indentation_spaces(line, tab_size=4):
     return len(line) - len(expanded_line.lstrip())
 
 
-def is_repo_too_large(path_to_repo, max_py_files_count):
-    num_of_py_files = count_py_files(path_to_repo)
+def is_repo_too_large(path_to_repo, directories_to_skip, max_py_files_count):
+    num_of_py_files = count_py_files(path_to_repo, directories_to_skip)
     if num_of_py_files > max_py_files_count:
         return True
     return False
