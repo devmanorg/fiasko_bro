@@ -20,7 +20,7 @@ VALIDATOR_SETTINGS = {
     ]
 }
 
-DEFAULT_BLACKLISTS = {
+BLACKLISTS = {
     'has_variables_from_blacklist': [
         'list',
         'lists',
@@ -69,7 +69,7 @@ DEFAULT_BLACKLISTS = {
     ],
 }
 
-DEFAULT_WHITELISTS = {
+WHITELISTS = {
     'has_no_short_variable_names': [
         'a',
         'b',

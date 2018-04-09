@@ -4,7 +4,7 @@ from itertools import filterfalse
 
 import git
 
-from fiasko_bro.config import VALIDATOR_SETTINGS
+from .defaults import VALIDATOR_SETTINGS
 from .url_helpers import get_filename_from_path
 
 

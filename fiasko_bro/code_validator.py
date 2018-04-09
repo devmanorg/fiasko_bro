@@ -3,7 +3,7 @@ from collections import OrderedDict
 from . import validators
 from . import pre_validation_checks
 from .repository_info import ProjectFolder
-from . import config
+from . import defaults
 
 
 def validate(project_path, original_project_path=None, **kwargs):
@@ -12,11 +12,11 @@ def validate(project_path, original_project_path=None, **kwargs):
 
 
 class CodeValidator:
-    blacklists = config.DEFAULT_BLACKLISTS
+    blacklists = defaults.BLACKLISTS
 
-    whitelists = config.DEFAULT_WHITELISTS
+    whitelists = defaults.WHITELISTS
 
-    _default_settings = config.VALIDATOR_SETTINGS
+    _default_settings = defaults.VALIDATOR_SETTINGS
 
     pre_validation_checks = {
         'encoding': [

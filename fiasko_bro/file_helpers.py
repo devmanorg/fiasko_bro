@@ -1,6 +1,6 @@
 import os
 
-from fiasko_bro.config import VALIDATOR_SETTINGS
+from fiasko_bro.defaults import VALIDATOR_SETTINGS
 
 
 def count_py_files(directory):

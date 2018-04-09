@@ -1,6 +1,7 @@
 import os
 import codecs
-from fiasko_bro.config import VALIDATOR_SETTINGS
+
+from ..defaults import VALIDATOR_SETTINGS
 
 
 def has_no_bom(project_path, *args, **kwargs):

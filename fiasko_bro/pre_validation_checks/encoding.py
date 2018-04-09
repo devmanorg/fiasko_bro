@@ -1,6 +1,6 @@
 import os
 
-from fiasko_bro.config import VALIDATOR_SETTINGS
+from ..defaults import VALIDATOR_SETTINGS
 from ..file_helpers import is_in_utf8
 
 
