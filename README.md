@@ -36,10 +36,10 @@ See `fiasko --help` for more CLI arguments.
 From python code:
 ```python
 >>> import fiasko_bro
->>> fiasko_bro.validate_repo('/path/to/repo/')
+>>> fiasko_bro.validate('/path/to/folder/')
 [('camel_case_vars', 'for example, rename the following: WorkBook'), ('file_too_long', 'coursera.py')]
 ```
-The `validate_repo` method returns list of tuples which consist of an error slug and an error message.
+The `validate` method returns list of tuples which consist of an error slug and an error message.
 
 
 ### Installation

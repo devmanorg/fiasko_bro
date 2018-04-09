@@ -34,7 +34,7 @@ Usage
 Here's the simplest usage example::
 
     >>> import fiasko_bro
-    >>> fiasko_bro.validate_repo('/path/to/repo/')
+    >>> fiasko_bro.validate('/path/to/repo/')
     [('camel_case_vars', 'for example, rename the following: WorkBook'), ('file_too_long', 'source_file.py')]
 
 
