@@ -1,14 +1,9 @@
 from collections import OrderedDict
-import logging
 
 from . import validators
 from . import pre_validation_checks
 from .repository_info import ProjectFolder
 from . import config
-
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 def validate(project_path, original_project_path=None, **kwargs):
