@@ -38,6 +38,7 @@ def run_validator_group(validator_group, validator_arguments, post_error_validat
                 )
             return errors
         successful_group_names.append(group_name)
+    return []
 
 
 def _construct_validator_arguments(project_path, **kwargs):
