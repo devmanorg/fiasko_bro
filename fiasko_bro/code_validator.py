@@ -54,8 +54,13 @@ def _construct_validator_arguments(project_path, **kwargs):
 
 def validate(project_path, original_project_path=None, **kwargs):
     pre_validation_checks = kwargs.pop('pre_validation_checks', None) or defaults.PRE_VALIDATION_CHECKS
-    error_validator_groups = kwargs.pop('error_validator_groups', None) or defaults.ERROR_VALIDATOR_GROUPS
-    warning_validator_groups = kwargs.pop('warning_validator_groups', None) or defaults.WARNING_VALIDATOR_GROUPS
+    error_validator_groups = kwargs.pop('error_validator_groups', None)
+    warning_validator_groups = kwargs.pop('warning_validator_groups', None)
+    if not error_validator_groups:
+        error_validator_groups = defaults.ERROR_VALIDATOR_GROUPS
+        # use default warning groups only with default error groups
+        if not warning_validator_groups:
+            warning_validator_groups = defaults.WARNING_VALIDATOR_GROUPS
     validator_arguments = _construct_validator_arguments(
         project_path,
         original_project_path=original_project_path,
