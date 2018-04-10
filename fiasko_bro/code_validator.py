@@ -66,9 +66,15 @@ def validate(project_path, original_project_path=None, **kwargs):
     if pre_validation_errors:
         return pre_validation_errors
 
-    validator_arguments['project_folder'] = ProjectFolder(project_path)
+    validator_arguments['project_folder'] = ProjectFolder(
+        project_path,
+        directories_to_skip=validator_arguments['directories_to_skip']
+    )
     if original_project_path:
-        validator_arguments['original_project_folder'] = ProjectFolder(original_project_path)
+        validator_arguments['original_project_folder'] = ProjectFolder(
+            original_project_path,
+            directories_to_skip=validator_arguments['directories_to_skip']
+        )
     return run_validator_group(
         validator_group=error_validator_groups,
         validator_arguments=validator_arguments,

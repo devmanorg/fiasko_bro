@@ -4,7 +4,6 @@ from itertools import filterfalse
 
 import git
 
-from .defaults import VALIDATOR_SETTINGS
 from .url_helpers import get_filename_from_path
 
 
@@ -63,9 +62,9 @@ class LocalRepository:
 
 class ProjectFolder:
 
-    def __init__(self, path):
+    def __init__(self, path, directories_to_skip=None):
         self.path = path
-        self._parsed_py_files = self._get_parsed_py_files()
+        self._parsed_py_files = self._get_parsed_py_files(directories_to_skip)
         try:
             self.repo = LocalRepository(path)
         except git.InvalidGitRepositoryError:
@@ -74,13 +73,14 @@ class ProjectFolder:
     def does_file_exist(self, filename):
         return os.path.isfile(os.path.join(self.path, filename))
 
-    def get_source_file_contents(self, extension_list):
+    def get_source_file_contents(self, extension_list, directories_to_skip=None):
         file_paths = []
         file_contents = []
+        directories_to_skip = directories_to_skip or []
         for dirname, directories_list, filenames in os.walk(self.path, topdown=True):
             directories_list[:] = [
                 d for d in directories_list
-                if d not in VALIDATOR_SETTINGS['directories_to_skip']
+                if d not in directories_to_skip
             ]
             for filename in filenames:
                 extension = os.path.splitext(filename)[1]
@@ -92,8 +92,8 @@ class ProjectFolder:
         source_file_contents = list(zip(file_paths, file_contents))
         return source_file_contents
 
-    def _get_parsed_py_files(self):
-        py_files = self.get_source_file_contents(['.py']) or [(), ()]
+    def _get_parsed_py_files(self, directories_to_skip=None):
+        py_files = self.get_source_file_contents(['.py'], directories_to_skip) or [(), ()]
         parsed_py_files = [ParsedPyFile(path, content) for path, content in py_files]
         return parsed_py_files
 

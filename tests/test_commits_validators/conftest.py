@@ -4,6 +4,7 @@ import pytest
 import git
 
 from fiasko_bro.repository_info import ProjectFolder
+from fiasko_bro import defaults
 
 
 @pytest.fixture(scope="module")
@@ -14,7 +15,8 @@ def test_repo():
     repo.index.commit('Initial commit')
     repo.index.add(['second_commit_file.py'])
     repo.index.commit('win')
-    return ProjectFolder(test_repo_dir)
+    directories_to_skip = defaults.VALIDATOR_SETTINGS['directories_to_skip']
+    return ProjectFolder(test_repo_dir, directories_to_skip)
 
 
 @pytest.fixture(scope="module")
@@ -23,4 +25,5 @@ def origin_repo():
     repo = git.Repo.init(origin_repo_dir)
     repo.index.add(['initial_file.py'])
     repo.index.commit('Initial commit')
-    return ProjectFolder(origin_repo_dir)
+    directories_to_skip = defaults.VALIDATOR_SETTINGS['directories_to_skip']
+    return ProjectFolder(origin_repo_dir, directories_to_skip)

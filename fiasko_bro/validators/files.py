@@ -10,10 +10,10 @@ def has_no_long_files(project_folder, max_number_of_lines, *args, **kwargs):
             return 'file_too_long', parsed_file.name
 
 
-def are_tabs_used_for_indentation(project_folder, *args, **kwargs):
+def are_tabs_used_for_indentation(project_folder, directories_to_skip, *args, **kwargs):
     frontend_extensions = ['.html', '.css', '.js']
     relevant_extensions = frontend_extensions + ['.py']
-    files_info = project_folder.get_source_file_contents(relevant_extensions)
+    files_info = project_folder.get_source_file_contents(relevant_extensions, directories_to_skip)
     if not files_info:
         return
     for filepath, file_content in files_info:
