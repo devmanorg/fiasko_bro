@@ -18,4 +18,4 @@ def has_no_commit_messages_from_blacklist(project_folder, blacklists, last_commi
     for commit in project_folder.repo.iter_commits('master', max_count=last_commits_to_check_amount):
         message = commit.message.lower().strip().strip('.\'"')
         if message in blacklist:
-            return 'git_history_warning', ''
+            return 'git_history_warning', message
