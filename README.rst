@@ -4,23 +4,23 @@ Fiasko Bro
    When flake8 is not enough.
 
 .. image:: https://travis-ci.org/devmanorg/fiasko_bro.svg?branch=master
-    :target: https://travis-ci.org/devmanorg/fiasko_bro
+   :target: https://travis-ci.org/devmanorg/fiasko_bro
    :alt: Build Status
 
 .. image:: https://codecov.io/gh/devmanorg/fiasko_bro/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/devmanorg/fiasko_bro
+   :target: https://codecov.io/gh/devmanorg/fiasko_bro
    :alt: codecov
 
 .. image:: https://readthedocs.org/projects/fiasko-bro/badge/?version=latest
-    :target: http://fiasko-bro.readthedocs.io/en/latest/?badge=latest
+   :target: http://fiasko-bro.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
 .. image:: https://api.codeclimate.com/v1/badges/4f26aec50f07294b37e3/maintainability
-    :target: https://codeclimate.com/github/devmanorg/fiasko_bro/maintainability
+   :target: https://codeclimate.com/github/devmanorg/fiasko_bro/maintainability
    :alt: Maintainability
 
 .. image:: https://badge.fury.io/py/Fiasko-Bro.svg
-    :target: https://badge.fury.io/py/Fiasko-Bro
+   :target: https://badge.fury.io/py/Fiasko-Bro
    :alt: PyPI version
 
 Fiasko is a static analysis tool for Python code that catches common style errors.
