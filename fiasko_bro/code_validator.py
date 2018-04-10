@@ -15,7 +15,7 @@ def _run_validator_group(group, arguments):
     return errors
 
 
-def _run_validators_for_group_names(validator_groups, group_names, validator_arguments):
+def _run_validators_with_group_names(validator_groups, group_names, validator_arguments):
     errors = []
     for group_name in group_names:
         errors += _run_validator_group(
@@ -31,7 +31,7 @@ def run_validator_group(validator_group, validator_arguments, post_error_validat
         errors = _run_validator_group(group, validator_arguments)
         if errors:
             if post_error_validator_group:
-                errors += _run_validators_for_group_names(
+                errors += _run_validators_with_group_names(
                     post_error_validator_group,
                     group_names=successful_group_names,
                     validator_arguments=validator_arguments
