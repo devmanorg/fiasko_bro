@@ -47,7 +47,7 @@ def _construct_validator_arguments(project_path, **kwargs):
         'whitelists': defaults.WHITELISTS,
         'blacklists': defaults.BLACKLISTS,
     }
-    validator_arguments.update(defaults.VALIDATOR_SETTINGS)
+    validator_arguments.update(defaults.VALIDATION_PARAMETERS)
     validator_arguments.update(kwargs)
     return validator_arguments
 

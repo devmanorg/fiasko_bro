@@ -5,7 +5,7 @@ from . import pre_validation_checks
 from . import validators
 
 
-VALIDATOR_SETTINGS = {
+VALIDATION_PARAMETERS = {
     'readme_filename': 'README.md',
     'allowed_max_pep8_violations': 5,
     'max_complexity': 7,

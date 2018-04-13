@@ -15,7 +15,7 @@ def test_repo():
     repo.index.commit('Initial commit')
     repo.index.add(['second_commit_file.py'])
     repo.index.commit('win')
-    directories_to_skip = defaults.VALIDATOR_SETTINGS['directories_to_skip']
+    directories_to_skip = defaults.VALIDATION_PARAMETERS['directories_to_skip']
     return ProjectFolder(test_repo_dir, directories_to_skip)
 
 
@@ -25,5 +25,5 @@ def origin_repo():
     repo = git.Repo.init(origin_repo_dir)
     repo.index.add(['initial_file.py'])
     repo.index.commit('Initial commit')
-    directories_to_skip = defaults.VALIDATOR_SETTINGS['directories_to_skip']
+    directories_to_skip = defaults.VALIDATION_PARAMETERS['directories_to_skip']
     return ProjectFolder(origin_repo_dir, directories_to_skip)
