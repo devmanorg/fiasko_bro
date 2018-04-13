@@ -42,7 +42,7 @@ class ParsedPyFile:
         return self.ast_tree is not None
 
     def __str__(self):
-        return 'ParsedPyFile object for the file {}'.format(self.name)
+        return self.name
 
     def __repr__(self):
         return 'ParsedPyFile object for the file {}'.format(self.name)
