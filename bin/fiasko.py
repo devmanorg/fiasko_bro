@@ -1,9 +1,7 @@
 import os
 import argparse
-import copy
 
 from fiasko_bro import validate
-from fiasko_bro import defaults
 from fiasko_bro.configparser_helpers import extract_fiasko_config_from_cfg_file
 
 
@@ -18,9 +16,7 @@ def main():
     args = parse_args()
     config_path = args.config_path or os.path.join(args.path, 'setup.cfg')
     updated_config = extract_fiasko_config_from_cfg_file(config_path)
-    settings = copy.deepcopy(defaults.VALIDATOR_SETTINGS)
-    settings.update(updated_config)
-    violations = validate(args.path, **settings)
+    violations = validate(args.path, **updated_config)
     for violation_slug, violation_message in violations:
         print('%-40s\t%s' % (violation_slug, violation_message))
     print('=' * 50)
