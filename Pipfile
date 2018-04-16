@@ -7,10 +7,12 @@ name = "pypi"
 
 [packages]
 
-gitpython = "*"
-stdlib-list = "*"
-mccabe = "*"
-"pep8" = "*"
+GitPython = "==2.1.8"
+stdlib-list = "==0.4.0"
+mccabe = "==0.6.1"
+"pep8" = "==1.7.1"
+"gitdb2" = "==2.0.3"
+"smmap2" = "==2.0.3"
 
 
 [dev-packages]
@@ -18,5 +20,5 @@ mccabe = "*"
 pytest = "*"
 pytest-cov = "*"
 codecov = "*"
-babel = "*"
+Babel = "*"
 tox = "*"
