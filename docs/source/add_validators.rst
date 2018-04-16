@@ -83,10 +83,30 @@ that it could tolerate some number of files with a syntax error:
     }
     print(validate('/Users/project', max_syntax_error_files_amount=2, error_validator_groups=validator_groups))
 
-Whitelists and blacklists
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Ignored paths
+~~~~~~~~~~~~~~~~~~~
 
-    The docs are postponed since the mechanism is `going to be changed <https://github.com/devmanorg/fiasko_bro/issues/102>`_ soon.
+Suppose we want to ignore some of the files and directories while we validating for syntax errors.
+This is how it can be done:
+
+.. code-block:: python
+
+    from fiasko_bro import validate
+
+
+    def has_almost_no_syntax_errors(project_folder, syntax_files_to_ignore, *args, **kwargs):
+        for parsed_file in project_folder.get_parsed_py_files(whitelist=syntax_files_to_ignore):
+            if not parsed_file.is_syntax_correct:
+                return 'syntax_error', parsed_file.name
+
+
+    validator_groups = {
+        'general': [has_almost_no_syntax_errors]
+    }
+    ignore_list = ['trash.py', 'garbage.py']
+    print(validate('/Users/project', syntax_files_to_ignore=ignore_list, error_validator_groups=validator_groups))
+
+Now, if ``trash.py`` is a part of a file's path, the file is not going to be returned by ``get_parsed_py_files`` method.
 
 Validator return values
 ^^^^^^^^^^^^^^^^^^^^^^^

@@ -54,11 +54,6 @@ Here's a part of Fiasko's own ``setup.cfg`` file::
 Python API doesn't take into consideration the ``setup.cfg`` parameters.
 This is a `subject to discussion <https://github.com/devmanorg/fiasko_bro/issues/105>`_.
 
-Overriding blacklists and whitelists
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    The docs are postponed since the mechanism is `going to be changed <https://github.com/devmanorg/fiasko_bro/issues/102>`_ soon.
-
 "Original" repo
 ^^^^^^^^^^^^^^^
 
