@@ -79,7 +79,7 @@ that it could tolerate some number of files with a syntax error:
 
 
     validator_groups = {
-        'general': []
+        'general': [has_almost_no_syntax_errors]
     }
     print(validate('/Users/project', max_syntax_error_files_amount=2, error_validator_groups=validator_groups))
 
@@ -188,8 +188,8 @@ The error validators are expected to be grouped according to their purpose, like
                 [validators.has_more_commits_than_origin],
             ),
             (
-                'readme',
-                [validators.has_readme_file],
+                'syntax',
+                [validators.has_no_syntax_errors],
             ),
             ...
             (
@@ -202,7 +202,8 @@ The error validators are expected to be grouped according to their purpose, like
         ]
     )
 
-Here, for example, you have the group ``general`` that consists of a list of validators.
+Here, for example, you have the group ``general`` that consists of a list of validators. We used ``OrderedDict``
+because the order in which the validator groups run matters.
 
 In each group, every single validator is executed.
 If one of the validators in the group fails, the ``validate`` method executes the rest of the group and then

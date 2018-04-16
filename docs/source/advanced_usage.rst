@@ -11,8 +11,10 @@ If you want to override the default values, just pass the parameters to ``valida
 
 .. code-block:: python
 
-    >>> from fiasko_bro import validate
-    >>> validate('/user/projects/fiasko_bro/', directories_to_skip=['build', 'dist', 'test_fixtures', '.pytest_cache'])
+    >>> from fiasko_bro import validate, defaults
+    >>> default_directories_to_skip = defaults.VALIDATION_PARAMETERS['directories_to_skip']
+    >>> directories_to_skip = default_directories_to_skip.union({'test_fixtures', '.pytest_cache', 'venv'})
+    >>> validate('/user/projects/fiasko_bro/', directories_to_skip=directories_to_skip)
 
 The names of the parameters tend to be self-explanatory.
 They also have sensible defaults so you didn't have to worry about them until absolutely have to.
