@@ -4,9 +4,14 @@ from .. import ast_helpers
 from .. import url_helpers
 
 
-def has_no_extra_dockstrings(project_folder, whitelists, functions_with_docstrings_percent_limit, *args, **kwargs):
-    whitelist = whitelists.get('has_no_extra_dockstrings_whitelist', [])
-    for parsed_file in project_folder.get_parsed_py_files(whitelist=whitelist):
+def has_no_extra_dockstrings(
+    project_folder,
+    extra_dockstrings_paths_to_ignore,
+    functions_with_docstrings_percent_limit,
+    *args,
+    **kwargs
+):
+    for parsed_file in project_folder.get_parsed_py_files(whitelist=extra_dockstrings_paths_to_ignore):
         defs = ast_helpers.get_nodes_of_type(parsed_file.ast_tree, ast.FunctionDef)
         if not defs:
             continue

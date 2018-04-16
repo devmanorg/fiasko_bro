@@ -44,8 +44,6 @@ def run_validator_group(validator_group, validator_arguments, post_error_validat
 def _construct_validator_arguments(project_path, **kwargs):
     validator_arguments = {
         'project_path': project_path,
-        'whitelists': defaults.WHITELISTS,
-        'blacklists': defaults.BLACKLISTS,
     }
     validator_arguments.update(defaults.VALIDATION_PARAMETERS)
     validator_arguments.update(kwargs)

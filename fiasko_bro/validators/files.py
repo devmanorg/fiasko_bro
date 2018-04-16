@@ -30,16 +30,14 @@ def are_tabs_used_for_indentation(project_folder, directories_to_skip, *args, **
             return 'tabs_used_for_indents', filename
 
 
-def has_no_encoding_declaration(project_folder, whitelists, *args, **kwargs):
-    whitelist = whitelists.get('has_no_encoding_declaration', [])
-    for parsed_file in project_folder.get_parsed_py_files(whitelist=whitelist):
+def has_no_encoding_declaration(project_folder, encoding_declarations_paths_to_ignore, *args, **kwargs):
+    for parsed_file in project_folder.get_parsed_py_files(whitelist=encoding_declarations_paths_to_ignore):
         first_line = parsed_file.content.strip('\n').split('\n')[0].strip().replace(' ', '')
         if first_line.startswith('#') and 'coding:utf-8' in first_line:
-            return 'has_encoding_declarations', parsed_file.name
+            return 'has_encoding_declarations_paths_to_ignore', parsed_file.name
 
 
-def has_no_directories_from_blacklist(project_folder, blacklists, *args, **kwargs):
-    blacklist = blacklists.get('has_no_directories_from_blacklist', [])
-    for dirname in blacklist:
+def has_no_directories_from_blacklist(project_folder, data_directories, *args, **kwargs):
+    for dirname in data_directories:
         if project_folder.does_directory_exist(dirname):
             return 'data_in_repo', dirname

@@ -7,18 +7,17 @@ def test_has_no_short_variable_names_fail(test_repo):
     minimum_name_length = 3
     output = validators.has_no_short_variable_names(
         project_folder=test_repo,
-        whitelists=defaults.WHITELISTS,
+        valid_short_variable_names=defaults.VALIDATION_PARAMETERS['valid_short_variable_names'],
         minimum_name_length=minimum_name_length,
     )
     assert output == expected_output
 
 
 def test_has_no_short_variable_names_ok(test_repo):
-    whitelists = {'has_no_short_variable_names': ['sv']}
     minimum_name_length = 3
     output = validators.has_no_short_variable_names(
         project_folder=test_repo,
-        whitelists=whitelists,
+        valid_short_variable_names=['sv'],
         minimum_name_length=minimum_name_length,
     )
     assert output is None

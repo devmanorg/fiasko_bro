@@ -11,15 +11,14 @@ def is_mccabe_difficulty_ok(project_folder, max_complexity, *args, **kwargs):
         return 'mccabe_failure', ','.join(violations)
 
 
-def is_nesting_too_deep(project_folder, tab_size, max_indentation_level, whitelists, *args, **kwargs):
+def is_nesting_too_deep(project_folder, tab_size, max_indentation_level, deep_nesting_paths_to_ignore, *args, **kwargs):
     """
         Looks at the number of spaces in the beginning and decides if the code is
         too nested.
 
         As a precondition, the code has to pass has_indents_of_spaces.
     """
-    whitelist = whitelists.get('is_nesting_too_deep', [])
-    for parsed_file in project_folder.get_parsed_py_files(whitelist=whitelist):
+    for parsed_file in project_folder.get_parsed_py_files(whitelist=deep_nesting_paths_to_ignore):
         lines = parsed_file.content.split('\n')
         previous_line_indent = 0
         for line_number, line in enumerate(lines):

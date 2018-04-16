@@ -8,12 +8,11 @@ from ..i18n import _
 
 
 def is_pep8_fine(project_folder, allowed_max_pep8_violations,
-                 max_pep8_line_length, whitelists, *args, **kwargs):
-    whitelist = whitelists.get('is_pep8_fine', [])
+                 max_pep8_line_length, pep8_paths_to_ignore, *args, **kwargs):
     violations_amount = code_helpers.count_pep8_violations(
         project_folder,
         max_line_length=max_pep8_line_length,
-        path_whitelist=whitelist
+        path_whitelist=pep8_paths_to_ignore
     )
     if violations_amount > allowed_max_pep8_violations:
         return 'pep8', _('%s PEP8 violations') % violations_amount
@@ -73,12 +72,11 @@ def has_no_nonpythonic_empty_list_validations(project_folder, *args, **kwargs):
                 return 'nonpythonic_empty_list_validation', '{}:{}'.format(parsed_file.name, compare.lineno)
 
 
-def has_no_exit_calls_in_functions(project_folder, whitelists, *args, **kwargs):
-    whitelist = whitelists.get('has_no_exit_calls_in_functions', [])
+def has_no_exit_calls_in_functions(project_folder, functions_allowed_to_have_exit_calls, *args, **kwargs):
     for parsed_file in project_folder.get_parsed_py_files():
         defs = ast_helpers.get_nodes_of_type(parsed_file.ast_tree, ast.FunctionDef)
         for function_definition in defs:
-            if function_definition.name in whitelist:
+            if function_definition.name in functions_allowed_to_have_exit_calls:
                 continue
             if ast_helpers.has_exit_calls(function_definition):
                 return 'has_exit_calls_in_function', function_definition.name
@@ -126,12 +124,11 @@ def has_no_string_literal_sums(project_folder, *args, **kwargs):
                     return 'has_string_sum', '{}: {}'.format(parsed_file.name, node.lineno)
 
 
-def has_no_calls_with_constants(project_folder, whitelists, *args, **kwargs):
-    whitelist = whitelists.get('has_no_calls_with_constants')
+def has_no_calls_with_constants(project_folder, valid_calls_with_constants, *args, **kwargs):
     for parsed_file in project_folder.get_parsed_py_files():
         if 'tests' in parsed_file.path:  # tests can have constants in asserts
             continue
         calls = ast_helpers.get_nodes_of_type(parsed_file.ast_tree, ast.Call)
         for call in calls:
-            if ast_helpers.is_call_has_constants(call, whitelist):
+            if ast_helpers.is_call_has_constants(call, valid_calls_with_constants):
                 return 'magic_numbers', '{}:{}'.format(parsed_file.name, call.lineno)

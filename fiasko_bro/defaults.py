@@ -21,11 +21,8 @@ VALIDATION_PARAMETERS = {
     'directories_to_skip': [
         'build',
         'dist',
-    ]
-}
-
-BLACKLISTS = {
-    'has_variables_from_blacklist': [
+    ],
+    'bad_variable_names': [
         'list',
         'lists',
         'input',
@@ -42,7 +39,7 @@ BLACKLISTS = {
         'info',
         'n',
     ],
-    'has_no_commit_messages_from_blacklist': [
+    'bad_commit_messages': [
         'win',
         'commit',
         'commit#1',
@@ -66,15 +63,12 @@ BLACKLISTS = {
         'fixes',
         '',
     ],
-    'has_no_directories_from_blacklist': [
+    'data_directories': [
         '.idea',
         '__pycache__',
         '.vscode',
     ],
-}
-
-WHITELISTS = {
-    'has_no_short_variable_names': [
+    'valid_short_variable_names': [
         'a',
         'b',
         'c',
@@ -86,7 +80,7 @@ WHITELISTS = {
         'y2',
         '_',
     ],
-    'has_no_calls_with_constants': [
+    'valid_calls_with_constants': [
         'pow',
         'exit',
         'round',
@@ -100,7 +94,7 @@ WHITELISTS = {
         'combinations',
         'seek',
     ],
-    'is_snake_case': [
+    'valid_non_snake_case_left_hand_values': [
         # from sqlalchemy.sqlalchemy.orm.sessionmaker
         'Session',
         # from sqlalchemy.ext.automap
@@ -109,34 +103,34 @@ WHITELISTS = {
         'Order',
         'Address',
     ],
-    'right_assignment_for_snake_case': [
+    'valid_non_snake_case_right_hand_values': [
         'Base',
     ],
-    'has_no_exit_calls_in_functions': [
+    'functions_allowed_to_have_exit_calls': [
         'main',
     ],
-    'is_pep8_fine': [
+    'pep8_paths_to_ignore': [
         '{sep}migrations{sep}'.format(sep=os.path.sep),
         '{sep}alembic{sep}'.format(sep=os.path.sep),
         'manage.py',
     ],
-    'has_no_encoding_declaration': [
+    'encoding_declarations_paths_to_ignore': [
         '{sep}migrations{sep}'.format(sep=os.path.sep),
     ],
-    'has_no_local_imports': [
+    'local_imports_paths_to_ignore': [
         'manage.py',
     ],
-    'has_local_var_named_as_global': [
+    'local_var_named_as_global_paths_to_ignore': [
         'settings.py',
     ],
-    'has_variables_from_blacklist': [
+    'bad_variables_paths_to_ignore': [
         'apps.py',
     ],
-    'has_no_extra_dockstrings_whitelist': [
+    'extra_dockstrings_paths_to_ignore': [
         '{sep}migrations{sep}'.format(sep=os.path.sep),
         '{sep}alembic{sep}'.format(sep=os.path.sep),
     ],
-    'is_nesting_too_deep': [
+    'deep_nesting_paths_to_ignore': [
         '{sep}migrations{sep}'.format(sep=os.path.sep),
         '{sep}alembic{sep}'.format(sep=os.path.sep),
         'manage.py',
