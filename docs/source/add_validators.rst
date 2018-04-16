@@ -132,8 +132,6 @@ Consider the example:
 
 .. code-block:: python
 
-    import copy
-
     from fiasko_bro import validate, defaults
 
 
@@ -141,8 +139,8 @@ Consider the example:
         pass
 
 
-    validator_groups = copy.deepcopy(defaults.ERROR_VALIDATOR_GROUPS)
-    validator_groups['general'].append(my_fancy_validator)
+    validator_groups = defaults.ERROR_VALIDATOR_GROUPS.copy()
+    validator_groups['general'] += (my_fancy_validator,)
     print(
         validate(
             '/Users/project',
@@ -161,7 +159,7 @@ The intricacies
 
 The are two kinds of validators: error validators and warning validators.
 The difference between them is that warning validators don't halt the validation process, while the error validators do.
-The error validators are expected to be grouped according to their purpose, like so (this is a part of the default error validator group)::
+The error validators are expected to be grouped according to their purpose, like so::
 
     ERROR_VALIDATOR_GROUPS = OrderedDict(
         [
