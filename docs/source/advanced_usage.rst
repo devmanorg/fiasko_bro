@@ -71,6 +71,8 @@ In this example, the original readme was not modified, even though we expected i
 Pre-validation checks
 ^^^^^^^^^^^^^^^^^^^^^
 
-# TODO: add docs for pre_validation_checks
+Pre-validation checks are here to ensure it's safe to parse the files in the folder into ASTs. For example, they check
+file encodings and and the size of the folder under validation so that other validators did not error out.
+From the client's perspective, they work exactly like validators.
 
 

@@ -225,3 +225,25 @@ The ``commits`` warning validator group is executed only if the ``commits`` erro
 
 Warning validators are not executed if none of the error validators are failed.
 They just add more error messages in case the validation fails.
+
+Adding pre-validation checks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Pre-validator checks have the same structure as ``error_validator_groups`` and their usage is the same too:
+
+.. code-block:: python
+
+    from fiasko_bro import validate
+
+
+    def my_pre_validation_check(project_path, *args, **kwargs):
+        pass
+
+
+    pre_validation_checks = {
+        'general': [my_pre_validation_check]
+    }
+    print(validate('/Users/project', pre_validation_checks=pre_validation_checks))
+
+Note that the pre-valdation check receives ``project_path`` (a string), not ``project_folder`` (a ``ProjectFolder`` object)
+because the the whole point of the check is to ensure it's OK to parse the files into ASTs.
