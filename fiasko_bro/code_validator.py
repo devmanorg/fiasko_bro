@@ -3,7 +3,7 @@ from .repository_info import ProjectFolder
 
 
 def _is_successful_validation(validation_result):
-    return not isinstance(validation_result, tuple)
+    return validation_result is None
 
 
 def _run_validator_group(group, arguments):
@@ -11,7 +11,7 @@ def _run_validator_group(group, arguments):
     for validator in group:
         validation_result = validator(**arguments)
         if not _is_successful_validation(validation_result):
-            errors.append(validation_result)
+            errors.append((validator.__name__, validation_result))
     return errors
 
 

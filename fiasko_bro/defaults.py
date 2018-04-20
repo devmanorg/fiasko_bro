@@ -177,13 +177,13 @@ PRE_VALIDATION_CHECKS = MappingProxyType(
     OrderedDict(
         {
             'encoding': (
-                pre_validation_checks.are_sources_in_utf,
+                pre_validation_checks.file_not_in_utf8,
             ),
             'size': (
-                pre_validation_checks.are_repos_too_large,
+                pre_validation_checks.repo_is_too_large,
             ),
             'bom': (
-                pre_validation_checks.has_no_bom,
+                pre_validation_checks.file_has_bom,
             ),
         }
     )
@@ -193,47 +193,47 @@ ERROR_VALIDATOR_GROUPS = MappingProxyType(
     OrderedDict(
         {
             'commits': (
-                validators.has_more_commits_than_origin,
+                validators.no_more_commits_than_origin,
             ),
             'readme': (
-                validators.has_readme_file,
+                validators.no_readme_file,
             ),
             'syntax': (
-                validators.has_no_syntax_errors,
+                validators.syntax_error,
             ),
             'general': (
-                validators.has_no_directories_from_blacklist,
-                validators.is_pep8_fine,
-                validators.has_changed_readme,
-                validators.is_snake_case,
-                validators.is_mccabe_difficulty_ok,
-                validators.has_no_encoding_declaration,
-                validators.has_no_star_imports,
-                validators.has_no_local_imports,
+                validators.data_in_repo,
+                validators.too_many_pep8_violations,
+                validators.readme_not_changed,
+                validators.camel_case_variable_name,
+                validators.too_difficult_by_mccabe,
+                validators.encoding_declaration,
+                validators.star_import,
+                validators.local_import,
                 validators.has_local_var_named_as_global,
                 validators.has_variables_from_blacklist,
-                validators.has_no_short_variable_names,
-                validators.has_no_range_from_zero,
-                validators.are_tabs_used_for_indentation,
-                validators.has_no_try_without_exception,
-                validators.has_frozen_requirements,
-                validators.has_no_vars_with_lambda,
-                validators.has_no_calls_with_constants,
-                validators.has_readme_in_single_language,
-                validators.has_no_urls_with_hardcoded_arguments,
-                validators.has_no_nonpythonic_empty_list_validations,
-                validators.has_no_extra_dockstrings,
-                validators.has_no_exit_calls_in_functions,
-                validators.has_no_libs_from_stdlib_in_requirements,
-                validators.has_no_lines_ends_with_semicolon,
-                validators.not_validates_response_status_by_comparing_to_200,
-                validators.has_no_mutable_default_arguments,
-                validators.has_no_slices_starts_from_zero,
-                validators.has_no_cast_input_result_to_str,
-                validators.has_no_return_with_parenthesis,
-                validators.has_no_long_files,
-                validators.is_nesting_too_deep,
-                validators.has_no_string_literal_sums,
+                validators.short_variable_name,
+                validators.range_starting_from_zero,
+                validators.tabs_used_for_indentation,
+                validators.except_block_class_too_broad,
+                validators.requirements_not_frozen,
+                validators.variable_assignment_with_lambda,
+                validators.call_with_constants,
+                validators.bilingual_readme,
+                validators.urls_with_hardcoded_get_parameters,
+                validators.nonpythonic_empty_list_validation,
+                validators.extra_docstrings,
+                validators.exit_call_in_function,
+                validators.has_libs_from_stdlib_in_requirements,
+                validators.line_ends_with_semicolon,
+                validators.validates_response_status_by_comparing_to_200,
+                validators.mutable_default_arguments,
+                validators.slice_starts_from_zero,
+                validators.casts_input_result_to_str,
+                validators.return_with_parenthesis,
+                validators.long_file,
+                validators.code_too_nested,
+                validators.string_literal_sum,
             ),
         }
     )
@@ -242,11 +242,11 @@ ERROR_VALIDATOR_GROUPS = MappingProxyType(
 WARNING_VALIDATOR_GROUPS = MappingProxyType(
     {
         'commits': (
-            validators.has_no_commit_messages_from_blacklist,
+            validators.commit_messages_from_blacklist,
         ),
         'syntax': (
-            validators.has_indents_of_spaces,
-            validators.has_no_variables_that_shadow_default_names,
+            validators.indent_not_multiple_of_tab_size,
+            validators.variables_that_shadow_default_names,
         ),
     }
 )

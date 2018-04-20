@@ -1,7 +1,6 @@
 from fiasko_bro import validators
 
 
-def test_has_no_string_literal_sums_fail(test_repo):
-    expected_output = 'has_string_sum'
-    output = validators.has_no_string_literal_sums(project_folder=test_repo)
-    assert output[0] == expected_output
+def test_string_literal_sum_fail(test_repo):
+    output = validators.string_literal_sum(project_folder=test_repo)
+    assert isinstance(output, str)

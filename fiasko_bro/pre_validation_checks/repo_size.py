@@ -1,7 +1,7 @@
 from .. import code_helpers
 
 
-def are_repos_too_large(
+def repo_is_too_large(
     project_path,
     directories_to_skip,
     max_num_of_py_files,
@@ -10,7 +10,7 @@ def are_repos_too_large(
     **kwargs
 ):
     if code_helpers.is_repo_too_large(project_path, directories_to_skip, max_num_of_py_files):
-        return 'Repo is too large', ''
+        return ''
     if original_project_path:
         if code_helpers.is_repo_too_large(original_project_path, directories_to_skip, max_num_of_py_files):
-            return 'Repo is too large', ''
+            return ''

@@ -2,9 +2,9 @@ from fiasko_bro import defaults
 from fiasko_bro import validators
 
 
-def test_has_no_directories_from_blacklist(test_repo):
-    expected_output = 'data_in_repo', '.vscode'
-    output = validators.has_no_directories_from_blacklist(
+def test_data_in_repo(test_repo):
+    expected_output = '.vscode'
+    output = validators.data_in_repo(
         project_folder=test_repo,
         data_directories=defaults.VALIDATION_PARAMETERS['data_directories']
     )
@@ -12,7 +12,7 @@ def test_has_no_directories_from_blacklist(test_repo):
 
 
 def test_no_star_imports_ok(origin_repo):
-    output = validators.has_no_directories_from_blacklist(
+    output = validators.data_in_repo(
         project_folder=origin_repo,
         data_directories=defaults.VALIDATION_PARAMETERS['data_directories']
     )

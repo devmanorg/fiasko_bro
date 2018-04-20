@@ -1,10 +1,9 @@
 import ast
 
 from .. import ast_helpers
-from .. import url_helpers
 
 
-def has_no_return_with_parenthesis(project_folder, *args, **kwargs):
+def return_with_parenthesis(project_folder, *args, **kwargs):
     for parsed_file in project_folder.get_parsed_py_files():
         file_content = parsed_file.content.split('\n')
         return_lines = [n.lineno for n in ast.walk(parsed_file.ast_tree) if isinstance(n, ast.Return)]
@@ -18,10 +17,10 @@ def has_no_return_with_parenthesis(project_folder, *args, **kwargs):
                 )
                 and line.strip().endswith(')')
             ):
-                return 'return_with_parenthesis', '{}:{}'.format(parsed_file.name, line_num)
+                return '{}:{}'.format(parsed_file.name, line_num)
 
 
-def has_no_lines_ends_with_semicolon(project_folder, *args, **kwargs):
+def line_ends_with_semicolon(project_folder, *args, **kwargs):
     for parsed_file in project_folder.get_parsed_py_files():
         total_lines_with_semicolons = len(
             [1 for l in parsed_file.content.split('\n') if l.endswith(';') and not l.startswith('#')]
@@ -30,4 +29,4 @@ def has_no_lines_ends_with_semicolon(project_folder, *args, **kwargs):
         string_nodes = ast_helpers.get_nodes_of_type(parsed_file.ast_tree, ast.Str)
         semicolons_in_string_constants_amount = sum([n.s.count(';') for n in string_nodes])
         if total_lines_with_semicolons > semicolons_in_string_constants_amount:
-            return 'has_semicolons', parsed_file.name
+            return parsed_file.name

@@ -3,7 +3,7 @@ from fiasko_bro import validators
 
 
 def test_has_variables_from_blacklist_fail(test_repo):
-    expected_output = 'bad_titles', 'data'
+    expected_output = 'data'
     output = validators.has_variables_from_blacklist(
         project_folder=test_repo,
         bad_variables_paths_to_ignore=defaults.VALIDATION_PARAMETERS['bad_variables_paths_to_ignore'],
