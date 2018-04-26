@@ -1,6 +1,6 @@
 import builtins
 
-from .. import ast_helpers
+from ..utils import ast_helpers
 from ..i18n import _
 
 

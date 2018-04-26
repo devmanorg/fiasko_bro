@@ -1,7 +1,6 @@
 import ast
 
-from .. import ast_helpers
-from .. import url_helpers
+from ..utils import ast_helpers, url_helpers
 
 
 def has_no_extra_dockstrings(solution_repo, whitelists, functions_with_docstrings_percent_limit, *args, **kwargs):
