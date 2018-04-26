@@ -1,7 +1,7 @@
 import os
 
 from fiasko_bro.config import VALIDATOR_SETTINGS
-from ..file_helpers import is_in_utf8
+from ..utils.file_helpers import is_in_utf8
 
 
 def are_sources_in_utf(path_to_repo, *args, **kwargs):

@@ -1,8 +1,6 @@
 import ast
 
-from .. import ast_helpers
-from .. import file_helpers
-from .. import url_helpers
+from ..utils import ast_helpers, file_helpers, url_helpers
 
 
 def has_no_syntax_errors(solution_repo, *args, **kwargs):

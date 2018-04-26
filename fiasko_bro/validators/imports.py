@@ -1,5 +1,4 @@
-from .. import ast_helpers
-from .. import url_helpers
+from ..utils import ast_helpers, url_helpers
 
 
 def has_no_star_imports(solution_repo, *args, **kwargs):

@@ -1,6 +1,4 @@
-from .. import code_helpers
-from .. import url_helpers
-from .. import file_helpers
+from ..utils import code_helpers, url_helpers, file_helpers
 
 
 def is_mccabe_difficulty_ok(solution_repo, max_complexity, *args, **kwargs):

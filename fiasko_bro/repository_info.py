@@ -5,7 +5,7 @@ import copy
 import git
 
 from fiasko_bro.config import VALIDATOR_SETTINGS
-from . import file_helpers
+from .utils import file_helpers
 
 
 class LocalRepositoryInfo:
