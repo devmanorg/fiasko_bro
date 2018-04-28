@@ -2,7 +2,7 @@ import os.path
 
 import pytest
 
-from .utils import initialize_repo
+from tests.utils import initialize_repo
 from fiasko_bro import validate
 
 
