@@ -7,7 +7,7 @@ from fiasko_bro import defaults
 from fiasko_bro.repository_info import ProjectFolder
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def test_repo():
     test_repo_dir = 'test_fixtures{}general_repo'.format(os.path.sep)
     initialize_repo(test_repo_dir)
@@ -16,7 +16,7 @@ def test_repo():
     remove_repo(test_repo_dir)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def origin_repo():
     origin_repo_dir = 'test_fixtures{}general_repo_origin'.format(os.path.sep)
     initialize_repo(origin_repo_dir)

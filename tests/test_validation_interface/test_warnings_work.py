@@ -2,15 +2,16 @@ import os.path
 
 import pytest
 
-from tests.utils import initialize_repo
+from tests.utils import initialize_repo, remove_repo
 from fiasko_bro import validate
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def long_file_3_spaces_repo_path():
     repo_path = 'test_fixtures{}long_file_3_spaces_repo'.format(os.path.sep)
     initialize_repo(repo_path)
-    return repo_path
+    yield repo_path
+    remove_repo(repo_path)
 
 
 def test_warnings_show_up_after_fail(long_file_3_spaces_repo_path):
