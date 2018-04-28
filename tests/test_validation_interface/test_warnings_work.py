@@ -9,6 +9,7 @@ from fiasko_bro import validate
 @pytest.fixture(scope="session")
 def long_file_3_spaces_repo_path():
     repo_path = 'test_fixtures{}long_file_3_spaces_repo'.format(os.path.sep)
+    remove_repo(repo_path)
     initialize_repo(repo_path)
     yield repo_path
     remove_repo(repo_path)

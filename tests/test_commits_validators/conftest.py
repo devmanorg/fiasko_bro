@@ -11,6 +11,7 @@ from fiasko_bro import defaults
 @pytest.fixture(scope="session")
 def test_repo():
     test_repo_dir = 'test_fixtures{}commits_repo'.format(os.path.sep)
+    remove_repo(test_repo_dir)
     repo = git.Repo.init(test_repo_dir)
     repo.index.add(['initial_file.py'])
     repo.index.commit('Initial commit')
@@ -24,6 +25,7 @@ def test_repo():
 @pytest.fixture(scope="session")
 def origin_repo():
     origin_repo_dir = 'test_fixtures{}commits_repo_origin'.format(os.path.sep)
+    remove_repo(origin_repo_dir)
     repo = git.Repo.init(origin_repo_dir)
     repo.index.add(['initial_file.py'])
     repo.index.commit('Initial commit')

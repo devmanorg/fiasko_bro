@@ -11,4 +11,4 @@ def initialize_repo(repo_path):
 
 def remove_repo(repo_path):
     git_folder_path = '{}/.git'.format(repo_path)
-    shutil.rmtree(git_folder_path)
+    shutil.rmtree(git_folder_path, ignore_errors=True)
