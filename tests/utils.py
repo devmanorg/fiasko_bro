@@ -3,9 +3,12 @@ import shutil
 import git
 
 
-def initialize_repo(repo_path):
+def initialize_repo(repo_path, ignore_gitignore=False):
+    arguments = ['.']
+    if ignore_gitignore:
+        arguments.append('-f')  # needed to ensure the global gitignore does not disrupt the test
     repo = git.Repo.init(repo_path)
-    repo.index.add(['.'])
+    repo.git.add(arguments)
     repo.index.commit('Initial commit')
 
 

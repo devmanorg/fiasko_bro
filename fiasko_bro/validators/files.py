@@ -38,6 +38,10 @@ def has_no_encoding_declaration(project_folder, encoding_declarations_paths_to_i
 
 
 def has_no_directories_from_blacklist(project_folder, data_directories, *args, **kwargs):
-    for dirname in data_directories:
-        if project_folder.does_directory_exist(dirname):
-            return 'data_in_repo', dirname
+    if not project_folder.repo:
+        return
+    for directory in project_folder.enumerate_directories():
+        for data_directory in data_directories:
+            if data_directory in directory:
+                if project_folder.repo.is_tracked_directory(directory):
+                    return 'data_in_repo', data_directory

@@ -59,6 +59,10 @@ class LocalRepository:
     def iter_commits(self, *args, **kwargs):
         return self._repo.iter_commits(*args, **kwargs)
 
+    def is_tracked_directory(self, directory):
+        # https://stackoverflow.com/a/34329915/3694363
+        return bool(self._repo.git.ls_files(directory))
+
 
 class ProjectFolder:
 
@@ -72,6 +76,21 @@ class ProjectFolder:
 
     def does_file_exist(self, filename):
         return os.path.isfile(os.path.join(self.path, filename))
+
+    @staticmethod
+    def _make_root_relative_to_path(root, path):
+        return root[len(path) + 1:]  # +1 is for the slash
+
+    def enumerate_directories(self):
+        for root, folders, _ in os.walk(self.path):
+            relative_root = self._make_root_relative_to_path(root, self.path) or '.'
+            for folder in folders:
+                directory = '{root}{sep}{folder}'.format(
+                    root=relative_root,
+                    sep=os.path.sep,
+                    folder=folder
+                )
+                yield directory
 
     def get_source_file_contents(self, extension_list, directories_to_skip=None):
         file_paths = []
