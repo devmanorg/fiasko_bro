@@ -24,6 +24,7 @@ VALIDATION_PARAMETERS = MappingProxyType(
             [
                 'build',
                 'dist',
+                '.git',
             ]
         ),
         'bad_variable_names': frozenset(
