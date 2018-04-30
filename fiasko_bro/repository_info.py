@@ -67,6 +67,8 @@ class LocalRepository:
 class ProjectFolder:
 
     def __init__(self, path, directories_to_skip=None):
+        if not os.path.isdir(path):
+            raise FileNotFoundError('Path "{}" not found or is not a directory.'.format(path))
         self.path = path
         self._parsed_py_files = self._get_parsed_py_files(directories_to_skip)
         try:
