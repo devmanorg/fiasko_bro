@@ -2,7 +2,6 @@ import ast
 
 from .. import ast_helpers
 from .. import file_helpers
-from .. import url_helpers
 
 
 def has_no_syntax_errors(project_folder, *args, **kwargs):

@@ -1,7 +1,6 @@
 import ast
 
 from .. import ast_helpers
-from .. import url_helpers
 
 
 def has_no_extra_dockstrings(

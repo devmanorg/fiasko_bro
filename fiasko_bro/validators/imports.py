@@ -1,5 +1,4 @@
 from .. import ast_helpers
-from .. import url_helpers
 
 
 def has_no_star_imports(project_folder, *args, **kwargs):
