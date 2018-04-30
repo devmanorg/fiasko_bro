@@ -41,6 +41,9 @@ class ParsedPyFile:
     def is_syntax_correct(self):
         return self.ast_tree is not None
 
+    def get_name_with_line(self, line_number):
+        return '{}:{}'.format(self.name, line_number)
+
     def __str__(self):
         return self.name
 

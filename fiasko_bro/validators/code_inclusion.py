@@ -26,5 +26,5 @@ def is_nesting_too_deep(project_folder, tab_size, max_indentation_level, deep_ne
                 # make sure it's not a line continuation
                 and indentation_spaces_amount - previous_line_indent == tab_size
             ):
-                return 'too_nested', '{}:{}'.format(parsed_file.name, line_number)
+                return 'too_nested', parsed_file.get_name_with_line(line_number)
             previous_line_indent = indentation_spaces_amount

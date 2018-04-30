@@ -25,4 +25,4 @@ def has_indents_of_spaces(project_folder, tab_size, *args, **kwargs):
                 node_types_to_validate,
                 tab_size,
             ):
-                return 'indent_not_four_spaces', '{}:{}'.format(parsed_file.name, node.lineno)
+                return 'indent_not_four_spaces', parsed_file.get_name_with_line(node.lineno)

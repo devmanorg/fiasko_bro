@@ -17,7 +17,7 @@ def has_no_return_with_parenthesis(project_folder, *args, **kwargs):
                 )
                 and line.strip().endswith(')')
             ):
-                return 'return_with_parenthesis', '{}:{}'.format(parsed_file.name, line_num)
+                return 'return_with_parenthesis', parsed_file.get_name_with_line(line_num)
 
 
 def has_no_lines_ends_with_semicolon(project_folder, *args, **kwargs):
