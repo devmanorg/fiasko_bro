@@ -1,11 +1,15 @@
-from functools import wraps
+def ensure_repo_tokens_mutually_exclusive(**kwargs):
+    if 'validator_token' in kwargs and 'validator_tokens' in kwargs:
+        raise ValueError("Please specify either 'token' or 'tokens'")
 
 
-def tokenized_validator(token):
-    def validator_decorator(func):
-        @wraps(func)
-        def func_wrapper(*args, **kwargs):
-            if token == kwargs.get('validator_token'):
-                return func(*args, **kwargs)
-        return func_wrapper
-    return validator_decorator
+def if_any(tokens, repo_tokens):
+    return any(token in repo_tokens for token in tokens)
+
+
+def if_all(tokens, repo_tokens):
+    return set(tokens) == set(repo_tokens)
+
+
+def if_in(token, repo_tokens):
+    return token in repo_tokens

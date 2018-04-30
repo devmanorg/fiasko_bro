@@ -104,11 +104,29 @@ Of course, built-in validators have their own defaults in `_default_settings` pr
 Conditionally execute a validator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you want the validator to be executed only for certain types of repositories, add ``tokenized_validator`` to it::
+If you want the validator to be executed only for certain types of repositories, you can use ``tokenized_validators`` module.
+Inside this module you can find three main decorators:
+    
+    ``@tokenized_validators.run_if_any(tokens)``
 
-    from fiasko_bro import tokenized_validator
+decorated validator will be run if repo is marked by any of the tokens
 
-    @tokenized_validator(token='min_max_challenge')
+    ``@tokenized_validators.run_if_all(tokens)``
+
+in this case validator will be run only if repo is marked by all of the tokens
+
+decorator's parameter ``tokens`` can be any kind of iterable i.e. ``['django', 'sqlalchemy']``
+
+You can also use decorator with single token as a string
+
+    ``@tokenized_validators.run_if(token):``
+
+Example:
+::
+
+    from fiasko_bro import tokenized_validators
+
+    @tokenized_validators.run_if('min_max_challenge')
     def has_min_max_functions(solution_repo, *args, **kwargs):
         for tree in solution_repo.get_ast_trees():
             names = get_all_names_from_tree(tree)
@@ -120,11 +138,35 @@ then add the validator to the appropriate group
 
     code_validator.error_validator_groups['general'].append(has_min_max_functions)
 
-and when calling ``validate`` for certain repo, pass the token:
+and when calling ``validate`` for certain repo, mark repo with the token:
 
     code_validator.validate(solution_repo=solution_repo, validator_token='min_max_challenge')
 
-The validator won't be executed for any other repository.
+If you wish to mark repo with multiple tokens use an iterable and keyword argument ``validator_tokens``:
+
+    code_validator.validate(solution_repo=solution_repo, validator_tokens={'min_max_challenge', 'django'})
+
+If you need even more customization you can use ``@tokenized_validators.run_if_tokens_satisfy_condition(tokens, condition):``
+
+where ``condition`` your own defined function with two arguments ``tokens``, ``repo_tokens`` and boolean return type.
+
+Example:
+::
+
+    from fiasko_bro import tokenized_validators
+
+    def my_condition(tokens, repo_tokens):
+        return len(tokens) > len(repo_tokens)
+
+    @tokenized_validators.run_if_tokens_satisfy_condition(['sql', 'js'], my_condition)
+    def has_min_max_functions(solution_repo, *args, **kwargs):
+        for tree in solution_repo.get_ast_trees():
+            names = get_all_names_from_tree(tree)
+            if 'min' in names and 'max' in names:
+                return
+        return 'builtins', 'no min or max is used'
+
+In this particular case validator will be run only if repo is marked with the ammount of tokens greater than 2.
 
 Blacklist/whitelists for validators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
