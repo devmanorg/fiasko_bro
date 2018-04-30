@@ -1,6 +1,5 @@
 from setuptools import setup, find_packages
 from setuptools.command.install import install
-from codecs import open
 from os import path
 
 
@@ -24,34 +23,6 @@ class InstallWithCompile(install):
 
 
 setup(
-    name='Fiasko Bro',
-
-    version='0.0.1.1',
-
-    description='Automatic code validator',
-    long_description='The project validates for common pitfalls',  # TODO: generate README
-
-    url='https://github.com/devmanorg/fiasko_bro',
-
-    license='MIT',
-
-    author='Ilya Lebedev',
-    author_email='melevir@gmail.com',
-    classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Natural Language :: English',
-        'Operating System :: MacOS',
-        'Operating System :: POSIX :: Linux',
-        'Operating System :: Microsoft :: Windows',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Topic :: Software Development :: Quality Assurance',
-    ],
-
-    keywords='static code analysis code quality',
-
     packages=find_packages(),
     # since babel appears both in setup_requires and install_requires,
     # our package can't be instaled with python setup.py install command
