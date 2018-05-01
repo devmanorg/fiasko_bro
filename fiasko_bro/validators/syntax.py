@@ -1,7 +1,6 @@
 import ast
 
-from .. import ast_helpers
-from .. import file_helpers
+from ..utils import ast_helpers, file_helpers
 
 
 def has_no_syntax_errors(project_folder, *args, **kwargs):

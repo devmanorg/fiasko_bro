@@ -1,4 +1,4 @@
-from .. import ast_helpers
+from ..utils import ast_helpers
 
 
 def has_no_star_imports(project_folder, *args, **kwargs):

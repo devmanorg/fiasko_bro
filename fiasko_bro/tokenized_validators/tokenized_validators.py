@@ -1,5 +1,5 @@
 from functools import wraps
-from ..validator_helpers import if_any, if_all, if_in
+from ..utils.validator_helpers import if_any, if_all, if_in
 
 
 def run_if_tokens_satisfy_condition(tokens, condition):

@@ -1,6 +1,6 @@
 import os
 
-from .. import url_helpers
+from ..utils import url_helpers
 
 
 def has_no_long_files(project_folder, max_number_of_lines, *args, **kwargs):

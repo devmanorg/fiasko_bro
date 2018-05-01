@@ -1,6 +1,6 @@
 from . import defaults
 from .repository_info import ProjectFolder
-from .validator_helpers import ensure_repo_tokens_mutually_exclusive
+from .utils.validator_helpers import ensure_repo_tokens_mutually_exclusive
 
 
 def _is_successful_validation(validation_result):

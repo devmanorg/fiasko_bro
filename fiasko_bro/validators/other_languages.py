@@ -1,6 +1,6 @@
 import ast
 
-from .. import ast_helpers
+from ..utils import ast_helpers
 
 
 def has_no_return_with_parenthesis(project_folder, *args, **kwargs):

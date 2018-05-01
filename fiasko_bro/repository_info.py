@@ -4,7 +4,7 @@ from itertools import filterfalse
 
 import git
 
-from .url_helpers import get_filename_from_path
+from .utils.url_helpers import get_filename_from_path
 
 
 class ParsedPyFile:

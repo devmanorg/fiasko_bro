@@ -1,6 +1,6 @@
 import os
 
-from ..file_helpers import is_in_utf8
+from ..utils.file_helpers import is_in_utf8
 
 
 def are_sources_in_utf(project_path, directories_to_skip, *args, **kwargs):

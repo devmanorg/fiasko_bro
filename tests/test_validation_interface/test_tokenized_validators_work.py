@@ -1,5 +1,4 @@
 import os
-import itertools
 
 import pytest
 

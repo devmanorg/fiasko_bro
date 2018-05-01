@@ -1,4 +1,4 @@
-from .. import code_helpers
+from ..utils import code_helpers
 
 
 def is_mccabe_difficulty_ok(project_folder, max_complexity, *args, **kwargs):

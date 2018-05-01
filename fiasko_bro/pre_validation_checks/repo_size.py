@@ -1,4 +1,4 @@
-from .. import code_helpers
+from ..utils import code_helpers
 
 
 def are_repos_too_large(

@@ -1,4 +1,4 @@
-from .. import list_helpers
+from ..utils import list_helpers
 from ..i18n import _
 
 
