@@ -28,3 +28,11 @@ def is_in_utf8(name):
     except UnicodeDecodeError:
         return False
     return True
+
+
+def is_file_too_long(file_path, max_number_of_lines):
+    with open(file_path, 'r', encoding='utf-8') as file_handler:
+        number_of_lines = 0
+        while number_of_lines < max_number_of_lines and bool(file_handler.readline()):
+            number_of_lines += 1
+    return number_of_lines == max_number_of_lines

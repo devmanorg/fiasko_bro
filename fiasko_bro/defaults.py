@@ -177,14 +177,17 @@ VALIDATION_PARAMETERS = MappingProxyType(
 PRE_VALIDATION_CHECKS = MappingProxyType(
     OrderedDict(
         {
+            'repo_size': (
+                pre_validation_checks.are_repos_too_large,
+            ),
             'encoding': (
                 pre_validation_checks.are_sources_in_utf,
             ),
-            'size': (
-                pre_validation_checks.are_repos_too_large,
-            ),
             'bom': (
                 pre_validation_checks.has_no_bom,
+            ),
+            'file_size': (
+                pre_validation_checks.has_no_long_py_files,
             ),
         }
     )
@@ -232,7 +235,6 @@ ERROR_VALIDATOR_GROUPS = MappingProxyType(
                 validators.has_no_slices_starts_from_zero,
                 validators.has_no_cast_input_result_to_str,
                 validators.has_no_return_with_parenthesis,
-                validators.has_no_long_files,
                 validators.is_nesting_too_deep,
                 validators.has_no_string_literal_sums,
             ),

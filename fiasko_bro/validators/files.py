@@ -3,13 +3,6 @@ import os
 from ..utils import url_helpers
 
 
-def has_no_long_files(project_folder, max_number_of_lines, *args, **kwargs):
-    for parsed_file in project_folder.get_parsed_py_files():
-        number_of_lines = parsed_file.content.count('\n')
-        if number_of_lines > max_number_of_lines:
-            return 'file_too_long', parsed_file.name
-
-
 def are_tabs_used_for_indentation(project_folder, directories_to_skip, *args, **kwargs):
     frontend_extensions = ['.html', '.css', '.js']
     relevant_extensions = frontend_extensions + ['.py']
