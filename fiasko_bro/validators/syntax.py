@@ -13,6 +13,9 @@ def has_indents_of_spaces(project_folder, tab_size, *args, **kwargs):
     """
         Since there are cases for which col_offset is computed incorrectly,
         this validator must be nothing more than a simple warning.
+
+        It compliments the pep8 validator which tends to fail in cases when
+        the indent is incorrect.
     """
     node_types_to_validate = (ast.For, ast.If, ast.FunctionDef, ast.With)
     for parsed_file in project_folder.get_parsed_py_files():
