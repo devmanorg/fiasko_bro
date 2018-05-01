@@ -7,6 +7,6 @@ def test_has_no_nonpythonic_empty_list_validations(test_repo):
         'has_no_nonpythonic_empty_list_validations.py:2'
     )
     output = validators.has_no_nonpythonic_empty_list_validations(
-        solution_repo=test_repo,
+        project_folder=test_repo,
     )
     assert output == expected_output

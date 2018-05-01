@@ -10,14 +10,14 @@ The choice of the language depends on environment variables ``LANGUAGE``, ``LC_A
 For example::
 
     $ python
-    >>> from fiasko_bro import validate_repo
-    >>> validate_repo('../10_coursera_temp')
+    >>> from fiasko_bro import validate
+    >>> validate('../10_coursera_temp')
     [('camel_case_vars', 'for example, rename the following: WorkBook'), ('file_too_long', 'coursera.py')]
     >>>
     $ export LANGUAGE=ru
     $ python
-    >>> from fiasko_bro import validate_repo
-    >>> validate_repo('../10_coursera_temp')
+    >>> from fiasko_bro import validate
+    >>> validate('../10_coursera_temp')
     [('camel_case_vars', 'переименуй, например, WorkBook'), ('file_too_long', 'coursera.py')]
     >>>
 
@@ -54,14 +54,14 @@ each of the steps:
 Now change the locale make sure Fiasko produces the right output::
 
     $ python
-    >>> from fiasko_bro import validate_repo
-    >>> validate_repo('../10_coursera_temp')
+    >>> from fiasko_bro import validate
+    >>> validate('../10_coursera_temp')
     [('camel_case_vars', 'for example, rename the following: WorkBook'), ('file_too_long', 'coursera.py')]
     >>>
     $ export LANGUAGE=<locale name>
     $ python
-    >>> from fiasko_bro import validate_repo
-    >>> validate_repo('../10_coursera_temp')
+    >>> from fiasko_bro import validate
+    >>> validate('../10_coursera_temp')
     [('camel_case_vars', 'переименуй, например, WorkBook'), ('file_too_long', 'coursera.py')]
     >>>
 

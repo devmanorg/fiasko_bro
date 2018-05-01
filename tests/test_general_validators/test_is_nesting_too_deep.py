@@ -1,16 +1,19 @@
+from fiasko_bro import defaults
 from fiasko_bro import validators
-from fiasko_bro.code_validator import CodeValidator
 
 
 def test_is_nesting_too_deep_fails(test_repo):
-    max_indentation_level = CodeValidator._default_settings[
+    max_indentation_level = defaults.VALIDATION_PARAMETERS[
         'max_indentation_level'
     ]
+    deep_nesting_paths_to_ignore = defaults.VALIDATION_PARAMETERS[
+        'deep_nesting_paths_to_ignore'
+    ]
     output = validators.is_nesting_too_deep(
-        solution_repo=test_repo,
-        tab_size=CodeValidator._default_settings['tab_size'],
+        project_folder=test_repo,
+        tab_size=defaults.VALIDATION_PARAMETERS['tab_size'],
         max_indentation_level=max_indentation_level,
-        whitelists=CodeValidator.whitelists,
+        deep_nesting_paths_to_ignore=deep_nesting_paths_to_ignore
     )
     assert isinstance(output, tuple)
     assert output[0] == 'too_nested'
@@ -18,13 +21,16 @@ def test_is_nesting_too_deep_fails(test_repo):
 
 
 def test_is_nesting_too_deep_succeeds(origin_repo):
-    max_indentation_level = CodeValidator._default_settings[
+    max_indentation_level = defaults.VALIDATION_PARAMETERS[
         'max_indentation_level'
     ]
+    deep_nesting_paths_to_ignore = defaults.VALIDATION_PARAMETERS[
+        'deep_nesting_paths_to_ignore'
+    ]
     output = validators.is_nesting_too_deep(
-        solution_repo=origin_repo,
-        tab_size=CodeValidator._default_settings['tab_size'],
+        project_folder=origin_repo,
+        tab_size=defaults.VALIDATION_PARAMETERS['tab_size'],
         max_indentation_level=max_indentation_level,
-        whitelists=CodeValidator.whitelists,
+        deep_nesting_paths_to_ignore=deep_nesting_paths_to_ignore
     )
     assert output is None

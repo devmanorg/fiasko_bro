@@ -1,2 +1,2 @@
-from .code_validator import CodeValidator, validate_repo
-from .repository_info import LocalRepositoryInfo
+from .code_validator import validate
+from .repository_info import ProjectFolder

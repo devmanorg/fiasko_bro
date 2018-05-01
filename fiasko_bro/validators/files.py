@@ -3,21 +3,17 @@ import os
 from .. import url_helpers
 
 
-def has_no_long_files(solution_repo, max_number_of_lines, *args, **kwargs):
-    for file_path, file_content, _ in solution_repo.get_ast_trees(
-        with_filenames=True,
-        with_file_content=True
-    ):
-        number_of_lines = file_content.count('\n')
+def has_no_long_files(project_folder, max_number_of_lines, *args, **kwargs):
+    for parsed_file in project_folder.get_parsed_py_files():
+        number_of_lines = parsed_file.content.count('\n')
         if number_of_lines > max_number_of_lines:
-            file_name = url_helpers.get_filename_from_path(file_path)
-            return 'file_too_long', file_name
+            return 'file_too_long', parsed_file.name
 
 
-def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
+def are_tabs_used_for_indentation(project_folder, directories_to_skip, *args, **kwargs):
     frontend_extensions = ['.html', '.css', '.js']
     relevant_extensions = frontend_extensions + ['.py']
-    files_info = solution_repo.get_source_file_contents(relevant_extensions)
+    files_info = project_folder.get_source_file_contents(relevant_extensions, directories_to_skip)
     if not files_info:
         return
     for filepath, file_content in files_info:
@@ -34,21 +30,18 @@ def are_tabs_used_for_indentation(solution_repo, *args, **kwargs):
             return 'tabs_used_for_indents', filename
 
 
-def has_no_encoding_declaration(solution_repo, whitelists, *args, **kwargs):
-    whitelist = whitelists.get('has_no_encoding_declaration', [])
-    for filepath, file_content, _ in solution_repo.get_ast_trees(
-        with_filenames=True,
-        with_file_content=True,
-        whitelist=whitelist,
-    ):
-        first_line = file_content.strip('\n').split('\n')[0].strip().replace(' ', '')
+def has_no_encoding_declaration(project_folder, encoding_declarations_paths_to_ignore, *args, **kwargs):
+    for parsed_file in project_folder.get_parsed_py_files(whitelist=encoding_declarations_paths_to_ignore):
+        first_line = parsed_file.content.strip('\n').split('\n')[0].strip().replace(' ', '')
         if first_line.startswith('#') and 'coding:utf-8' in first_line:
-            filename = url_helpers.get_filename_from_path(filepath)
-            return 'has_encoding_declarations', filename
+            return 'has_encoding_declarations_paths_to_ignore', parsed_file.name
 
 
-def has_no_directories_from_blacklist(solution_repo, blacklists, *args, **kwargs):
-    blacklist = blacklists.get('has_no_directories_from_blacklist', [])
-    for dirname in blacklist:
-        if solution_repo.does_directory_exist(dirname):
-            return 'data_in_repo', dirname
+def has_no_directories_from_blacklist(project_folder, data_directories, *args, **kwargs):
+    if not project_folder.repo:
+        return
+    for directory in project_folder.enumerate_directories():
+        for data_directory in data_directories:
+            if data_directory in directory:
+                if project_folder.repo.is_tracked_directory(directory):
+                    return 'data_in_repo', data_directory

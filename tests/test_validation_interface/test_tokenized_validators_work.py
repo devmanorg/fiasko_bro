@@ -1,9 +1,12 @@
 import os
+import itertools
+
 import pytest
 
-from .utils import initialize_repo
+from ..utils import initialize_repo, remove_repo
 from fiasko_bro import tokenized_validators
-from fiasko_bro import CodeValidator
+from fiasko_bro import defaults
+from fiasko_bro import validate
 
 
 MESSAGE_SINGLE_TOKEN = 'validator with single token ran'
@@ -11,81 +14,82 @@ MESSAGE_DISJUNCT_TOKENS = 'validator with two disjunct tokens ran'
 MESSAGE_CONJUCT_TOKENS = 'validator with two conjuct tokens ran'
 
 
-@pytest.fixture(scope='module')
 def get_validator_with_single_token(token):
     @tokenized_validators.run_if(token)
-    def tokenized_validator_with_single_token(solution_repo, *args, **kwargs):
+    def tokenized_validator_with_single_token(*args, **kwargs):
         return MESSAGE_SINGLE_TOKEN,
     return tokenized_validator_with_single_token
 
 
-@pytest.fixture(scope='module')
 def get_validator_with_two_disjunct_tokens(iterable):
     @tokenized_validators.run_if_any(iterable)
-    def tokenized_validator_with_two_disjunct_tokens(solution_repo, *args, **kwargs):
+    def tokenized_validator_with_two_disjunct_tokens(*args, **kwargs):
         return MESSAGE_DISJUNCT_TOKENS,
     return tokenized_validator_with_two_disjunct_tokens
 
 
-@pytest.fixture(scope='module')
 def get_validator_with_two_conjunct_tokens(iterable):
     @tokenized_validators.run_if_all(iterable)
-    def tokenized_validator_with_two_conjuct_tokens(solution_repo, *args, **kwargs):
+    def tokenized_validator_with_two_conjuct_tokens(*args, **kwargs):
         return MESSAGE_CONJUCT_TOKENS,
     return tokenized_validator_with_two_conjuct_tokens
 
 
-@pytest.fixture(scope='module')
-def code_validator():
-    code_validator = CodeValidator()
+@pytest.fixture(scope='session')
+def error_validator_groups():
     validator_with_single_token = get_validator_with_single_token(1)
     validator_with_two_disjunct_tokens = get_validator_with_two_disjunct_tokens({'minmax', 'maximize'})
     validator_with_two_conjunct_tokens = get_validator_with_two_conjunct_tokens(['django', 'twisted'])
-    code_validator.error_validator_groups['commits'].append(validator_with_single_token)
-    code_validator.error_validator_groups['commits'].append(validator_with_two_disjunct_tokens)
-    code_validator.error_validator_groups['commits'].append(validator_with_two_conjunct_tokens)
-    return code_validator
+    new_validators = (
+        validator_with_single_token,
+        validator_with_two_disjunct_tokens,
+        validator_with_two_conjunct_tokens,
+    )
+    modified_error_validator_groups = defaults.ERROR_VALIDATOR_GROUPS.copy()
+    modified_error_validator_groups ['commits'] = modified_error_validator_groups['commits'] + new_validators
+    return modified_error_validator_groups
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def origin_repo():
     repo_path = 'test_fixtures{}general_repo_origin'.format(os.path.sep)
     initialize_repo(repo_path)
-    return repo_path
+    yield repo_path
+    remove_repo(repo_path)
 
 
-def test_tokenized_validator_with_single_token_ok(origin_repo, code_validator):
-    output = code_validator.validate(origin_repo, validator_token=1)
+def test_tokenized_validator_with_single_token_ok(origin_repo, error_validator_groups):
+    output = validate(origin_repo, validator_token=1, error_validator_groups=error_validator_groups)
     assert (MESSAGE_SINGLE_TOKEN,) in output
 
 
-def test_tokenized_validator_with_single_token_fail(origin_repo, code_validator):
-    output = code_validator.validate(origin_repo, validator_token=None)
+def test_tokenized_validator_with_single_token_fail(origin_repo, error_validator_groups):
+    output = validate(origin_repo, validator_token=None, error_validator_groups=error_validator_groups)
     assert (MESSAGE_SINGLE_TOKEN,) not in output
 
 
-def test_validator_with_two_disjunct_tokens_ok(origin_repo, code_validator):
-    output = code_validator.validate(origin_repo, validator_tokens=['minmax', 'sql'])
+def test_validator_with_two_disjunct_tokens_ok(origin_repo, error_validator_groups):
+    output = validate(origin_repo, validator_tokens=['minmax', 'sql'], error_validator_groups=error_validator_groups)
     assert (MESSAGE_DISJUNCT_TOKENS,) in output
 
 
-def test_validator_with_two_disjunct_tokens_fail(origin_repo, code_validator):
-    output = code_validator.validate(origin_repo, validator_tokens=['sql', 'concurrency'])
+def test_validator_with_two_disjunct_tokens_fail(origin_repo, error_validator_groups):
+    output = validate(origin_repo, validator_tokens=['sql', 'concurrency'], error_validator_groups=error_validator_groups)
     assert (MESSAGE_DISJUNCT_TOKENS,) not in output
 
 
-def test_validator_with_two_conjunct_tokens_ok(origin_repo, code_validator):
-    output = code_validator.validate(origin_repo, validator_tokens=('twisted', 'django'))
+def test_validator_with_two_conjunct_tokens_ok(origin_repo, error_validator_groups):
+    output = validate(origin_repo, validator_tokens=('twisted', 'django'), error_validator_groups=error_validator_groups)
     assert (MESSAGE_CONJUCT_TOKENS,) in output
 
 
-def test_validator_with_two_conjunct_tokens_fail(origin_repo, code_validator):
-    output = code_validator.validate(origin_repo, validator_tokens={'django', 'tornado'})
+def test_validator_with_two_conjunct_tokens_fail(origin_repo, error_validator_groups):
+    output = validate(origin_repo, validator_tokens={'django', 'tornado'}, error_validator_groups=error_validator_groups)
     assert (MESSAGE_CONJUCT_TOKENS,) not in output
 
 
-def test_mark_repo_with_both_fail(origin_repo, code_validator):
+def test_mark_repo_with_both_fail(origin_repo):
     token = 'django'
     tokens = ('djano', 'celery')
     with pytest.raises(ValueError):
-        output = code_validator.validate(origin_repo, validator_token=token, validator_tokens=tokens)
+        validate(origin_repo, validator_token=token, validator_tokens=tokens)
