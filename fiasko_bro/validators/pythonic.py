@@ -1,6 +1,6 @@
 import ast
 
-from .. import ast_nodes_validators
+from ..utils import ast_nodes_validators
 from ..utils import ast_helpers, code_helpers, url_helpers
 from ..i18n import _
 
