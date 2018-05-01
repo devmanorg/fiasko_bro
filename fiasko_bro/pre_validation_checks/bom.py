@@ -10,6 +10,6 @@ def has_no_bom(project_path, directories_to_skip, *args, **kwargs):
         ]
         for name in filenames:
             with open(os.path.join(root, name), 'rb') as file_handle:
-                file_content = file_handle.read()
+                file_content = file_handle.read(3)  # we don't need to read the whole file
                 if file_content.startswith(codecs.BOM_UTF8):
                     return 'has_bom', name
