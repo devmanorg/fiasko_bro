@@ -176,71 +176,95 @@ VALIDATION_PARAMETERS = MappingProxyType(
 
 PRE_VALIDATION_CHECKS = MappingProxyType(
     OrderedDict(
-        {
-            'repo_size': (
-                pre_validation_checks.repo_is_too_large,
+        (
+            (
+                'repo_size',
+                (
+                    pre_validation_checks.repo_is_too_large,
+                ),
             ),
-            'encoding': (
-                pre_validation_checks.file_not_in_utf8,
+            (
+                'encoding',
+                (
+                    pre_validation_checks.file_not_in_utf8,
+                ),
             ),
-            'bom': (
-                pre_validation_checks.file_has_bom,
+            (
+                'bom',
+                (
+                    pre_validation_checks.file_has_bom,
+                ),
             ),
-            'file_size': (
-                pre_validation_checks.file_too_long,
+            (
+                'file_size',
+                (
+                    pre_validation_checks.file_too_long,
+                ),
             ),
-        }
+        )
     )
 )
 
 ERROR_VALIDATOR_GROUPS = MappingProxyType(
     OrderedDict(
-        {
-            'commits': (
-                validators.no_more_commits_than_origin,
+        (
+            (
+                'commits',
+                (
+                    validators.no_more_commits_than_origin,
+                ),
             ),
-            'readme': (
-                validators.no_readme_file,
+            (
+                'readme',
+                (
+                    validators.no_readme_file,
+                ),
             ),
-            'syntax': (
-                validators.syntax_error,
+            (
+                'syntax',
+                (
+                    validators.syntax_error,
+                ),
             ),
-            'general': (
-                validators.data_in_repo,
-                validators.too_many_pep8_violations,
-                validators.readme_not_changed,
-                validators.camel_case_variable_name,
-                validators.too_difficult_by_mccabe,
-                validators.encoding_declaration,
-                validators.star_import,
-                validators.local_import,
-                validators.has_local_var_named_as_global,
-                validators.has_variables_from_blacklist,
-                validators.short_variable_name,
-                validators.range_starting_from_zero,
-                validators.tabs_used_for_indentation,
-                validators.except_block_class_too_broad,
-                validators.requirements_not_frozen,
-                validators.variable_assignment_with_lambda,
-                validators.call_with_constants,
-                validators.bilingual_readme,
-                validators.urls_with_hardcoded_get_parameters,
-                validators.nonpythonic_empty_list_validation,
-                validators.extra_docstrings,
-                validators.exit_call_in_function,
-                validators.has_libs_from_stdlib_in_requirements,
-                validators.line_ends_with_semicolon,
-                validators.validates_response_status_by_comparing_to_200,
-                validators.mutable_default_arguments,
-                validators.slice_starts_from_zero,
-                validators.casts_input_result_to_str,
-                validators.return_with_parenthesis,
-                validators.code_too_nested,
-                validators.string_literal_sum,
-                validators.has_pdb_breakpoint,
-                validators.has_multiple_imports_on_same_line,
+            (
+                'general',
+                (
+                    validators.data_in_repo,
+                    validators.too_many_pep8_violations,
+                    validators.readme_not_changed,
+                    validators.camel_case_variable_name,
+                    validators.too_difficult_by_mccabe,
+                    validators.encoding_declaration,
+                    validators.star_import,
+                    validators.local_import,
+                    validators.has_local_var_named_as_global,
+                    validators.has_variables_from_blacklist,
+                    validators.short_variable_name,
+                    validators.range_starting_from_zero,
+                    validators.tabs_used_for_indentation,
+                    validators.except_block_class_too_broad,
+                    validators.requirements_not_frozen,
+                    validators.variable_assignment_with_lambda,
+                    validators.call_with_constants,
+                    validators.bilingual_readme,
+                    validators.urls_with_hardcoded_get_parameters,
+                    validators.nonpythonic_empty_list_validation,
+                    validators.extra_docstrings,
+                    validators.exit_call_in_function,
+                    validators.has_libs_from_stdlib_in_requirements,
+                    validators.line_ends_with_semicolon,
+                    validators.validates_response_status_by_comparing_to_200,
+                    validators.mutable_default_arguments,
+                    validators.slice_starts_from_zero,
+                    validators.casts_input_result_to_str,
+                    validators.return_with_parenthesis,
+                    validators.code_too_nested,
+                    validators.string_literal_sum,
+                    validators.has_pdb_breakpoint,
+                    validators.has_multiple_imports_on_same_line,
+                ),
             ),
-        }
+        )
     )
 )
 
