@@ -40,7 +40,7 @@ def error_validator_groups():
         validator_with_two_conjunct_tokens,
     )
     modified_error_validator_groups = defaults.ERROR_VALIDATOR_GROUPS.copy()
-    modified_error_validator_groups ['commits'] = modified_error_validator_groups['commits'] + new_validators
+    modified_error_validator_groups['commits'] = modified_error_validator_groups['commits'] + new_validators
     return modified_error_validator_groups
 
 
