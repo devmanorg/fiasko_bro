@@ -27,10 +27,10 @@ def readme_not_changed(project_folder, readme_filename, original_project_folder=
 
 def bilingual_readme(project_folder, readme_filename, min_percent_of_another_language, *args, **kwargs):
     raw_readme = project_folder.get_file(readme_filename)
-    readme_no_code = re.sub("\s```[#!A-Za-z]*\n[\s\S]*?\n```\s", '', raw_readme)
-    clean_readme = re.sub("\[([^\]]+)\]\(([^)]+)\)", '', readme_no_code)
-    ru_letters_amount = len(re.findall('[а-яА-Я]', clean_readme))
-    en_letters_amount = len(re.findall('[a-zA-Z]', clean_readme))
+    readme_no_code = re.sub(r'\s```[#!A-Za-z]*\n[\s\S]*?\n```\s', '', raw_readme)
+    clean_readme = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', '', readme_no_code)
+    ru_letters_amount = len(re.findall(r'[а-яА-Я]', clean_readme))
+    en_letters_amount = len(re.findall(r'[a-zA-Z]', clean_readme))
     if not (ru_letters_amount + en_letters_amount):
         return
     another_language_percent = min([ru_letters_amount, en_letters_amount]) * 100
