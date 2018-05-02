@@ -4,12 +4,12 @@ import re
 from ..i18n import _
 
 
-def has_readme_file(project_folder, readme_filename, *args, **kwargs):
+def no_readme_file(project_folder, readme_filename, *args, **kwargs):
     if not project_folder.does_file_exist(readme_filename):
-        return 'need_readme', _('there is no %s') % readme_filename
+        return _('there is no %s') % readme_filename
 
 
-def has_changed_readme(project_folder, readme_filename, original_project_folder=None, *args, **kwargs):
+def readme_not_changed(project_folder, readme_filename, original_project_folder=None, *args, **kwargs):
     if not original_project_folder:
         return
     original_readme_path = os.path.join(original_project_folder.path, readme_filename)
@@ -19,16 +19,13 @@ def has_changed_readme(project_folder, readme_filename, original_project_folder=
             original_readme = original_handler.read()
     except FileNotFoundError:
         return
-    try:
-        with open(solution_readme_path, encoding='utf-8') as solution_handler:
-            solution_readme = solution_handler.read()
-        if solution_readme == original_readme:
-            return 'need_readme', None
-    except UnicodeDecodeError:
-        return 'readme_not_utf_8', None
+    with open(solution_readme_path, encoding='utf-8') as solution_handler:
+        solution_readme = solution_handler.read()
+    if solution_readme == original_readme:
+        return ''
 
 
-def has_readme_in_single_language(project_folder, readme_filename, min_percent_of_another_language, *args, **kwargs):
+def bilingual_readme(project_folder, readme_filename, min_percent_of_another_language, *args, **kwargs):
     raw_readme = project_folder.get_file(readme_filename)
     readme_no_code = re.sub("\s```[#!A-Za-z]*\n[\s\S]*?\n```\s", '', raw_readme)
     clean_readme = re.sub("\[([^\]]+)\]\(([^)]+)\)", '', readme_no_code)
@@ -39,4 +36,4 @@ def has_readme_in_single_language(project_folder, readme_filename, min_percent_o
     another_language_percent = min([ru_letters_amount, en_letters_amount]) * 100
     another_language_percent /= (ru_letters_amount + en_letters_amount)
     if another_language_percent > min_percent_of_another_language:
-        return 'bilingual_readme', ''
+        return ''

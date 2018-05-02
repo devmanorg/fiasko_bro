@@ -3,7 +3,7 @@ import ast
 from ..utils import ast_helpers
 
 
-def has_no_extra_dockstrings(
+def extra_docstrings(
     project_folder,
     extra_dockstrings_paths_to_ignore,
     functions_with_docstrings_percent_limit,
@@ -17,4 +17,4 @@ def has_no_extra_dockstrings(
 
         docstrings = [ast.get_docstring(d) for d in defs if ast.get_docstring(d) is not None]
         if len(docstrings) / len(defs) * 100 > functions_with_docstrings_percent_limit:
-            return 'extra_comments', parsed_file.name
+            return parsed_file.name

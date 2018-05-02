@@ -8,29 +8,24 @@ from fiasko_bro import defaults
 from fiasko_bro import validate
 
 
-MESSAGE_SINGLE_TOKEN = 'validator with single token ran'
-MESSAGE_DISJUNCT_TOKENS = 'validator with two disjunct tokens ran'
-MESSAGE_CONJUCT_TOKENS = 'validator with two conjuct tokens ran'
-
-
 def get_validator_with_single_token(token):
     @tokenized_validators.run_if(token)
     def tokenized_validator_with_single_token(*args, **kwargs):
-        return MESSAGE_SINGLE_TOKEN,
+        return ''
     return tokenized_validator_with_single_token
 
 
 def get_validator_with_two_disjunct_tokens(iterable):
     @tokenized_validators.run_if_any(iterable)
     def tokenized_validator_with_two_disjunct_tokens(*args, **kwargs):
-        return MESSAGE_DISJUNCT_TOKENS,
+        return ''
     return tokenized_validator_with_two_disjunct_tokens
 
 
 def get_validator_with_two_conjunct_tokens(iterable):
     @tokenized_validators.run_if_all(iterable)
     def tokenized_validator_with_two_conjuct_tokens(*args, **kwargs):
-        return MESSAGE_CONJUCT_TOKENS,
+        return ''
     return tokenized_validator_with_two_conjuct_tokens
 
 
@@ -59,32 +54,32 @@ def origin_repo():
 
 def test_tokenized_validator_with_single_token_ok(origin_repo, error_validator_groups):
     output = validate(origin_repo, validator_token=1, error_validator_groups=error_validator_groups)
-    assert (MESSAGE_SINGLE_TOKEN,) in output
+    assert ('tokenized_validator_with_single_token', '') in output
 
 
 def test_tokenized_validator_with_single_token_fail(origin_repo, error_validator_groups):
     output = validate(origin_repo, validator_token=None, error_validator_groups=error_validator_groups)
-    assert (MESSAGE_SINGLE_TOKEN,) not in output
+    assert ('tokenized_validator_with_single_token', '') not in output
 
 
 def test_validator_with_two_disjunct_tokens_ok(origin_repo, error_validator_groups):
     output = validate(origin_repo, validator_tokens=['minmax', 'sql'], error_validator_groups=error_validator_groups)
-    assert (MESSAGE_DISJUNCT_TOKENS,) in output
+    assert ('tokenized_validator_with_two_disjunct_tokens', '') in output
 
 
 def test_validator_with_two_disjunct_tokens_fail(origin_repo, error_validator_groups):
     output = validate(origin_repo, validator_tokens=['sql', 'concurrency'], error_validator_groups=error_validator_groups)
-    assert (MESSAGE_DISJUNCT_TOKENS,) not in output
+    assert ('tokenized_validator_with_two_disjunct_tokens', '') not in output
 
 
 def test_validator_with_two_conjunct_tokens_ok(origin_repo, error_validator_groups):
     output = validate(origin_repo, validator_tokens=('twisted', 'django'), error_validator_groups=error_validator_groups)
-    assert (MESSAGE_CONJUCT_TOKENS,) in output
+    assert ('tokenized_validator_with_two_conjuct_tokens', '') in output
 
 
 def test_validator_with_two_conjunct_tokens_fail(origin_repo, error_validator_groups):
     output = validate(origin_repo, validator_tokens={'django', 'tornado'}, error_validator_groups=error_validator_groups)
-    assert (MESSAGE_CONJUCT_TOKENS,) not in output
+    assert ('tokenized_validator_with_two_conjuct_tokens', '') not in output
 
 
 def test_mark_repo_with_both_fail(origin_repo):

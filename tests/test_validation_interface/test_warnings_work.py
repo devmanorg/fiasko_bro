@@ -17,8 +17,8 @@ def file_3_spaces_repo_path():
 
 def test_warnings_show_up_after_fail(file_3_spaces_repo_path):
     expected_output = [
-        ('pep8', '43 PEP8 violations'),
-        ('indent_not_four_spaces', 'file_3_spaces.py:16')
+        ('too_many_pep8_violations', '43 PEP8 violations'),
+        ('indent_not_multiple_of_tab_size', 'file_3_spaces.py:16')
     ]
     output = validate(file_3_spaces_repo_path)
     assert output == expected_output

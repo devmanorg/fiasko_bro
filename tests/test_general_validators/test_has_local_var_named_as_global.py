@@ -4,7 +4,7 @@ from fiasko_bro.i18n import _
 
 
 def test_has_local_var_named_as_global_fail(test_repo):
-    expected_output = 'has_locals_named_as_globals', _('for example, %s') % 'LOCAL_VAR'
+    expected_output = _('for example, %s') % 'LOCAL_VAR'
     ignore_list = defaults.VALIDATION_PARAMETERS['local_var_named_as_global_paths_to_ignore']
     output = validators.has_local_var_named_as_global(
         project_folder=test_repo,

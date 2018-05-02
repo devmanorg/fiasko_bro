@@ -3,13 +3,13 @@ import ast
 from ..utils import ast_helpers, file_helpers
 
 
-def has_no_syntax_errors(project_folder, *args, **kwargs):
+def syntax_error(project_folder, *args, **kwargs):
     for parsed_file in project_folder.get_parsed_py_files():
         if not parsed_file.is_syntax_correct:
-            return 'syntax_error', parsed_file.name
+            return parsed_file.name
 
 
-def has_indents_of_spaces(project_folder, tab_size, *args, **kwargs):
+def indent_not_multiple_of_tab_size(project_folder, tab_size, *args, **kwargs):
     """
         Since there are cases for which col_offset is computed incorrectly,
         this validator must be nothing more than a simple warning.
@@ -27,4 +27,4 @@ def has_indents_of_spaces(project_folder, tab_size, *args, **kwargs):
                 node_types_to_validate,
                 tab_size,
             ):
-                return 'indent_not_four_spaces', parsed_file.get_name_with_line(node.lineno)
+                return parsed_file.get_name_with_line(node.lineno)

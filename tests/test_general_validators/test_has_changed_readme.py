@@ -2,7 +2,7 @@ from fiasko_bro import validators
 
 
 def test_readme_changed_succeeds(test_repo, origin_repo):
-    output = validators.has_changed_readme(
+    output = validators.readme_not_changed(
         project_folder=test_repo,
         readme_filename='changed_readme.md',
         original_project_folder=origin_repo,
@@ -11,8 +11,8 @@ def test_readme_changed_succeeds(test_repo, origin_repo):
 
 
 def test_readme_changed_fails(test_repo, origin_repo):
-    expected_output = 'need_readme', None
-    output = validators.has_changed_readme(
+    expected_output = ''
+    output = validators.readme_not_changed(
         project_folder=test_repo,
         readme_filename='unchanged_readme.md',
         original_project_folder=origin_repo,
