@@ -14,4 +14,4 @@ def test_get_error_slugs_returns_correct_default_pre_validators_and_custom_error
         'syntax': (syntax_error,),
     }
     output = get_error_slugs(error_validator_groups=error_groups)
-    assert set(output) == expected_output
+    assert output == expected_output

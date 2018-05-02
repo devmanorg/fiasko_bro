@@ -104,10 +104,10 @@ def get_error_slugs(pre_validation_checks=None, error_validator_groups=None, war
         error_validator_groups=error_validator_groups,
         warning_validator_groups=warning_validator_groups
     )
-    error_slugs = []
+    error_slugs = set()
     for validator_groups in validators:
         traverse_validator_groups(
             validator_groups,
-            func=lambda validator: error_slugs.append(validator.__name__)
+            func=lambda validator: error_slugs.add(validator.__name__)
         )
     return error_slugs
