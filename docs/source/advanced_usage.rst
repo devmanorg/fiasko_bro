@@ -64,7 +64,7 @@ by passing ``original_project_path`` argument:
 
     >>> from fiasko_bro import validate
     >>> code_validator.validate(project_path='/path/to/folder/', original_project_path='/path/to/different/folder/')
-    [('need_readme', None)]
+    [('readme_not_changed', '')]
 
 In this example, the original readme was not modified, even though we expected it to.
 

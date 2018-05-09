@@ -9,14 +9,14 @@ All the code you need to write in order to implement the behavior is these 12 li
     from fiasko_bro import validate
 
 
-    def has_no_syntax_errors(project_folder, *args, **kwargs):
+    def syntax_error(project_folder, *args, **kwargs):
         for parsed_file in project_folder.get_parsed_py_files():
             if not parsed_file.is_syntax_correct:
-                return 'syntax_error', parsed_file.name
+                return parsed_file.name
 
 
     validator_groups = {
-        'general': [has_no_syntax_errors]
+        'general': [syntax_error]
     }
     print(validate('/Users/project', error_validator_groups=validator_groups))
 
@@ -46,13 +46,13 @@ To illustrate the usage of ``original_project_folder``, let's consider a validat
 
 .. code-block:: python
 
-    def has_more_commits_than_origin(project_folder, original_project_folder=None, *args, **kwargs):
+    def no_more_commits_than_origin(project_folder, original_project_folder=None, *args, **kwargs):
         if not original_project_folder:
             return
         if not project_folder.repo or not original_project_folder.repo:
             return
         if project_folder.repo.count_commits() <= original_project_folder.repo.count_commits():
-            return 'no_new_code', None
+            return ''
 
 Notice we made our validator succeed in case there's no ``original_project_folder`` or no repositories are attached to the folders.
 We consider it a sensible solution for our case, but you can choose any other behavior.
@@ -69,17 +69,17 @@ that it could tolerate some number of files with a syntax error:
     from fiasko_bro import validate
 
 
-    def has_almost_no_syntax_errors(project_folder, max_syntax_error_files_amount, *args, **kwargs):
+    def too_many_syntax_errors(project_folder, max_syntax_error_files_amount, *args, **kwargs):
         syntax_error_files_amount = 0
         for parsed_file in project_folder.get_parsed_py_files():
             if not parsed_file.is_syntax_correct:
                 syntax_error_files_amount += 1
         if syntax_error_files_amount > max_syntax_error_files_amount:
-            return 'too_many_syntax_errors', syntax_error_files_amount
+            return str(syntax_error_files_amount)
 
 
     validator_groups = {
-        'general': [has_almost_no_syntax_errors]
+        'general': [too_many_syntax_errors]
     }
     print(validate('/Users/project', max_syntax_error_files_amount=2, error_validator_groups=validator_groups))
 
@@ -94,14 +94,14 @@ This is how it can be done:
     from fiasko_bro import validate
 
 
-    def has_almost_no_syntax_errors(project_folder, syntax_files_to_ignore, *args, **kwargs):
+    def syntax_error(project_folder, syntax_files_to_ignore, *args, **kwargs):
         for parsed_file in project_folder.get_parsed_py_files(whitelist=syntax_files_to_ignore):
             if not parsed_file.is_syntax_correct:
-                return 'syntax_error', parsed_file.name
+                return parsed_file.name
 
 
     validator_groups = {
-        'general': [has_almost_no_syntax_errors]
+        'general': [syntax_error]
     }
     ignore_list = ['trash.py', 'garbage.py']
     print(validate('/Users/project', syntax_files_to_ignore=ignore_list, error_validator_groups=validator_groups))
@@ -111,11 +111,11 @@ Now, if ``trash.py`` is a part of a file's path, the file is not going to be ret
 Validator return values
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-A validator is expected to return either ``None`` (if the validation was successful) or a tuple.
+A validator returns ``None`` if everything's fine.
 
-The tuple has to consist of an error slug (which is used as an error identifier) and some info that will clarify the error.
-In the examples above we either return a file name with a syntax error or the number of syntax errors if it's more relevant.
-In case there's no helpful information to return, just return ``error_slug, None``.
+In case of a problem, a validator is expected to return an error message string that helps to fix the problem. For example,
+if a file has a syntax error, we return the name of the file. In case of PEP8 violations, we return their number.
+If you absolutely sure you don't want any error message, return an empty string.
 
 Conditional validator execution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -143,12 +143,12 @@ Example:
     from fiasko_bro import tokenized_validators
 
     @tokenized_validators.run_if('min_max_challenge')
-    def has_min_max_functions(project_folder, *args, **kwargs):
+    def no_min_max_functions(project_folder, *args, **kwargs):
         for parsed_file in project_folder.get_parsed_py_files():
             names = get_all_names_from_tree(parsed_file.ast_tree)
             if 'min' in names and 'max' in names:
                 return
-        return 'builtins', 'no min or max is used'
+        return 'this repo has to contain a call to min or max function'
 
 then add the validator to the appropriate group
 
@@ -175,12 +175,12 @@ Example:
         return len(tokens) > len(repo_tokens)
 
     @tokenized_validators.run_if_tokens_satisfy_condition(['sql', 'js'], my_condition)
-    def has_min_max_functions(solution_repo, *args, **kwargs):
+    def no_min_max_functions(project_folder, *args, **kwargs):
         for parsed_file in project_folder.get_parsed_py_files():
             names = get_all_names_from_tree(parsed_file.ast_tree)
             if 'min' in names and 'max' in names:
                 return
-        return 'builtins', 'no min or max is used'
+        return 'this repo has to contain a call to min or max function'
 
 In this particular case validator will be run only if repo is marked with the ammount of tokens greater than 2.
 
@@ -227,17 +227,17 @@ The error validators are expected to be grouped according to their purpose, like
         [
             (
                 'commits',
-                [validators.has_more_commits_than_origin],
+                [validators.no_more_commits_than_origin],
             ),
             (
                 'syntax',
-                [validators.has_no_syntax_errors],
+                [validators.syntax_error],
             ),
             ...
             (
                 'general',
                 [
-                    validators.is_pep8_fine,
+                    validators.too_many_pep8_violations,
                     ...
                 ],
             ),
@@ -255,11 +255,11 @@ Here's the structure of the warnings validators::
 
     WARNING_VALIDATOR_GROUPS = {
         'commits': [
-            validators.has_no_commit_messages_from_blacklist,
+            validators.commit_message_from_blacklist,
         ],
         'syntax': [
-            validators.has_indents_of_spaces,
-            validators.has_no_variables_that_shadow_default_names,
+            validators.indent_not_multiple_of_tab_size,
+            validators.variables_that_shadow_default_names,
         ]
     }
 

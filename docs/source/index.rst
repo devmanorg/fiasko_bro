@@ -47,7 +47,7 @@ Fiasko was conceived as a tool used through Python interface. Here's the simples
 
     >>> from fiasko_bro import validate
     >>> validate('/user/projects/fiasko_bro/')
-    [('git_history_warning', 'add files via upload'), ('pep8', '33 PEP8 violations'), ('mccabe_failure', 'has_changed_readme'), ('has_star_import', '__init__.py'), ('has_local_import', 'setup.py'), ('bad_titles', 'name, n'), ('bad_titles', 'n, r, l, t, i'), ('file_too_long', 'ast_helpers.py'), ('too_nested', 'code_validator.py:54'), ('indent_not_four_spaces', 'ast_helpers.py:130'), ('title_shadows', '_, slice')]
+    [('commit_messages_from_blacklist', 'add files via upload'), ('too_many_pep8_violations', '33 PEP8 violations'), ('too_difficult_by_mccabe', 'has_changed_readme'), ('star_import', '__init__.py'), ('local_import', 'setup.py'), ('has_variables_from_blacklist', 'name, n'), ('short_variable_name', 'n, r, l, t, i'), ('file_too_long', 'ast_helpers.py'), ('too_nested', 'code_validator.py:54'), ('indent_not_multiple_of_tab_size', 'ast_helpers.py:130'), ('variables_that_shadow_default_names', '_, slice')]
 
 
 Then CLI was added:
@@ -55,17 +55,17 @@ Then CLI was added:
 .. code-block:: bash
 
     $ fiasko -p ~/projects/fiasko_bro
-    git_history_warning                     	add files via upload
-    pep8                                    	33 PEP8 violations
-    mccabe_failure                          	has_changed_readme
-    has_star_import                         	__init__.py
-    has_local_import                        	setup.py
-    bad_titles                              	name, n
-    bad_titles                              	i, r, n, t, l
+    commit_messages_from_blacklist              add files via upload
+    too_many_pep8_violations                    33 PEP8 violations
+    too_difficult_by_mccabe                    	has_changed_readme
+    star_import                         	    __init__.py
+    local_import                        	    setup.py
+    has_variables_from_blacklist               	name, n
+    short_variable_name                        	i, r, n, t, l
     file_too_long                           	ast_helpers.py
     too_nested                              	code_validator.py:54
-    indent_not_four_spaces                  	ast_helpers.py:130
-    title_shadows                           	slice
+    indent_not_multiple_of_tab_size            	ast_helpers.py:130
+    variables_that_shadow_default_names        	slice
     ==================================================
     Total 11 violations
 
