@@ -57,15 +57,15 @@ Then CLI was added:
     $ fiasko -p ~/projects/fiasko_bro
     commit_messages_from_blacklist              add files via upload
     too_many_pep8_violations                    33 PEP8 violations
-    too_difficult_by_mccabe                    	has_changed_readme
-    star_import                         	    __init__.py
-    local_import                        	    setup.py
-    has_variables_from_blacklist               	name, n
-    short_variable_name                        	i, r, n, t, l
-    file_too_long                           	ast_helpers.py
-    too_nested                              	code_validator.py:54
-    indent_not_multiple_of_tab_size            	ast_helpers.py:130
-    variables_that_shadow_default_names        	slice
+    too_difficult_by_mccabe                     has_changed_readme
+    star_import                                 __init__.py
+    local_import                                setup.py
+    has_variables_from_blacklist                name, n
+    short_variable_name                         i, r, n, t, l
+    file_too_long                               ast_helpers.py
+    too_nested                                  code_validator.py:54
+    indent_not_multiple_of_tab_size             ast_helpers.py:130
+    variables_that_shadow_default_names         slice
     ==================================================
     Total 11 violations
 
