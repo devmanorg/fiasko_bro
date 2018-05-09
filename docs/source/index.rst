@@ -94,3 +94,4 @@ What's next
    contributing
    roadmap
    internationalization
+   changelog
