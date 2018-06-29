@@ -1,14 +1,12 @@
 import os
 
-from fiasko_bro.config import VALIDATOR_SETTINGS
 
-
-def count_py_files(directory):
+def count_py_files(directory, directories_to_skip):
     all_files = []
     for directory, dirs, files in os.walk(directory, topdown=True):
         dirs[:] = [
             d for d in dirs
-            if d not in VALIDATOR_SETTINGS['directories_to_skip']
+            if d not in directories_to_skip
         ]
         all_files += files
     return len([f for f in all_files if f.endswith('.py')])
@@ -32,8 +30,9 @@ def is_in_utf8(name):
     return True
 
 
-def is_filename_in_whitelist(file_name, whitelist):
-    for whitelisted_part in whitelist:
-        if whitelisted_part in file_name:
-            return True
-    return False
+def is_file_too_long(file_path, max_number_of_lines):
+    with open(file_path, 'r', encoding='utf-8') as file_handler:
+        number_of_lines = 0
+        while number_of_lines < max_number_of_lines and bool(file_handler.readline()):
+            number_of_lines += 1
+    return number_of_lines == max_number_of_lines

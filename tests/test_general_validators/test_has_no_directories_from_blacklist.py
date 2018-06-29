@@ -1,21 +1,35 @@
 from fiasko_bro import validators
-from fiasko_bro.code_validator import CodeValidator
 
 
-def test_has_no_directories_from_blacklist(test_repo):
-    expected_output = 'data_in_repo', '.vscode'
-    blacklists = CodeValidator.blacklists
-    output = validators.has_no_directories_from_blacklist(
-        solution_repo=test_repo,
-        blacklists=blacklists,
+def test_data_in_repo_fails_simple_data_directory(test_repo):
+    expected_output = '.vscode'
+    output = validators.data_in_repo(
+        project_folder=test_repo,
+        data_directories=['.vscode']
     )
     assert output == expected_output
 
 
-def test_no_star_imports_ok(origin_repo):
-    blacklists = CodeValidator.blacklists
-    output = validators.has_no_directories_from_blacklist(
-        solution_repo=origin_repo,
-        blacklists=blacklists,
+def test_data_in_repo_fails_nested_data_directory(test_repo):
+    expected_output = '__pycache__'
+    output = validators.data_in_repo(
+        project_folder=test_repo,
+        data_directories=['__pycache__']
+    )
+    assert output == expected_output
+
+
+def test_data_in_repo_succeeds_directories_not_tracked(origin_repo):
+    output = validators.data_in_repo(
+        project_folder=origin_repo,
+        data_directories=['.vscode']
+    )
+    assert output is None
+
+
+def test_data_in_repo_succeeds_directories_not_found(test_repo):
+    output = validators.data_in_repo(
+        project_folder=test_repo,
+        data_directories=['the_name_of_data_dir_01236']
     )
     assert output is None

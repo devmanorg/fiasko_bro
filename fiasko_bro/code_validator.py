@@ -1,161 +1,113 @@
-from collections import OrderedDict
-import logging
-
-from . import validators
-from . import pre_validation_checks
-from .repository_info import LocalRepositoryInfo
-from . import config
+from . import defaults
+from .repository_info import ProjectFolder
+from .utils.validator_helpers import ensure_repo_tokens_mutually_exclusive
 
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+def _is_successful_validation(validation_result):
+    return validation_result is None
 
 
-def validate_repo(path_to_repo, path_to_original_repo=None, **kwargs):
-    code_validator = CodeValidator()
-    return code_validator.validate(path_to_repo, path_to_original_repo, **kwargs)
+def _run_validator_group(group, arguments):
+    errors = []
+    for validator in group:
+        validation_result = validator(**arguments)
+        if not _is_successful_validation(validation_result):
+            errors.append((validator.__name__, validation_result))
+    return errors
 
 
-class CodeValidator:
-    blacklists = config.DEFAULT_BLACKLISTS
+def _run_validators_with_group_names(validator_groups, group_names, validator_arguments):
+    errors = []
+    for group_name in group_names:
+        errors += _run_validator_group(
+            validator_groups.get(group_name, []),
+            validator_arguments
+        )
+    return errors
 
-    whitelists = config.DEFAULT_WHITELISTS
 
-    _default_settings = config.VALIDATOR_SETTINGS
+def run_validator_group(validator_group, validator_arguments, post_error_validator_group=None):
+    successful_group_names = []
+    for group_name, group in validator_group.items():
+        errors = _run_validator_group(group, validator_arguments)
+        if errors:
+            if post_error_validator_group:
+                errors += _run_validators_with_group_names(
+                    post_error_validator_group,
+                    group_names=successful_group_names,
+                    validator_arguments=validator_arguments
+                )
+            return errors
+        successful_group_names.append(group_name)
+    return []
 
-    pre_validation_checks = {
-        'encoding': [
-            pre_validation_checks.are_sources_in_utf
-        ],
-        'size': [
-            pre_validation_checks.are_repos_too_large
-        ],
-        'bom': [
-            pre_validation_checks.has_no_bom
-        ]
+
+def _construct_validator_arguments(project_path, **kwargs):
+    validator_arguments = {
+        'project_path': project_path,
     }
+    validator_arguments.update(defaults.VALIDATION_PARAMETERS)
+    validator_arguments.update(kwargs)
+    return validator_arguments
 
-    error_validator_groups = OrderedDict(
-        [
-            (
-                'commits',
-                [validators.has_more_commits_than_origin],
-            ),
-            (
-                'readme',
-                [validators.has_readme_file],
-            ),
-            (
-                'syntax',
-                [validators.has_no_syntax_errors],
-            ),
-            (
-                'general',
-                [
-                    validators.has_no_directories_from_blacklist,
-                    validators.is_pep8_fine,
-                    validators.has_changed_readme,
-                    validators.is_snake_case,
-                    validators.is_mccabe_difficulty_ok,
-                    validators.has_no_encoding_declaration,
-                    validators.has_no_star_imports,
-                    validators.has_no_local_imports,
-                    validators.has_local_var_named_as_global,
-                    validators.has_variables_from_blacklist,
-                    validators.has_no_short_variable_names,
-                    validators.has_no_range_from_zero,
-                    validators.are_tabs_used_for_indentation,
-                    validators.has_no_try_without_exception,
-                    validators.has_frozen_requirements,
-                    validators.has_no_vars_with_lambda,
-                    validators.has_no_calls_with_constants,
-                    validators.has_readme_in_single_language,
-                    validators.has_no_urls_with_hardcoded_arguments,
-                    validators.has_no_nonpythonic_empty_list_validations,
-                    validators.has_no_extra_dockstrings,
-                    validators.has_no_exit_calls_in_functions,
-                    validators.has_no_libs_from_stdlib_in_requirements,
-                    validators.has_no_lines_ends_with_semicolon,
-                    validators.not_validates_response_status_by_comparing_to_200,
-                    validators.has_no_mutable_default_arguments,
-                    validators.has_no_slices_starts_from_zero,
-                    validators.has_no_cast_input_result_to_str,
-                    validators.has_no_return_with_parenthesis,
-                    validators.has_no_long_files,
-                    validators.is_nesting_too_deep,
-                    validators.has_no_string_literal_sums,
-                ],
-            ),
-        ]
+
+def determine_validators(**kwargs):
+    pre_validation_checks = kwargs.pop('pre_validation_checks', None) or defaults.PRE_VALIDATION_CHECKS
+    error_validator_groups = kwargs.pop('error_validator_groups', None)
+    warning_validator_groups = kwargs.pop('warning_validator_groups', None) or {}
+    if not error_validator_groups:
+        error_validator_groups = defaults.ERROR_VALIDATOR_GROUPS
+        # use default warning groups only with default error groups
+        if not warning_validator_groups:
+            warning_validator_groups = defaults.WARNING_VALIDATOR_GROUPS
+    return pre_validation_checks, error_validator_groups, warning_validator_groups
+
+
+def validate(project_path, original_project_path=None, **kwargs):
+    ensure_repo_tokens_mutually_exclusive(**kwargs)
+    pre_validation_checks, error_validator_groups, warning_validator_groups = determine_validators(**kwargs)
+    validator_arguments = _construct_validator_arguments(
+        project_path,
+        original_project_path=original_project_path,
+        **kwargs
     )
 
-    warning_validator_groups = {
-        'commits': [
-            validators.has_no_commit_messages_from_blacklist,
-        ],
-        'syntax': [
-            validators.has_indents_of_spaces,
-            validators.has_no_variables_that_shadow_default_names,
-        ]
-    }
+    pre_validation_errors = run_validator_group(pre_validation_checks, validator_arguments)
+    if pre_validation_errors:
+        return pre_validation_errors
 
-    for name in warning_validator_groups:
-        assert name in error_validator_groups.keys()
+    validator_arguments['project_folder'] = ProjectFolder(
+        project_path,
+        directories_to_skip=validator_arguments['directories_to_skip']
+    )
+    if original_project_path:
+        validator_arguments['original_project_folder'] = ProjectFolder(
+            original_project_path,
+            directories_to_skip=validator_arguments['directories_to_skip']
+        )
+    return run_validator_group(
+        validator_group=error_validator_groups,
+        validator_arguments=validator_arguments,
+        post_error_validator_group=warning_validator_groups
+    )
 
-    def __init__(self, **kwargs):
-        self.validator_arguments = dict(self._default_settings)
-        self.validator_arguments.update(kwargs)
 
-    @staticmethod
-    def _is_successful_validation(validation_result):
-        return not isinstance(validation_result, tuple)
+def traverse_validator_groups(validator_groups, func):
+    for validator_group in validator_groups.values():
+        for validator in validator_group:
+            func(validator)
 
-    def _run_validator_group(self, group, arguments):
-        errors = []
-        for validator in group:
-            validation_result = validator(**arguments)
-            if not self._is_successful_validation(validation_result):
-                errors.append(validation_result)
-        return errors
 
-    def _run_warning_validators_until(self, failed_error_group_name, arguments):
-        """Gets warnings up until but not including the failed group"""
-        warnings = []
-        for error_group_name in self.error_validator_groups.keys():
-            if error_group_name == failed_error_group_name:
-                return warnings
-            warnings += self._run_validator_group(
-                self.warning_validator_groups.get(error_group_name, []),
-                arguments
-            )
-        return warnings
-
-    def run_validator_group(self, group, add_warnings=False, *args, **kwargs):
-        errors = []
-        for error_group_name, error_group in group.items():
-            errors += self._run_validator_group(
-                error_group,
-                self.validator_arguments
-            )
-            if errors:
-                if add_warnings:
-                    errors += self._run_warning_validators_until(
-                        error_group_name,
-                        self.validator_arguments
-                    )
-                return errors
-        return errors
-
-    def validate(self, repo_path, original_repo_path=None, **kwargs):
-        self.validator_arguments.update(kwargs)
-        self.validator_arguments['path_to_repo'] = repo_path
-        self.validator_arguments['original_repo_path'] = original_repo_path
-        self.validator_arguments['whitelists'] = self.whitelists
-        self.validator_arguments['blacklists'] = self.blacklists
-        pre_validation_errors = self.run_validator_group(self.pre_validation_checks)
-        if pre_validation_errors:
-            return pre_validation_errors
-        self.validator_arguments['solution_repo'] = LocalRepositoryInfo(repo_path)
-        if original_repo_path:
-            self.validator_arguments['original_repo'] = LocalRepositoryInfo(original_repo_path)
-        return self.run_validator_group(self.error_validator_groups, add_warnings=True)
+def get_error_slugs(pre_validation_checks=None, error_validator_groups=None, warning_validator_groups=None):
+    validators = determine_validators(
+        pre_validation_checks=pre_validation_checks,
+        error_validator_groups=error_validator_groups,
+        warning_validator_groups=warning_validator_groups
+    )
+    error_slugs = set()
+    for validator_groups in validators:
+        traverse_validator_groups(
+            validator_groups,
+            func=lambda validator: error_slugs.add(validator.__name__)
+        )
+    return error_slugs

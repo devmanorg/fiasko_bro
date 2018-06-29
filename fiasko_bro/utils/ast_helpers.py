@@ -35,6 +35,21 @@ def get_all_namedtuple_names(tree):
     return nametuples_names
 
 
+def get_all_import_names_mentioned_in_import(tree):
+    import_names = []
+    imports = get_all_imports(tree)
+    for import_node in imports:
+        if isinstance(import_node, ast.ImportFrom):
+            import_names.append(import_node.module)
+        elif isinstance(import_node, ast.Import):
+            import_names += [import_object.name for import_object in import_node.names]
+    return import_names
+
+
+def is_multiple_imports_on_one_line(node):
+    return isinstance(node, ast.Import) and len(node.names) > 1
+
+
 def get_all_imported_names_from_tree(tree):
     imported_names = []
     for node in ast.walk(tree):

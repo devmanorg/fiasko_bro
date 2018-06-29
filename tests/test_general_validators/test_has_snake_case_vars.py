@@ -1,28 +1,32 @@
+from fiasko_bro import defaults
 from fiasko_bro import validators
-from fiasko_bro.code_validator import CodeValidator
 
 
-def test_is_snake_case_fail(test_repo):
-    whitelists = CodeValidator.whitelists
-    output = validators.is_snake_case(
-        solution_repo=test_repo,
-        whitelists=whitelists,
+def test_camel_case_variable_name_fail(test_repo):
+    parameters = defaults.VALIDATION_PARAMETERS
+    valid_non_snake_case_left_hand_values = parameters['valid_non_snake_case_left_hand_values']
+    valid_non_snake_case_right_hand_values = parameters['valid_non_snake_case_right_hand_values']
+    output = validators.camel_case_variable_name(
+        project_folder=test_repo,
+        valid_non_snake_case_left_hand_values=valid_non_snake_case_left_hand_values,
+        valid_non_snake_case_right_hand_values=valid_non_snake_case_right_hand_values
     )
-    assert isinstance(output, tuple)
-    assert output[0] == 'camel_case_vars'
+    assert isinstance(output, str)
 
 
-def test_is_snake_case_ok(test_repo):
-    expected_output = None
-    vars_used_not_in_snake_case = [
+def test_camel_case_variable_name_succeeds_for_extended_left_hand_whitelist(test_repo):
+    parameters = defaults.VALIDATION_PARAMETERS
+    valid_non_snake_case_left_hand_values = parameters['valid_non_snake_case_left_hand_values']
+    valid_non_snake_case_right_hand_values = parameters['valid_non_snake_case_right_hand_values']
+    vars_used_not_in_snake_case = {
         'CamelCaseVar',
         'lowerCamelCaseVar',
         'SoMeWieRdCasE'
-    ]
-    whitelists = CodeValidator.whitelists
-    whitelists['is_snake_case'].extend(vars_used_not_in_snake_case)
-    output = validators.is_snake_case(
-        solution_repo=test_repo,
-        whitelists=whitelists,
+    }
+    left_hand = valid_non_snake_case_left_hand_values.union(vars_used_not_in_snake_case)
+    output = validators.camel_case_variable_name(
+        project_folder=test_repo,
+        valid_non_snake_case_left_hand_values=left_hand,
+        valid_non_snake_case_right_hand_values=valid_non_snake_case_right_hand_values
     )
-    assert output is expected_output
+    assert output is None

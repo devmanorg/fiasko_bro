@@ -22,7 +22,11 @@ First, find out which validators to add in `Github Issues <https://github.com/de
 If you have an idea of your own, make sure to create an issue first.
 
 `Write your validator <http://fiasko-bro.readthedocs.io/en/latest/advanced_usage.html#customize-validators>`_
-and put it in ``validators.py`` and an appropriate validator group.
+and put it in ``validators`` folder and an appropriate validator group.
+
+A good name for a validator would be the one that plays along nicely with the error message.
+For example, if the error message consists of a file name and a line number,
+then the validator name should indicate what is wrong with the line: ``too_nested``, ``fails_john_complexity``.
 
 Make sure you have the tests for your validator.
 

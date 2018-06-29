@@ -11,7 +11,7 @@ def count_pep8_violations(repository_info, max_line_length=79, path_whitelist=No
         paths=['--max-line-length', str(max_line_length)],
         quiet=True
     )
-    python_file_paths = repository_info.get_python_file_filenames()
+    python_file_paths = [parsed_file.path for parsed_file in repository_info.get_parsed_py_files()]
     validatable_paths = []
     for python_file_path in python_file_paths:
         for whitelisted_path_part in path_whitelist:
@@ -44,8 +44,8 @@ def count_indentation_spaces(line, tab_size=4):
     return len(line) - len(expanded_line.lstrip())
 
 
-def is_repo_too_large(path_to_repo, max_py_files_count):
-    num_of_py_files = count_py_files(path_to_repo)
+def is_repo_too_large(path_to_repo, directories_to_skip, max_py_files_count):
+    num_of_py_files = count_py_files(path_to_repo, directories_to_skip)
     if num_of_py_files > max_py_files_count:
         return True
     return False
