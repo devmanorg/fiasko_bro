@@ -17,16 +17,16 @@ def _process_section_to_dict_config(config_section):
     config_processors = {
         'readme_filename': lambda x: x,
         'allowed_max_pep8_violations': int,
-        'max_complexity': int,
+        'max_mccabe_complexity': int,
         'minimum_name_length': int,
-        'min_percent_of_another_language': int,
+        'min_percent_of_another_language_in_readme': int,
         'last_commits_to_check_amount': int,
         'tab_size': int,
         'functions_with_docstrings_percent_limit': int,
         'max_pep8_line_length': int,
         'max_number_of_lines': int,
         'max_indentation_level': int,
-        'max_num_of_py_files': int,
+        'max_num_of_py_files_in_project': int,
         'directories_to_skip': lambda x: x.split(',')
     }
     result_config = {}

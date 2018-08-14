@@ -1,10 +1,10 @@
 from ..utils import code_helpers
 
 
-def too_difficult_by_mccabe(project_folder, max_complexity, *args, **kwargs):
+def too_difficult_by_mccabe(project_folder, max_mccabe_complexity, *args, **kwargs):
     violations = []
     for parsed_file in project_folder.get_parsed_py_files():
-        violations += code_helpers.get_mccabe_violations_for_file(parsed_file.path, max_complexity)
+        violations += code_helpers.get_mccabe_violations_for_file(parsed_file.path, max_mccabe_complexity)
     if violations:
         return ','.join(violations)
 

@@ -6,15 +6,15 @@ from ..utils import code_helpers, file_helpers
 def repo_is_too_large(
     project_path,
     directories_to_skip,
-    max_num_of_py_files,
+    max_num_of_py_files_in_project,
     original_project_path=None,
     *args,
     **kwargs
 ):
-    if code_helpers.is_repo_too_large(project_path, directories_to_skip, max_num_of_py_files):
+    if code_helpers.is_repo_too_large(project_path, directories_to_skip, max_num_of_py_files_in_project):
         return ''
     if original_project_path:
-        if code_helpers.is_repo_too_large(original_project_path, directories_to_skip, max_num_of_py_files):
+        if code_helpers.is_repo_too_large(original_project_path, directories_to_skip, max_num_of_py_files_in_project):
             return ''
 
 
