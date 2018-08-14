@@ -54,18 +54,18 @@ def _construct_validator_arguments(project_path, **kwargs):
 def determine_validators(**kwargs):
     pre_validation_checks = kwargs.pop('pre_validation_checks', None) or defaults.PRE_VALIDATION_CHECKS
     error_validator_groups = kwargs.pop('error_validator_groups', None)
-    warning_validator_groups = kwargs.pop('warning_validator_groups', None) or {}
+    post_error_validator_group = kwargs.pop('post_error_validator_groups', None) or {}
     if not error_validator_groups:
         error_validator_groups = defaults.ERROR_VALIDATOR_GROUPS
         # use default warning groups only with default error groups
-        if not warning_validator_groups:
-            warning_validator_groups = defaults.WARNING_VALIDATOR_GROUPS
-    return pre_validation_checks, error_validator_groups, warning_validator_groups
+        if not post_error_validator_group:
+            post_error_validator_group = defaults.POST_ERROR_VALIDATOR_GROUPS
+    return pre_validation_checks, error_validator_groups, post_error_validator_group
 
 
 def validate(project_path, original_project_path=None, **kwargs):
     ensure_repo_tokens_mutually_exclusive(**kwargs)
-    pre_validation_checks, error_validator_groups, warning_validator_groups = determine_validators(**kwargs)
+    pre_validation_checks, error_validator_groups, post_error_validator_groups = determine_validators(**kwargs)
     validator_arguments = _construct_validator_arguments(
         project_path,
         original_project_path=original_project_path,
@@ -88,7 +88,7 @@ def validate(project_path, original_project_path=None, **kwargs):
     return run_validator_group(
         validator_group=error_validator_groups,
         validator_arguments=validator_arguments,
-        post_error_validator_group=warning_validator_groups
+        post_error_validator_group=post_error_validator_groups
     )
 
 
@@ -98,11 +98,11 @@ def traverse_validator_groups(validator_groups, func):
             func(validator)
 
 
-def get_error_slugs(pre_validation_checks=None, error_validator_groups=None, warning_validator_groups=None):
+def get_error_slugs(pre_validation_checks=None, error_validator_groups=None, post_error_validator_groups=None):
     validators = determine_validators(
         pre_validation_checks=pre_validation_checks,
         error_validator_groups=error_validator_groups,
-        warning_validator_groups=warning_validator_groups
+        post_error_validator_groups=post_error_validator_groups
     )
     error_slugs = set()
     for validator_groups in validators:

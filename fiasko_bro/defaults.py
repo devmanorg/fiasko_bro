@@ -268,7 +268,7 @@ ERROR_VALIDATOR_GROUPS = MappingProxyType(
     )
 )
 
-WARNING_VALIDATOR_GROUPS = MappingProxyType(
+POST_ERROR_VALIDATOR_GROUPS = MappingProxyType(
     {
         'commits': (
             validators.commit_messages_from_blacklist,
@@ -280,5 +280,5 @@ WARNING_VALIDATOR_GROUPS = MappingProxyType(
     }
 )
 
-for name in WARNING_VALIDATOR_GROUPS:
+for name in POST_ERROR_VALIDATOR_GROUPS:
     assert name in ERROR_VALIDATOR_GROUPS.keys()
