@@ -2,7 +2,7 @@ import os
 import argparse
 
 from fiasko_bro import validate
-from fiasko_bro.configparser_helpers import extract_fiasko_config_from_cfg_file
+from fiasko_bro.utils.configparser_helpers import extract_fiasko_config_from_cfg_file
 
 
 def parse_args():
