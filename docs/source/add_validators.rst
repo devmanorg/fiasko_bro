@@ -207,20 +207,20 @@ Consider the example:
         validate(
             '/Users/project',
             error_validator_groups=validator_groups,
-            warning_validators_groups=defaults.WARNING_VALIDATOR_GROUPS
+            post_error_validator_groups=defaults.POST_ERROR_VALIDATOR_GROUPS
         )
     )
 
 As you can see, we simply copy the default validators structure, modify it to suit our needs and pass to the ``validate`` method.
 
-The minor issue is that since we pass our own error validators, the default warning validators have to be restored by hand.
+The minor issue is that since we pass our own error validators, the default post error validators have to be restored by hand.
 We did so by passing them as an argument too.
 
 The intricacies
 ~~~~~~~~~~~~~~~
 
-The are two kinds of validators: error validators and warning validators.
-The difference between them is that warning validators don't halt the validation process, while the error validators do.
+The are two kinds of validators: error validators and post error validators.
+The difference between them is that post error validators don't halt the validation process, while the error validators do.
 The error validators are expected to be grouped according to their purpose, like so::
 
     ERROR_VALIDATOR_GROUPS = OrderedDict(
@@ -250,10 +250,10 @@ because the order in which the validator groups run matters.
 In each group, every single validator is executed.
 If one of the validators in the group fails, the ``validate`` method executes the rest of the group and then
 returns the error list without proceeding to the next group.
-If all the validators in the error group succeed, the warning validators for this group are executed.
-Here's the structure of the warnings validators::
+If all the validators in the error group succeed, the post error validators for this group are executed.
+Here's the structure of the post error validators::
 
-    WARNING_VALIDATOR_GROUPS = {
+    POST_ERROR_VALIDATOR_GROUPS = {
         'commits': [
             validators.commit_message_from_blacklist,
         ],
@@ -263,7 +263,7 @@ Here's the structure of the warnings validators::
         ]
     }
 
-The ``commits`` warning validator group is executed only if the ``commits`` error validator group passes successfully.
+The ``commits`` post error validator group is executed only if the ``commits`` error validator group passes successfully.
 
 Warning validators are not executed if none of the error validators are failed.
 They just add more error messages in case the validation fails.

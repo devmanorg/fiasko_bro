@@ -20,12 +20,12 @@ def has_local_var_named_as_global(project_folder, local_var_named_as_global_path
             return message
 
 
-def short_variable_name(project_folder, minimum_name_length, valid_short_variable_names, *args, **kwargs):
+def short_variable_name(project_folder, min_variable_name_length, valid_short_variable_names, *args, **kwargs):
     short_names = []
     for parsed_file in project_folder.get_parsed_py_files():
         names = ast_helpers.get_all_defined_names(parsed_file.ast_tree)
         short_names += [n for n in names
-                        if len(n) < minimum_name_length and n not in valid_short_variable_names]
+                        if len(n) < min_variable_name_length and n not in valid_short_variable_names]
     if short_names:
         return ', '.join(list(set(short_names)))
 

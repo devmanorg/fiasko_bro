@@ -10,16 +10,16 @@ VALIDATION_PARAMETERS = MappingProxyType(
     {
         'readme_filename': 'README.md',
         'allowed_max_pep8_violations': 5,
-        'max_complexity': 7,
-        'minimum_name_length': 2,
-        'min_percent_of_another_language': 30,
+        'max_mccabe_complexity': 7,
+        'min_variable_name_length': 2,
+        'min_percent_of_another_language_in_readme': 30,
         'last_commits_to_check_amount': 5,
         'tab_size': 4,
         'functions_with_docstrings_percent_limit': 80,
         'max_pep8_line_length': 100,
         'max_number_of_lines': 200,
         'max_indentation_level': 4,
-        'max_num_of_py_files': 100,
+        'max_num_of_py_files_in_project': 100,
         'directories_to_skip': frozenset(
             [
                 'build',
@@ -268,7 +268,7 @@ ERROR_VALIDATOR_GROUPS = MappingProxyType(
     )
 )
 
-WARNING_VALIDATOR_GROUPS = MappingProxyType(
+POST_ERROR_VALIDATOR_GROUPS = MappingProxyType(
     {
         'commits': (
             validators.commit_messages_from_blacklist,
@@ -280,5 +280,5 @@ WARNING_VALIDATOR_GROUPS = MappingProxyType(
     }
 )
 
-for name in WARNING_VALIDATOR_GROUPS:
+for name in POST_ERROR_VALIDATOR_GROUPS:
     assert name in ERROR_VALIDATOR_GROUPS.keys()
